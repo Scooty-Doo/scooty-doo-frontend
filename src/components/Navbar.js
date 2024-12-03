@@ -7,7 +7,10 @@ const Navbar = () => {
     <nav style={styles.navbar}>
       <ul style={styles.navList}>
         <li style={styles.navItem}>
-          <Link style={styles.navLink} to="/">Home</Link>
+          <Link style={styles.navLink} to="/">Start</Link>
+        </li>
+        <li style={styles.navItem}>
+          <Link style={styles.navLink} to="/home">Home</Link>
         </li>
         <li style={styles.navItem}>
           <Link style={styles.navLink} to="/history">History</Link>
@@ -20,6 +23,15 @@ const Navbar = () => {
         </li>
         <li style={styles.navItem}>
           <Link style={styles.navLink} to="/account">Account</Link>
+        </li>
+        <li style={styles.navItem}>
+          <Link style={styles.navLink} to="/homeclient">StartK</Link>
+        </li>
+        <li style={styles.navItem}>
+          <Link style={styles.navLink} to="/accountclient">AccountK</Link>
+        </li>
+        <li style={styles.navItem}>
+          <Link style={styles.navLink} to="/historyclient">HistoryK</Link>
         </li>
       </ul>
     </nav>

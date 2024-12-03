@@ -1,5 +1,5 @@
 import React from 'react';
 
-const Login = () => <h1>Login Page</h1>;
+const LoginClient = () => <h1>Login Page for client</h1>;
 
-export default Login;
+export default LoginClient;

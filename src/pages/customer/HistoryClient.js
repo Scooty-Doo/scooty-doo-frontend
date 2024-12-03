@@ -1,5 +1,5 @@
 import React from 'react';
 
-const History = () => <h1>History Page</h1>;
+const HistoryClient = () => <h1>History Page for client</h1>;
 
-export default History;
+export default HistoryClient;
