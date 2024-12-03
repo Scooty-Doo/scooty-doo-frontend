@@ -16,6 +16,7 @@ import Customer from './pages/admin/CustomerAdmin';
 import HomeClient     from './pages/customer/HomeClient';
 import AccountClient  from './pages/customer/AccountClient';
 import HistoryClient  from './pages/customer/HistoryClient';
+import LoginClient    from './pages/customer/LoginClient';
 
 import StartPage  from './pages/StartPage';
 
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/homeclient"  element={<HomeClient />} />
         <Route path="/accountclient"     element={<AccountClient />} />
         <Route path="/historyclient" element={<HistoryClient />} />
+        <Route path="/loginclient" element={<LoginClient />} />
 
         <Route path="*"         element={<h1>404: Page Not Found</h1>} />
       </Routes>
