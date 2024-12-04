@@ -1,0 +1,19 @@
+services:
+    webclient-dev:
+        build: 
+            context: .
+            dockerfile: ./dockerfiles/dev/Dockerfile
+        container_name: "scooty-web-dev"
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./src:/app/src
+    webclient-prod:
+        build: 
+            context: .
+            dockerfile: ./dockerfiles/prod/Dockerfile
+        container_name: "scooty-web-prod"
+        ports:
+            - "3000:3000"
+
+
