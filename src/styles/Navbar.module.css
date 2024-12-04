@@ -1,0 +1,39 @@
+/* Style for the navbar container */
+.navbar {
+  background-color: #2c3e50; /* Mörkare bakgrundsfärg för bättre kontrast */
+  padding: 15px 30px; /* Lägger till padding för att skapa utrymme runt innehållet */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lägger till en lätt skugga för att ge djup */
+  top: 0; /* Fäster navbaren vid toppen av sidan */
+  width: 100%; /* Sätter bredden på navbaren till 100% av viewportens bredd */
+  z-index: 1000; /* Sätter z-index för att se till att navbaren ligger ovanpå andra element */
+}
+
+/* Style for the nav list */
+.navList {
+  display: flex; /* Använder flexbox för att ordna nav-items horisontellt */
+  justify-content: center; /* Centrerar nav-items horisontellt */
+  align-items: center; /* Centrerar nav-items vertikalt */
+  list-style: none; /* Tar bort punktlistorna från nav-listan */
+  margin: 0; /* Tar bort standardmarginal */
+  padding: 0; /* Tar bort standardpadding */
+}
+
+/* Style for each nav item */
+.navItem {
+  margin: 0 20px; /* Lägger till utrymme mellan varje nav-item */
+}
+
+/* Style for the nav links */
+.navLink {
+  color: #ecf0f1; /* Ljus färg på texten för bättre synlighet */
+  text-decoration: none; /* Tar bort understrykning på länkar */
+  font-size: 18px; /* Sätter teckenstorleken på länkarna */
+  font-weight: bold; /* Gör länkarna fetstilta */
+  transition: color 0.3s ease, transform 0.3s ease; /* Lägger till övergångseffekter för färg och transformation */
+}
+
+/* Hover effect for nav links */
+.navLink:hover {
+  color: #3498db; /* Ändrar textfärgen till blå vid hover */
+  transform: scale(1.1); /* Förstorar texten något vid hover för en interaktiv effekt */
+}

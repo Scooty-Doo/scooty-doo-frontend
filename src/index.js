@@ -1,17 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
+import './styles/Base.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-function HelloIndex() {
-  return <h1 className="greeting">Hello IndexPage!</h1>
-}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <HelloIndex />
     <App />
   </React.StrictMode>
 );

@@ -1,0 +1,72 @@
+/* Container för login-formuläret */
+.loginContainer {
+    display: flex; /* Använd flexbox för att organisera innehållet */
+    flex-direction: column; /* Vertikal layout */
+    align-items: center; /* Centrera innehållet horisontellt */
+    height: 100vh; /* Sätter höjden på containern till hela webbläsarens höjd */
+    font-family: 'Arial', sans-serif; /* Sätter fonten för texten */
+}
+
+/* Titeltexten på login-sidan */
+.title {
+    font-size: 2rem; /* Sätter storleken på rubriken */
+    margin-bottom: 20px; /* Lägger till 20px utrymme under rubriken */
+    color: #333; /* Sätter färgen på rubriken till mörkgrå */
+}
+
+/* Formulärets container */
+.form {
+    margin-top: 50px; /* Lägger till utrymme ovanför formuläret */
+    background-color: #fff; /* Sätter vit bakgrundsfärg */
+    padding: 30px; /* Lägger till padding runt formuläret */
+    border-radius: 8px; /* Rundar hörnen på formuläret */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lägg till en lätt skugga runt formuläret */
+    width: 100%; /* Gör formuläret brett så att det fyller sin container */
+    max-width: 400px; /* Sätter en maxbredd på formuläret för att hålla det kompakt */
+}
+
+/* Grupp av inputfält */
+.inputGroup {
+    margin-bottom: 15px; /* Lägger till utrymme mellan varje inputgrupp */
+}
+
+/* Etikett för inputfält */
+.label {
+    font-size: 1rem; /* Sätter storleken på etiketten */
+    color: #666; /* Sätter färgen på etiketten till en grå ton */
+    margin-bottom: 5px; /* Lägger till lite utrymme under etiketten */
+    display: block; /* Gör etiketten till ett blockelement så att den står på en egen rad */
+}
+
+/* Stilar för inputfält */
+.input {
+    width: 350px; /* Sätter en fast bredd på inputfälten */
+    padding: 12px; /* Lägger till padding för att ge utrymme inuti fältet */
+    border-radius: 4px; /* Rundar hörnen på inputfälten */
+    border: 1px solid #ccc; /* Sätter en grå kant runt fälten */
+    font-size: 1rem; /* Sätter teckenstorleken för texten i inputfältet */
+    outline: none; /* Tar bort den blå kanten som visas när man klickar på fältet */
+}
+
+/* Fokusstil för inputfält */
+.input:focus {
+    border-color: #4f89fc; /* Ändrar kantfärgen till blå när inputfältet är i fokus */
+}
+
+/* Stilar för login-knappen */
+.button {
+    width: 350px; /* Knappen tar upp samma bredd som inputfälten */
+    padding: 12px; /* Lägger till padding inuti knappen */
+    background-color: #2c3e50; /* Sätter bakgrundsfärgen på knappen */
+    color: white; /* Sätter textfärgen på knappen till vit */
+    border: none; /* Tar bort standardkanten på knappen */
+    border-radius: 4px; /* Rundar hörnen på knappen */
+    font-size: 1rem; /* Sätter teckenstorleken på knappen */
+    cursor: pointer; /* Gör att muspekaren ändras till en pekare vid hover */
+    transition: background-color 0.3s ease; /* Lägger till en övergångseffekt när bakgrundsfärgen ändras */
+}
+
+/* Hover-effekt för knappen */
+.button:hover {
+    background-color: #3e74d5; /* Ändrar bakgrundsfärgen på knappen vid hover */
+}
