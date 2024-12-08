@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';  // Importera Leaflet för att skapa en anpassad ikon
 
 const MapView = ({ userType }) => {
-    // Lista med cyklar och deras koordinater
-    const bikes = [
-        { id: 1, position: [55.604981, 13.003822], name: "Cykel 1" },
-        { id: 2, position: [55.605881, 13.004922], name: "Cykel 2" },
-        { id: 3, position: [55.606781, 13.005722], name: "Cykel 3" },
-    ];
+    const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
+    const [loading, setLoading] = useState(true); // State för att hantera laddning
 
     // Skapa en anpassad ikon för markörerna
     const bikeIcon = new L.Icon({
@@ -18,6 +15,23 @@ const MapView = ({ userType }) => {
         iconAnchor: [16, 32],  // Placeringen av ikonen (centrum av ikonen)
         popupAnchor: [0, -32],  // Placeringen av popup-fönstret relativt ikonen
     });
+
+    // Hämtar cyklar från API
+    useEffect(() => {
+        const fetchBikes = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/v1/bikes');
+                const data = await response.json();
+                setBikes(data.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching bikes:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchBikes();
+    }, []);
 
     // Koordinater och radie för den förbjudna zonen (kan vara vilken plats du vill)
     const forbiddenAreaCenter = [55.605, 13.004];  // Mittpunkt för den förbjudna zonen
