@@ -2,78 +2,117 @@
 
 /* Startpage container style */
 .startPage {
-    text-align: center; /* Centrerar innehållet horisontellt */
-    max-width: 90%; /* Sätter en maxbredd på 90% av viewportens bredd */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Fyll hela höjden på skärmen */
 }
+
 
 /* CSS for the title */
 .title {
-    font-size: 120px; /* Stor storlek för titeln */
-    color: #2c3e50; /* Mörk färg för titeln */
-    margin-bottom: 10px; /* Lägger till lite utrymme under titeln */
-    opacity: 0; /* Gör texten osynlig initialt */
-    transform: scale(0.5); /* Minskar storleken på texten för en effekt */
-    animation: titleAnimation 2s ease-out forwards; /* Lägger till animation för att göra titeln synlig och växa */
+  font-size: 120px; /* Stor storlek för titeln */
+  color: #2c3e50; /* Mörk färg för titeln */
+  margin-bottom: 10px; /* Lägger till lite utrymme under titeln */
+  opacity: 0; /* Gör texten osynlig initialt */
+  transform: scale(0.5); /* Minskar storleken på texten för en effekt */
+  animation: titleAnimation 1.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 /* Keyframe animation for the title */
 @keyframes titleAnimation {
-    0% {
-        opacity: 0; /* Starta med texten osynlig */
-        transform: scale(0.5); /* Starta med en liten text */
-    }
-    50% {
-        opacity: 1; /* Gör texten synlig */
-        transform: scale(1.1); /* Expandera texten något */
-    }
-    100% {
-        opacity: 1; /* Texten är fullt synlig */
-        transform: scale(1); /* Återgå till normal storlek */
-    }
+  0% {
+      opacity: 0; /* Starta med texten osynlig */
+      transform: scale(0.5); /* Starta med en liten text */
+  }
+  50% {
+      opacity: 1; /* Gör texten synlig */
+      transform: scale(1.1); /* Expandera texten något */
+  }
+  100% {
+      opacity: 1; /* Texten är fullt synlig */
+      transform: scale(1); /* Återgå till normal storlek */
+  }
 }
 
 /* Subtitle style */
 .subtitle {
-    font-size: 18px; /* Mindre storlek för undertiteln */
-    color: #555; /* Grå färg för undertiteln */
-    margin-bottom: 20px; /* Lägger till utrymme under undertiteln */
-    font-style: italic; /* Sätter texten i kursiv stil */
+  font-size: 18px; /* Mindre storlek för undertiteln */
+  color: #555; /* Grå färg för undertiteln */
+  margin-bottom: 20px; /* Lägger till utrymme under undertiteln */
+  font-style: italic; /* Sätter texten i kursiv stil */
 }
 
 /* Button container styling */
 .buttonContainer {
-    display: flex; /* Använder flexbox för att ordna knappar vertikalt */
-    flex-direction: column; /* Justera knapparna i en kolumn */
-    gap: 15px; /* Lägg till utrymme mellan knapparna */
+  display: flex; /* Använder flexbox för att ordna knappar vertikalt */
+  flex-direction: column; /* Justera knapparna i en kolumn */
+  gap: 15px; /* Lägg till utrymme mellan knapparna */
 }
 
 /* Button styling */
 .button {
-    background-color: #2c3e50; /* Mörk bakgrundsfärg för knappen */
-    color: white; /* Vit textfärg */
-    border: none; /* Ingen ram runt knappen */
-    padding: 20px 50px; /* Generöst padding runt knappen */
-    font-size: 16px; /* Sätt en medelstor teckenstorlek */
-    border-radius: 5px; /* Rundade hörn på knappen */
-    width: 300px; /* Sätt en fast bredd på knappen */
-    cursor: pointer; /* Ändrar muspekaren till en pekare vid hover */
-    transition: background-color 0.3s ease; /* Lägger till en smidig övergång för bakgrundsfärgen */
+  background-color: #2c3e50; /* Mörk bakgrundsfärg för knappen */
+  color: white; /* Vit textfärg */
+  border: none; /* Ingen ram runt knappen */
+  padding: 20px 40px; /* Generöst padding runt knappen */
+  font-size: 16px; /* Sätt en medelstor teckenstorlek */
+  border-radius: 5px; /* Rundade hörn på knappen */
+  width: 300px; /* Sätt en fast bredd på knappen */
+  cursor: pointer; /* Ändrar muspekaren till en pekare vid hover */
+  transition: background-color 0.3s ease; /* Lägger till en smidig övergång för bakgrundsfärgen */
+  touch-action: manipulation; /* Förbättrar prestanda för pekskärmar */
 }
 
 /* Hover effect for the button */
 .button:hover {
-    background-color: #2c3e50; /* Bakgrundsfärgen ändras på hover (förbli densamma här men kan ändras för effekt) */
+  background-color: #2c3e50; /* Bakgrundsfärgen ändras på hover (förbli densamma här men kan ändras för effekt) */
 }
 
 /* Admin link styling */
 .adminLink {
-    color: #2c3e50; /* Samma färg som knapparna för konsekvent design */
-    text-decoration: none; /* Tar bort understrykningen */
-    margin-top: 20px; /* Lägger till utrymme ovanför länken */
-    font-size: 14px; /* Sätt en liten textstorlek för länken */
+  color: #2c3e50; /* Samma färg som knapparna för konsekvent design */
+  text-decoration: none; /* Tar bort understrykningen */
+  margin-top: 20px; /* Lägger till utrymme ovanför länken */
+  font-size: 16px; /* Sätt en liten textstorlek för länken */
+  padding: 10px;
 }
 
 /* Hover effect for the admin link */
 .adminLink:hover {
-    text-decoration: underline; /* Lägger till understrykning när användaren hovrar över länken */
+  text-decoration: underline; /* Lägger till understrykning när användaren hovrar över länken */
 }
+
+/* Mobilanpassad layout */
+@media (max-width: 768px) {
+  .title {
+    font-size: 40px; /* Mindre storlek för titeln */
+  }
+
+  .subtitle {
+    font-size: 14px; /* Justera textstorleken för undertiteln */
+  }
+
+  .button {
+    width: 90%; /* Gör knapparna bredare och anpassade till skärmens storlek */
+    padding: 15px 20px; /* Justera paddingen för mindre skärmar */
+    font-size: 14px; /* Mindre teckenstorlek */
+  }
+
+  .buttonContainer {
+    gap: 10px; /* Mindre mellanrum mellan knapparna */
+  }
+}
+
+/* Layout för tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .title {
+    font-size: 80px; /* Mellanstorlek för titeln */
+  }
+
+  .button {
+    width: 250px; /* Justera knappbredden */
+  }
+}
+
