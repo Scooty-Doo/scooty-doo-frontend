@@ -14,7 +14,7 @@ const HomeClient = () => {
     };
 
     return (
-        <div className={styles.contaianer}>
+        <div className={styles.homecontaianer}>
             <div className={styles.map}>
                 <MapView />
             </div>

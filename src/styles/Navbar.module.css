@@ -1,17 +1,22 @@
 /* Style for the navbar container */
 .navbar {
-  background-color: #2c3e50;
+  background-color: #ffffff;
   padding: 25px 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* Använd flexbox för att ordna elementen på en rad */
+  justify-content: space-between; /* För att ge utrymme mellan loggan och navlänkarna */
+  align-items: center; /* Vertikal centrering */
   box-sizing: border-box;
+  border-bottom: 1px solid #ccc;
+}
+
+.logo {
+  height: 40px; /* Justera storlek på logotypen */
+  margin-right: auto; /* Ge utrymme mellan logotypen och navigationen */
 }
 
 /* Style for the nav list */
@@ -32,7 +37,7 @@
 
 /* Style for the nav links */
 .navLink {
-  color: #ecf0f1;
+  color: #2c3e50;
   text-decoration: none;
   font-size: 18px;
   font-weight: bold;
@@ -56,6 +61,19 @@
 /* Media query for smaller screens (mobil) */
 @media (max-width: 768px) {
   /* Flyttar navbaren till botten på skärmen på små skärmar */
+
+  .navbar {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+  }
   .navbar {
     top: auto; /* Tar bort top-positionen */
     bottom: 0; /* Fäster navbaren vid botten istället */
@@ -77,5 +95,9 @@
 
   .navItem {
     margin: 0 15px; /* Minskar avståndet mellan ikoner på mobilen */
+  }
+
+  .logo {
+    display: none;
   }
 }

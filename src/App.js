@@ -54,7 +54,7 @@ const App = () => {
       <Layout>
         {/* Define Routes */}
         <Routes>
-          <Route path="/"              element={<StartPage />} />
+          <Route path="/"              element={<LoginClient />} />
           <Route path="/home"          element={<Home />} />
           <Route path="/account"       element={<Account />} />
           <Route path="/history"       element={<History />} />
@@ -63,7 +63,6 @@ const App = () => {
           <Route path="/homeclient"    element={<HomeClient />} />
           <Route path="/accountclient" element={<AccountClient />} />
           <Route path="/historyclient" element={<HistoryClient />} />
-          <Route path="/loginclient"   element={<LoginClient />} />
           <Route path="/createaccount" element={<CreateAccount />} />
           <Route path="*"              element={<h1>404: Page Not Found</h1>} />
         </Routes>

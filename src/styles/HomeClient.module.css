@@ -1,4 +1,25 @@
 /* Global reset */
+
+.homecontaianer {
+    display: flex;
+    flex-direction: column; /* Gör att innehållet ordnas vertikalt */
+    justify-content: center; /* Vertikal centrering */
+    align-items: center; /* Horisontell centrering */
+    height: 100vh; /* Full höjd på sidan */
+    text-align: center; /* Centrerar texten */
+  }
+  
+.map {
+    width: 100%;
+    max-width: 600px; /* Begränsa kartans storlek */
+}
+
+.formcontainer {
+    width: 100%;
+    max-width: 400px; /* Begränsa formulärets storlek */
+}
+  
+
 /* Rubrikens stil */
 .title {
     font-size: 2rem; /* Standardstorlek */
@@ -8,33 +29,7 @@
     margin-bottom: 20px;
 }
 
-/* Huvudcontainer som håller rubrik och innehåll */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
-    padding: 20px;
-    margin-top: 90px;
-}
 
-/* Stilar för kartan */
-.map {
-    width: 100%; /* Kartan tar upp hela bredden */
-    max-width: 800px;
-    height: 400px;
-}
-
-/* Formulärets container */
-.formcontainer {
-    width: 80%; /* Standardbredd */
-    max-width: 500px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-}
 
 /* Stilar för formulärfält */
 form {
@@ -75,19 +70,18 @@ button:hover {
     
     .map {
         width: 100%;
-        height: 550px;
-        position: relative; /* Bibehåller karta som bakgrund under andra element */
+        height: 100vh;
         z-index: 1; /* Lägst z-index för att placera den under både navbar och formulär */
       }
       
 
     .formcontainer {
         position: absolute;
-        top: 80px; /* För att placera formuläret precis under navbaren */
+        top: 65%;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(197, 211, 232, 0.8);
         padding: 15px;
         border-radius: 10px;
         z-index: 900; /* Lägre än navbaren, men högre än kartan */
@@ -105,9 +99,6 @@ button:hover {
 
 /* Mediumstora skärmar, t.ex. surfplattor */
 @media (max-width: 900px) {
-    .map {
-        height: 550px; /* Anpassad höjd */
-    }
     .formcontainer {
         width: 90%; /* Nästan hela bredden */
     }

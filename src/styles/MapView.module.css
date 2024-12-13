@@ -1,0 +1,12 @@
+.mapContainer {
+    height: 400px; /* Höjden på kartan */
+    width: 100%;   /* Bredden på kartan */
+}
+
+/* Mediumstora skärmar, t.ex. surfplattor */
+@media (max-width: 900px) {
+    .mapContainer {
+        height: 100vh; /* Höjden på kartan */
+        width: 100%;   /* Bredden på kartan */
+    }
+}

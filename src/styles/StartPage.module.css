@@ -1,13 +1,7 @@
 /* Startpage container style */
 .startPage {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh; /* Fyll hela höjden på skärmen */
   min-width: 100vw;  /* Gör så att bredden fyller hela skärmen */
-  padding: 20px; /* Lägg till padding runt innehållet */
-  box-sizing: border-box;
 }
 
 
