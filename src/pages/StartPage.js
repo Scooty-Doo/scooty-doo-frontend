@@ -12,7 +12,7 @@ const StartPage = () => (
         <button className={styles.button}>Login</button>
       </Link>
       <Link to="/createaccount">
-        <button className={styles.button}>Registrera dig</button>
+        <button className={styles.button}> Sign Up</button>
       </Link>
       <Link to="/login">
         <p className={styles.adminLink}>Admin</p>

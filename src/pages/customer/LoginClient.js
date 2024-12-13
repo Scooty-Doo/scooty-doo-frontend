@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from '../../styles/LoginClient.module.css';
+import { FaGithub } from 'react-icons/fa';
 
-//Login för kund
 const LoginClient = () => {
-  // useNavigate för att kunna navigera till andra sidor
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Lägg till en unik klass på body
+    document.body.classList.add(styles.loginBody);
+
+    // Ta bort klassen när komponenten unmountar
+    return () => {
+      document.body.classList.remove(styles.loginBody);
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/homeclient'); // Navigera till hem för kund när loggat in
+    navigate('/homeclient');
   };
 
   return (
     <div className={styles.loginContainer}>
-      <h1 className={styles.title}>Login Page</h1>
+      <h1 className={styles.title}>Login</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
           <label htmlFor="email" className={styles.label}>
-            Email:
             <input
               id="email"
               type="email"
@@ -30,7 +39,6 @@ const LoginClient = () => {
         </div>
         <div className={styles.inputGroup}>
           <label htmlFor="password" className={styles.label}>
-            Password:
             <input
               id="password"
               type="password"
@@ -40,9 +48,27 @@ const LoginClient = () => {
             />
           </label>
         </div>
-        <button type="submit" className={styles.button}>Login</button>
+        <button type="submit" className={styles.loginbutton}>Login</button>
       </form>
 
+      <div className={styles.orContainer}>
+        <span className={styles.line}></span>
+        <span className={styles.orText}>or login with</span>
+        <span className={styles.line}></span>
+      </div>
+
+      <button className={`${styles.button} ${styles.githubButton}`}>
+        <FaGithub className={styles.githubIcon} style={{ marginRight: '10px' }} />
+        GitHub
+      </button>
+
+      <p className={styles.createAccountText}>
+        Not a member? <Link to="/createaccount">Signup</Link>
+      </p>
+
+      <p className={styles.AdminText}>
+        <Link to="/login">Admin</Link>
+      </p>
     </div>
   );
 };

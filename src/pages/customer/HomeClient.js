@@ -14,23 +14,22 @@ const HomeClient = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>Hem</h1>
+        <div className={styles.contaianer}>
             <div className={styles.map}>
                 <MapView />
             </div>
             <div className={styles.formcontainer}>
-                <h2>Starta resa</h2>
+                <h2>Activate your bike</h2>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="text" 
                         id="bikeId" 
                         value={bikeId} 
                         onChange={(e) => setBikeId(e.target.value)}
-                        placeholder="Ange Cykelns ID"
+                        placeholder="Bike ID"
                         required
                     />
-                    <button type="submit">Starta resa</button>
+                    <button type="submit">Start</button>
                 </form>
             </div>
         </div>

@@ -1,49 +1,53 @@
+/* Bakgrund för loginsida*/
+.loginBody {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-image: url('../pic/backgroundscooter.png');
+    background-size: cover;
+    background-position: center;
+}
+  
+
 /* Container för login-formuläret */
 .loginContainer {
-    display: flex; /* Använd flexbox för att organisera innehållet */
-    flex-direction: column; /* Vertikal layout */
-    align-items: center; /* Centrera innehållet horisontellt */
-    height: 100vh; /* Sätter höjden på containern till hela webbläsarens höjd */
-    font-family: 'Arial', sans-serif; /* Sätter fonten för texten */
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    font-family: 'Arial', sans-serif;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    margin-top: 150px;
 }
 
 /* Titeltexten på login-sidan */
 .title {
-    font-size: 2rem; /* Sätter storleken på rubriken */
-    margin-bottom: 20px; /* Lägger till 20px utrymme under rubriken */
-    color: #333; /* Sätter färgen på rubriken till mörkgrå */
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
 }
 
-/* Formulärets container */
-.form {
-    margin-top: 50px; /* Lägger till utrymme ovanför formuläret */
-    background-color: #fff; /* Sätter vit bakgrundsfärg */
-    padding: 30px; /* Lägger till padding runt formuläret */
-    border-radius: 8px; /* Rundar hörnen på formuläret */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lägg till en lätt skugga runt formuläret */
-    width: 100%; /* Gör formuläret brett så att det fyller sin container */
-    max-width: 400px; /* Sätter en maxbredd på formuläret för att hålla det kompakt */
-}
 
 /* Grupp av inputfält */
 .inputGroup {
-    margin-bottom: 15px; /* Lägger till utrymme mellan varje inputgrupp */
+    margin-bottom: 15px;
 }
 
 /* Etikett för inputfält */
 .label {
-    font-size: 1rem; /* Sätter storleken på etiketten */
-    color: #666; /* Sätter färgen på etiketten till en grå ton */
-    margin-bottom: 5px; /* Lägger till lite utrymme under etiketten */
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 10px;
     display: block; /* Gör etiketten till ett blockelement så att den står på en egen rad */
 }
 
 /* Stilar för inputfält */
 .input {
-    width: 350px; /* Sätter en fast bredd på inputfälten */
-    padding: 12px; /* Lägger till padding för att ge utrymme inuti fältet */
-    border-radius: 4px; /* Rundar hörnen på inputfälten */
-    border: 1px solid #ccc; /* Sätter en grå kant runt fälten */
+    width: 350px;
+    padding: 16px;
+    border-radius: 15px; /* Rundar hörnen på inputfälten */
+    border-color: grey;
     font-size: 1rem; /* Sätter teckenstorleken för texten i inputfältet */
     outline: none; /* Tar bort den blå kanten som visas när man klickar på fältet */
 }
@@ -54,19 +58,151 @@
 }
 
 /* Stilar för login-knappen */
-.button {
-    width: 350px; /* Knappen tar upp samma bredd som inputfälten */
-    padding: 12px; /* Lägger till padding inuti knappen */
-    background-color: #2c3e50; /* Sätter bakgrundsfärgen på knappen */
-    color: white; /* Sätter textfärgen på knappen till vit */
-    border: none; /* Tar bort standardkanten på knappen */
-    border-radius: 4px; /* Rundar hörnen på knappen */
-    font-size: 1rem; /* Sätter teckenstorleken på knappen */
-    cursor: pointer; /* Gör att muspekaren ändras till en pekare vid hover */
-    transition: background-color 0.3s ease; /* Lägger till en övergångseffekt när bakgrundsfärgen ändras */
+.loginbutton,
+.githubButton { 
+    margin-top: 28px;
+    border-color: #000000;
+    height: 60px;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Montserrat';
+    font-size: 20px;
+    color: #FFFFFF;
+    cursor: pointer;
+    width: 100%; /* Gör knapparna lika breda */
+    margin: 0 auto; /* Centrerar knapparna horisontellt */
+    display: flex; /* Flexbox för att säkerställa att innehållet centreras */
+    justify-content: center;
+    align-items: center;
 }
 
-/* Hover-effekt för knappen */
-.button:hover {
-    background-color: #3e74d5; /* Ändrar bakgrundsfärgen på knappen vid hover */
+/* Specifika stilar för login-knappen */
+.loginbutton {
+    background: #2c3e50;
 }
+
+.loginbutton:hover {
+    background-color: #395169;
+}
+
+/* Specifika stilar för GitHub-knappen */
+.githubButton {
+    background-color: #c5d3e8;
+    color: rgb(68, 68, 68);
+}
+
+.githubButton:hover {
+    background-color: #a7b3c4;
+}
+
+
+.githubIcon {
+    font-size: 1.2rem;
+    margin-right: 10px; /* Lägg till mellanrum mellan ikonen och texten */
+}
+
+
+/* Stil för "eller" med linjer */
+.orContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+.line {
+    flex-grow: 0.8;
+    height: 0.5px;
+    background-color: #000000;
+}
+  
+.orText {
+    margin: 0 10px;
+    font-size: 18px;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+}
+  
+/* Stil för p-taggen inom Link */
+.createAccountText {
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: bold;
+    padding-top: 50px;
+    text-align: center;
+    cursor: pointer; /* Gör texten klickbar */
+}
+
+/* Stil för admin */
+.AdminText {
+    font-size: 12px;
+    color: #2c3e50;
+    font-weight: bold;
+    padding-top: 50px;
+    text-align: center;
+    cursor: pointer; /* Gör texten klickbar */
+}
+
+
+/* Responsiv design för små skärmar */
+@media screen and (max-width: 600px) {
+    .loginContainer {
+        padding: 6px; /* Ytterligare minskning av padding */
+        width: 85%; /* Minska bredden för att skapa mer utrymme */
+        margin-top: 5px;
+    }
+
+    .title {
+        font-size: 1.1rem; /* Ytterligare minskning av rubrikstorleken */
+        margin-bottom: 10px; /* Minska avståndet under rubriken */
+    }
+
+    .input {
+        width: 100%; /* Gör inputfältet fullt brett på små skärmar */
+        font-size: 0.9rem; /* Justera teckenstorleken för input */
+    }
+
+    .loginbutton,
+    .githubButton {
+        font-size: 12px; /* Minska fontstorleken ytterligare */
+        height: 30px; /* Minska höjden något */
+    }
+
+    .createAccountText {
+        font-size: 14px; /* Minska storleken för länken */
+        padding-top: 15px; /* Minska padding för att ge mer utrymme */
+    }
+
+    .orText {
+        margin: 0 10px;
+        font-size: 13px;
+        color: #333;
+        font-family: 'Montserrat', sans-serif;
+      }
+}
+
+
+/* För tablet-storlekar */
+@media screen and (max-width: 768px) {
+    .loginContainer {
+        height: 75vh;
+        max-width: 90%; /* Låt login-container vara bredare på tablet */
+        margin-top: 40px;
+    }
+
+    .title {
+        font-size: 1.75rem; /* Mindre än desktop men större än mobiler */
+    }
+
+    .input {
+        width: 80%;
+    }
+
+    .loginbutton,
+    .githubButton {
+        font-size: 19px;
+        height: 40px;
+    }
+}
+
+  

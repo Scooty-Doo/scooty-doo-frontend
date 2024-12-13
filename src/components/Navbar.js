@@ -1,38 +1,65 @@
-// src/components/Navbar.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Navbar.module.css'; // Importera CSS-modulen
+import { FaHome, FaHistory, FaUser, FaCog } from 'react-icons/fa'; // Importera ikoner från react-icons
 
 const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/">Start</Link>
+          <Link className={styles.navLink} to="/">
+            <span className={styles.navText}>Start</span>
+            <FaHome className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/home">Home</Link>
+          <Link className={styles.navLink} to="/home">
+            <span className={styles.navText}>Home</span>
+            <FaHome className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/history">History</Link>
+          <Link className={styles.navLink} to="/history">
+            <span className={styles.navText}>History</span>
+            <FaHistory className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/zone">Zone</Link>
+          <Link className={styles.navLink} to="/zone">
+            <span className={styles.navText}>Zone</span>
+            <FaCog className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/customer">Customer</Link>
+          <Link className={styles.navLink} to="/customer">
+            <span className={styles.navText}>Customer</span>
+            <FaUser className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/account">Account</Link>
+          <Link className={styles.navLink} to="/account">
+            <span className={styles.navText}>Account</span>
+            <FaUser className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/homeclient">StartK</Link>
+          <Link className={styles.navLink} to="/homeclient">
+            <span className={styles.navText}>StartK</span>
+            <FaHome className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/accountclient">AccountK</Link>
+          <Link className={styles.navLink} to="/accountclient">
+            <span className={styles.navText}>AccountK</span>
+            <FaUser className={styles.navIcon} />
+          </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/historyclient">HistoryK</Link>
+          <Link className={styles.navLink} to="/historyclient">
+            <span className={styles.navText}>HistoryK</span>
+            <FaHistory className={styles.navIcon} />
+          </Link>
         </li>
       </ul>
     </nav>
