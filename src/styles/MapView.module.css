@@ -1,6 +1,7 @@
 .mapContainer {
-    height: 400px; /* Höjden på kartan */
+    height: 700px; /* Höjden på kartan */
     width: 100%;   /* Bredden på kartan */
+    margin-top: 50px;
 }
 
 /* Mediumstora skärmar, t.ex. surfplattor */

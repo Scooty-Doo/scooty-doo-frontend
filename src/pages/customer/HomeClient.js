@@ -19,6 +19,7 @@ const HomeClient = () => {
                 <MapView />
             </div>
             <div className={styles.formcontainer}>
+                <h2 className={styles.quote}> Start your scooty doo ride!</h2>
                 <h2>Activate your bike</h2>
                 <form onSubmit={handleSubmit}>
                     <input 

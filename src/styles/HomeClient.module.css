@@ -2,11 +2,14 @@
 
 .homecontaianer {
     display: flex;
-    flex-direction: column; /* Gör att innehållet ordnas vertikalt */
+    flex-direction: row; /* Gör att innehållet ordnas vertikalt */
     justify-content: center; /* Vertikal centrering */
     align-items: center; /* Horisontell centrering */
     height: 100vh; /* Full höjd på sidan */
     text-align: center; /* Centrerar texten */
+    background-image: url('../pic/white1.jpg');
+    background-size: cover;
+    background-position: center;
   }
   
 .map {
@@ -14,9 +17,21 @@
     max-width: 600px; /* Begränsa kartans storlek */
 }
 
+.quote {
+    color: #c5d3e8;
+    margin: 0; /* Ta bort standardmarginaler för rubriker */
+    padding: 10px 0; /* Lätt padding för rubriker */
+    font-size: 6rem;
+}
+
 .formcontainer {
     width: 100%;
     max-width: 400px; /* Begränsa formulärets storlek */
+    background-color: rgba(255, 255, 255, 0.912);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-left: 80px;
 }
   
 
@@ -62,10 +77,11 @@ button:hover {
 
 /* Mindre skärmar, t.ex. mobiltelefoner */
 @media (max-width: 600px) {
-    .container {
+    .homecontainer {
         margin-top: 0; /* Justera för att minska avståndet från toppen */
         height: 100vh; /* Ta upp hela höjden */
         padding: 0; /* Ta bort onödig padding */
+        flex-direction: column; 
     }
     
     .map {
@@ -94,6 +110,9 @@ button:hover {
     input, button {
         font-size: 0.9rem; /* Mindre textstorlek */
         padding: 8px; /* Mindre padding */
+    }
+    .quote {
+        display: none;
     }
 }
 
