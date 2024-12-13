@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Wkt from 'wicket'; // Wicket för att kunna hantera WKT-strängar från backend
 import L from 'leaflet';  // Importera Leaflet för att skapa en anpassad ikon
+import styles from '../styles/MapView.module.css';
 
 const MapView = ({ userType }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
@@ -62,7 +63,7 @@ const MapView = ({ userType }) => {
         <MapContainer 
             center={[55.604981, 13.003822]}  // Malmö
             zoom={15}  // Zoomnivå
-            style={{ height: "400px", width: "100%" }}
+            className={styles.mapContainer}
         >
             <TileLayer
                 url="https://tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=b50533aeae574d949113dae3897804bc"

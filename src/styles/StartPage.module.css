@@ -1,12 +1,7 @@
-/* Global reset */
-
 /* Startpage container style */
 .startPage {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh; /* Fyll hela höjden på skärmen */
+  min-width: 100vw;  /* Gör så att bredden fyller hela skärmen */
 }
 
 
@@ -49,6 +44,8 @@
   display: flex; /* Använder flexbox för att ordna knappar vertikalt */
   flex-direction: column; /* Justera knapparna i en kolumn */
   gap: 15px; /* Lägg till utrymme mellan knapparna */
+  width: 100%; /* Fyll hela bredden för att anpassa till små skärmar */
+  max-width: 400px; /* Sätt en maxbredd för stora skärmar */
 }
 
 /* Button styling */
@@ -59,10 +56,11 @@
   padding: 20px 40px; /* Generöst padding runt knappen */
   font-size: 16px; /* Sätt en medelstor teckenstorlek */
   border-radius: 5px; /* Rundade hörn på knappen */
-  width: 300px; /* Sätt en fast bredd på knappen */
+  width: 100%; /* Gör knappen fullt bred för mobil */
   cursor: pointer; /* Ändrar muspekaren till en pekare vid hover */
   transition: background-color 0.3s ease; /* Lägger till en smidig övergång för bakgrundsfärgen */
   touch-action: manipulation; /* Förbättrar prestanda för pekskärmar */
+  box-sizing: border-box; /* Se till att padding ingår i storleken */
 }
 
 /* Hover effect for the button */
@@ -86,22 +84,30 @@
 
 /* Mobilanpassad layout */
 @media (max-width: 768px) {
+  .startPage {
+    padding: 15px; /* Lägg till padding runt hela sidan */
+    margin-top: 10px;
+  }
+
   .title {
     font-size: 40px; /* Mindre storlek för titeln */
+    text-align: center; /* Centrerar texten */
   }
 
   .subtitle {
     font-size: 14px; /* Justera textstorleken för undertiteln */
+    text-align: center; /* Centrerar undertiteln */
   }
 
   .button {
-    width: 90%; /* Gör knapparna bredare och anpassade till skärmens storlek */
+    width: 100%; /* Gör knapparna 100% breda */
     padding: 15px 20px; /* Justera paddingen för mindre skärmar */
     font-size: 14px; /* Mindre teckenstorlek */
   }
 
   .buttonContainer {
     gap: 10px; /* Mindre mellanrum mellan knapparna */
+    width: 100%; /* Gör knapparna fullbredd */
   }
 }
 
@@ -112,7 +118,6 @@
   }
 
   .button {
-    width: 250px; /* Justera knappbredden */
+    width: 80%; /* Gör knapparna mindre på tabletter */
   }
 }
-
