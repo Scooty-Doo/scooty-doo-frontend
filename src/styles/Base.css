@@ -1,11 +1,54 @@
-body {
-    background-color: #c5d3e8;
+/* Se till att html och body täcker hela skärmen */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
 }
 
-h1 {
+/* Grundläggande stil för rubriker */
+h1, h2 {
     color: #2c3e50;
+    margin: 0; /* Ta bort standardmarginaler för rubriker */
+    padding: 10px 0; /* Lätt padding för rubriker */
 }
 
-h2 {
-    color: #2c3e50;
+/* Media queries för responsivitet */
+@media (max-width: 1200px) {
+
+    h1 {
+        font-size: 2.5em; /* Minska storleken på rubriker */
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    body {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    body {
+        padding: 5px;
+    }
 }
