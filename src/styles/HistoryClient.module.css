@@ -3,6 +3,7 @@
     padding: 20px; /* Lägger till inre marginal för att ge utrymme runt innehållet */
     max-width: 800px; /* Begränsar bredden på containern till 800px */
     margin: 0 auto; /* Centrerar containern horisontellt på sidan */
+    margin-top: 100px;
 }
 
 /* Lista som visar historik för resor */

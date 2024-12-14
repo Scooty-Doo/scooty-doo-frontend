@@ -9,6 +9,7 @@ const AccountClient = () => {
         email: "maya@example.com",
         address: "Testgatan 1, 12345 Teststad",
         phone: "0701234567",
+        wallet: 513,
     });
 
     // Hålla reda på lösenord och det bekräftade lösenordet
@@ -120,9 +121,9 @@ const AccountClient = () => {
                 </div>
                 {/* Höger kolumn */}
                 <div className={styles.rightColumn}>
-                    <h2>Saldo</h2>
-                    <p> 500 SEK</p>
-                    <button className={styles.saveButton}>
+                    <h2 className={styles.saldo}>Scooty Saldo:</h2>
+                    <p className={styles.money}>{userInfo.wallet} :-</p>
+                    <button className={styles.saveButtonSaldo}>
                             Fyll på Saldo
                     </button>
                 </div>

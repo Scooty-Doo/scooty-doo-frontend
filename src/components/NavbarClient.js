@@ -35,7 +35,7 @@ const NavbarClient = () => {
           </Link>
         </li>
         <li className={styles.navItem}>
-          <Link className={styles.navLink} to="/logout">
+          <Link className={styles.navLink} to="/">
             <span className={styles.navText}>Logout</span>
             <FaHistory className={styles.navIcon} />
           </Link>
