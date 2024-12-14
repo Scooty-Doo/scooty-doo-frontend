@@ -1,30 +1,33 @@
+/* Global reset */
+
 .homecontaianer {
     display: flex;
     flex-direction: row; /* Gör att innehållet ordnas vertikalt */
-    justify-content: flex-start; 
+    justify-content: space-between; 
     align-items: center; /* Horisontell centrering */
     height: 100vh; /* Full höjd på sidan */
     text-align: center; /* Centrerar texten */
     background-image: url('../pic/white1.jpg');
+    background-size: cover;
     background-position: center;
     padding-left: 0px;
+    padding-right: 50px;
     margin-top: 30px;
   }
   
 .map {
 flex: 3;
 width: 100%;
-max-width: none;
-margin-right: 0px;
-margin-left: 20px;
+max-width: none; /* Ta bort gränsen */
+margin-right: auto;
 padding-left: 30px;
 }
 
 
 .quote {
     color: #c5d3e8;
-    margin: 0;
-    padding: 10px 0;
+    margin: 0; /* Ta bort standardmarginaler för rubriker */
+    padding: 10px 0; /* Lätt padding för rubriker */
     font-size: 4rem;
     margin-bottom: 70px;
 }
@@ -32,18 +35,18 @@ padding-left: 30px;
 .formcontainer {
     flex: 1;
     width: 100%;
-    height: 60vh;
-    max-width: 600px;
+    max-width: 300px; /* Begränsa formulärets storlek */
     background-color: rgba(255, 255, 255, 0.912);
     padding: 15px;
     border-radius: 10px;
-    margin-right: 150px;
+    margin-top: 20px;
+    margin-right: 50px;
 }
   
 
 /* Rubrikens stil */
 .title {
-    font-size: 2rem;
+    font-size: 2rem; /* Standardstorlek */
     font-weight: bold;
     text-align: center;
     color: #333;
@@ -76,18 +79,18 @@ button {
 
 /* Hover-effekt för knappen */
 button:hover {
-    background-color: #34495e;
+    background-color: #34495e; /* Ljusare vid hover */
 }
 
 /* Media Queries */
 
 /* Mindre skärmar, t.ex. mobiltelefoner */
 @media (max-width: 600px) {
-    .homecontaianer {
+    .homecontainer {
         margin-top: 0; /* Justera för att minska avståndet från toppen */
         height: 100vh; /* Ta upp hela höjden */
         padding: 0; /* Ta bort onödig padding */
-        flex-direction: column;
+        flex-direction: column; 
     }
     
     .map {
@@ -98,12 +101,12 @@ button:hover {
       
 
     .formcontainer {
-        position: fixed;
+        position: absolute;
         top: 65%;
         left: 50%;
         transform: translateX(-50%);
-        width: 70%;
-        background-color: rgba(11, 11, 11, 0.8);
+        width: 90%;
+        background-color: rgba(197, 211, 232, 0.8);
         padding: 15px;
         border-radius: 10px;
         z-index: 900; /* Lägre än navbaren, men högre än kartan */
@@ -124,81 +127,7 @@ button:hover {
 
 /* Mediumstora skärmar, t.ex. surfplattor */
 @media (max-width: 900px) {
-    .homecontaianer {
-        display: flex;
-        flex-direction: row; /* Gör att innehållet ordnas vertikalt */
-        justify-content: flex-start; 
-        align-items: center; /* Horisontell centrering */
-        height: 100vh; /* Full höjd på sidan */
-        text-align: center; /* Centrerar texten */
-        background-image: url('../pic/white1.jpg');
-        background-position: center;
-        padding-left: 0px;
-    }
-    
-    .map {
-    width: 100%;
-    max-width: none; /* Ta bort gränsen */
-    margin-right: 0px;
-    margin-left: 10px;
-    padding-left: 0px;
-    }
-
-
-    .quote {
-        display: none;
-    }
-
     .formcontainer {
-        flex: 1;
-        width: 100%;
-        height: 30vh;
-        max-width: 600px; /* Begränsa formulärets storlek */
-        background-color: rgba(255, 255, 255, 0.912);
-        padding: 15px;
-        border-radius: 10px;
-        margin-right: 50px;
-        margin-left: 20px;
+        width: 90%; /* Nästan hela bredden */
     }
 }
-
-/* Mindre än standard*/
-@media (max-width: 1600px) {
-    .homecontaianer {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start; 
-        align-items: center;
-        height: 100vh; /* Full höjd på sidan */
-        text-align: center; /* Centrerar texten */
-        background-image: url('../pic/white1.jpg');
-        background-position: center;
-        padding-left: 0px;
-    }
-    
-    .map {
-    width: 100%;
-    max-width: none;
-    margin-right: 0px;
-    margin-left: 10px;
-    padding-left: 0px;
-    }
-
-
-    .quote {
-        display: none;
-    }
-
-    .formcontainer {
-        flex: 1;
-        width: 100%;
-        height: 30vh;
-        max-width: 600px; /* Begränsa formulärets storlek */
-        background-color: rgba(255, 255, 255, 0.912);
-        padding: 15px;
-        border-radius: 10px;
-        margin-right: 50px;
-        margin-left: 20px;
-    }
-}
-
