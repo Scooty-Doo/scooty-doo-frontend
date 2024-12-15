@@ -88,6 +88,32 @@ const AccountClient = () => {
                                 required
                             />
                         </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="password" className={styles.label}>
+                                Ändra lösenord:
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="confirmPassword" className={styles.label}>
+                                Bekräfta lösenord:
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={styles.input}
+                            />
+                        </div>
                         <button type="submit" className={styles.saveButton}>
                             Spara ändringar
                         </button>
