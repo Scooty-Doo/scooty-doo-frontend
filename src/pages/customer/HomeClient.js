@@ -3,10 +3,10 @@ import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 
 // Hemsida för klient, där kund kan starta resa
-const HomeClient = () => {
+const HomeClient = ({token}) => {
     // State för att hålla koll på cykelns-ID
     const [bikeId, setBikeId] = useState('');
-
+    console.log(token)
     // Hanterar formulär och loggar cykel-ID
     const handleSubmit = (e) => {
         e.preventDefault();

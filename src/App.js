@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 
 // Import for components
 import Navbar from './components/Navbar';
@@ -18,6 +19,9 @@ import AccountClient  from './pages/customer/AccountClient';
 import HistoryClient  from './pages/customer/HistoryClient';
 import LoginClient    from './pages/customer/LoginClient';
 import CreateAccount  from './pages/customer/CreateAccount';
+
+// Components for Oauth
+import GitHubLogin    from './pages/oauth/GitHubLogin';
 
 import StartPage  from './pages/StartPage';
 
@@ -49,25 +53,29 @@ const Layout = ({ children }) => {
 };
 
 const App = () => {
+  const basename = process.env.NODE_ENV === 'production' ? "/~vima23/scooty-doo" : "";
+  const [token, setToken] = useState(sessionStorage.getItem("token"));
+
   return (
-    <Router>
+    <HashRouter>
       <Layout>
         {/* Define Routes */}
         <Routes>
-          <Route path="/"              element={<LoginClient />} />
+          <Route path="/"              element={<LoginClient basename={basename} />} />
           <Route path="/home"          element={<Home />} />
           <Route path="/account"       element={<Account />} />
           <Route path="/history"       element={<History />} />
           <Route path="/zone"          element={<Zone />} />
           <Route path="/customer"      element={<Customer />} />
-          <Route path="/homeclient"    element={<HomeClient />} />
+          <Route path="/homeclient"    element={<HomeClient token={token} />} />
           <Route path="/accountclient" element={<AccountClient />} />
           <Route path="/historyclient" element={<HistoryClient />} />
           <Route path="/createaccount" element={<CreateAccount />} />
+          <Route path="/githublogin"   element={<GitHubLogin setToken={setToken}/>} />
           <Route path="*"              element={<h1>404: Page Not Found</h1>} />
         </Routes>
       </Layout>
-    </Router>
+    </HashRouter>
   );
 };
 

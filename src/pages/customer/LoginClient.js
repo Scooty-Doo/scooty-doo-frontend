@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from '../../styles/LoginClient.module.css';
 import { FaGithub } from 'react-icons/fa';
 
-const LoginClient = () => {
+const LoginClient = ({basename}) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +21,14 @@ const LoginClient = () => {
     e.preventDefault();
     navigate('/homeclient');
   };
+
+  const gitHubLogin = (e) => {
+    e.preventDefault();
+    const clientId = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_GITHUB_CLIENT : process.env.REACT_APP_GITHUB_CLIENT_DEV;
+    
+    const redirectURI = window.location.href + basename + "#/githublogin";
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}`
+  }
 
   return (
     <div className={styles.loginContainer}>
@@ -57,7 +65,7 @@ const LoginClient = () => {
         <span className={styles.line}></span>
       </div>
 
-      <button className={`${styles.button} ${styles.githubButton}`}>
+      <button className={`${styles.button} ${styles.githubButton}`} onClick={gitHubLogin}>
         <FaGithub className={styles.githubIcon} style={{ marginRight: '10px' }} />
         GitHub
       </button>
