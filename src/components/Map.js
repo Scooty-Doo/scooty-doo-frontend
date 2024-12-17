@@ -6,6 +6,15 @@ import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
 
+const parsePoint = (point) => {
+    if (!point) return null; // Hantera ogiltig data
+    const match = point.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+    if (!match) return null; // Returnera null om formatet är fel
+    const [, lng, lat] = match; // Extrahera längd och latitud
+    return { lat: parseFloat(lat), lng: parseFloat(lng) };
+};
+
+
 const MapView = ({ userType }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
@@ -43,8 +52,9 @@ const MapView = ({ userType }) => {
 
         const fetchBikes = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/v1/bikes');
+                const response = await fetch('http://127.0.0.1:8000/v1/bikes/available');
                 const data = await response.json();
+                console.log(data.data)
                 setBikes(data.data);
             } catch (error) {
                 console.error('Error fetching bikes:', error);
@@ -103,12 +113,28 @@ const MapView = ({ userType }) => {
                 </Marker>
             )}
 
-            {/* Lägg till markörer */}
-            {bikes.map((bike) => (
-                <Marker key={bike.id} position={bike.position} icon={bikeIcon}>
-                    <Popup>{bike.name} är här!</Popup>
-                </Marker>
-            ))}
+            {bikes.map((bike) => {
+                const position = parsePoint(bike.attributes.last_position);
+
+                // Kontrollera att positionen är giltig
+                if (!position) {
+                    console.warn(`Ogiltig position för cykel ${bike.id}:`, bike.attributes.last_position);
+                    return null;
+                }
+
+                return (
+                    <Marker
+                        key={bike.id}
+                        position={position}
+                        icon={bikeIcon}
+                    >
+                        <Popup>
+                            Cykel {bike.id}: {bike.attributes.battery_lvl}% batteri.
+                        </Popup>
+                    </Marker>
+                );
+            })}
+
 
             {/* Lägg till polygoner från zondata */}
             {zones.map((zone) => {
