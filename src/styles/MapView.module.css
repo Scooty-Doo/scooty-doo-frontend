@@ -1,7 +1,12 @@
 .mapContainer {
-    height: 400px; /* Höjden på kartan */
-    width: 100%;   /* Bredden på kartan */
+    height: 70vh; /* Anpassar höjden till 70% av skärmens höjd */
+    width: 70vw;  /* Anpassar bredden till 70% av skärmens bredd */
+    max-width: 1000px; /* Sätter en maxgräns för bredd */
+    margin-top: 50px;
+    border-radius: 10px;
+    align-self: stretch; 
 }
+
 
 /* Mediumstora skärmar, t.ex. surfplattor */
 @media (max-width: 900px) {
