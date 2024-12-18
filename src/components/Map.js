@@ -6,8 +6,9 @@ import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
 
+// Formatera om backends position till leaflet (lng och lat)
 const parsePoint = (point) => {
-    if (!point) return null; // Hantera ogiltig data
+    if (!point) return null;
     const match = point.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
     if (!match) return null; // Returnera null om formatet är fel
     const [, lng, lat] = match; // Extrahera längd och latitud
