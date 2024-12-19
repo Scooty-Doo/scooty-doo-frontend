@@ -1,5 +1,15 @@
 import React from 'react';
+import ListBike from '../../components/ListBike'; // Import the ListBike component
+import ListBikeCity from '../../components/ListBikeCity'; // Import the ListBikeCity component som har sök funktionalitet
 
-const Home = () => <h1>Home Page</h1>;
+const HomeAdmin = () => {
+    return (
+      <div>
+        <h1>Bike Inventory</h1>
+        {/* <ListBike /> */}
+        <ListBikeCity />
+      </div>
+    );
+  };
 
-export default Home;
+export default HomeAdmin;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../styles/Navbar.module.css'; // Importera CSS-modulen
+import styles from '../styles/NavbarAdmin.module.css'; // Importera CSS-modulen
 import { FaHome, FaHistory, FaUser, FaCog } from 'react-icons/fa'; // Importera ikoner från react-icons
 
 const Navbar = () => {

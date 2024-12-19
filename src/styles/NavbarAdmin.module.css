@@ -1,0 +1,108 @@
+/* Style for the navbar container */
+.navbar {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex; /* Använd flexbox för att ordna elementen på en rad */
+    justify-content: space-between; /* För att ge utrymme mellan loggan och navlänkarna */
+    align-items: center; /* Vertikal centrering */
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0; /* Adjust padding for vertical spacing */
+  }
+  
+  .logo {
+    height: 40px; /* Justera storlek på logotypen */
+    margin-right: auto; /* Ge utrymme mellan logotypen och navigationen */
+  }
+  
+  /* Style for the nav list */
+  .navList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Style for each nav item */
+  .navItem {
+    margin: 0 20px;
+    position: relative;
+  }
+  
+  /* Style for the nav links */
+  .navLink {
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Style for text within nav links */
+  .navText {
+    margin-right: 10px; /* Ger lite avstånd mellan text och ikon */
+  }
+  
+  /* Style for icons inside nav links */
+  .navIcon {
+    font-size: 20px; /* Ställer in storleken på ikoner */
+    display: none; /* Döljer ikonerna på stora skärmar */
+    z-index: 1000;
+  }
+  
+  /* Media query for smaller screens (mobil) */
+  @media (max-width: 768px) {
+    /* Flyttar navbaren till botten på skärmen på små skärmar */
+  
+    .navbar {
+      background-color: #ffffff;
+      padding: 25px 30px;
+      position: fixed;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      border-bottom: 1px solid #ccc;
+    }
+    .navbar {
+      top: auto; /* Tar bort top-positionen */
+      bottom: 0; /* Fäster navbaren vid botten istället */
+    }
+  
+    .navText {
+      display: none; /* Döljer texten på små skärmar */
+    }
+  
+    .navIcon {
+      display: inline-block; /* Visar endast ikoner på mobilen */
+      font-size: 24px; /* Större ikoner på mobilen */
+    }
+  
+    .navList {
+      flex-direction: row; /* Ordnar ikonerna horisontellt på mobilen */
+      justify-content: space-around;
+    }
+  
+    .navItem {
+      margin: 0 15px; /* Minskar avståndet mellan ikoner på mobilen */
+    }
+  
+    .logo {
+      display: none;
+    }
+  }
+  
+  body {
+    padding-top: 44px; /* Adjust this value to match the height of the navbar */
+  }
