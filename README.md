@@ -1,4 +1,4 @@
-# scooty-doo-frontend
+# scooty-doo-frontend!
 Frontend for the Scooty Doo web application
 
 ## Docker
