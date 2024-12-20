@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "../../styles/HistoryClient.module.css"; // Antag att du skapar en egen CSS-modul
+import { Link } from 'react-router-dom';
 
 // Visa tidigare åk för kund
 const HistoryClient = () => {
@@ -17,7 +18,8 @@ const HistoryClient = () => {
                 {rideHistory.map((ride, index) => (
                     <div key={index} className={styles.rideItem}>
                         <div className={styles.rideDetails}>
-                            <p><strong>Rutt:</strong> {ride.route}</p>
+                            <p><strong>
+                                <Link to="/ridehistory">Rutt:</Link></strong> {ride.route}</p>
                             <p><strong>Datum:</strong> {ride.date}</p>
                             <p><strong>Tid:</strong> {ride.time}</p>
                             <p><strong>Pris:</strong> {ride.price}</p>
