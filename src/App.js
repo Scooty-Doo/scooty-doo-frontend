@@ -12,6 +12,7 @@ import Account  from './pages/admin/AccountAdmin';
 import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
+import BikeCRUDAdmin from './pages/admin/BikeCRUDAdmin';
 
 // Components for customer
 import HomeClient     from './pages/customer/HomeClient';
@@ -40,6 +41,7 @@ const Layout = ({ children }) => {
     location.pathname.startsWith('/account') || 
     location.pathname.startsWith('/history') ||
     location.pathname.startsWith('/zone') ||
+    location.pathname.startsWith('/bikeCRUD') ||
     location.pathname.startsWith('/customer')) {
     navbar = <Navbar />;
   }
@@ -66,6 +68,7 @@ const App = () => {
           <Route path="/account"       element={<Account />} />
           <Route path="/history"       element={<History />} />
           <Route path="/zone"          element={<Zone />} />
+          <Route path="/bikeCRUD"      element={<BikeCRUDAdmin />} />
           <Route path="/customer"      element={<Customer />} />
           <Route path="/homeclient"    element={<HomeClient token={token} />} />
           <Route path="/accountclient" element={<AccountClient />} />
