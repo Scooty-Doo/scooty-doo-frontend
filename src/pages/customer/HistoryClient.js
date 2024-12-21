@@ -12,7 +12,7 @@ const HistoryClient = () => {
     ]);
 
     const mapicon = { 
-        iconurl: 'https://img.icons8.com/?size=100&id=P2ZiVm4SUoJd&format=png&color=000000' 
+        iconurl: 'https://img.icons8.com/?size=100&id=8212&format=png&color=2C3E50' 
     };
 
     return (
@@ -28,10 +28,7 @@ const HistoryClient = () => {
                                 alt="Map Icon" 
                                 className={styles.mapIcon} 
                             />
-                            <p><strong>Rutt:</strong> {ride.route}</p>
-                            <p><strong>Datum:</strong> {ride.date}</p>
-
-                            <p><strong><Link to="/ridehistory">{ride.date}</Link></strong></p>
+                            <p className={styles.date}><strong><Link to="/ridehistory">{ride.date}</Link></strong></p>
                             <p><strong>Tid:</strong> {ride.time}</p>
                             <p><strong>Pris:</strong> {ride.price}</p>
                         </div>

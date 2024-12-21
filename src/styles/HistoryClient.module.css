@@ -11,6 +11,11 @@
     margin-top: 20px;
 }
 
+.date {
+    font-size: 30px;
+    text-decoration: none;
+}
+
 /* Styler varje enskild resa i listan med flexbox för att ordna elementen horisontellt */
 .rideItem {
     display: flex;
@@ -32,6 +37,12 @@
     font-size: 14px;
 }
 
+.rideDetails a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #2C3E50;
+}
+
 /* Gör stark text fet inom rideDetails */
 .rideDetails p strong {
     font-weight: bold;
@@ -39,8 +50,8 @@
 
 /* Ikonens stil */
 .mapIcon {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
 }
 
 /* Mindre skärmar, t.ex. mobiltelefoner */
