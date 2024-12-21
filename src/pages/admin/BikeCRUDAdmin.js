@@ -4,9 +4,9 @@ import styles from '../../styles/BikeCRUDAdmin.module.css';
 
     // What does this file need to be able to do?
     // Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
-        // this is to be done later, for now just set a variable bikeId to a static number (2)
-    // Have a form that displays the information of the bike
-    // Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for)
+        // this is to be done later, for now just set a variable bikeId to a static number
+    // Have a form that displays the information of the bike (done)
+    // Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for) (done)
     // Given that the JSON data of the bike contains a link to self that just contains the fetch link to call via id we COULD just take that from the previous page and put it into a variable called (fetchBikeUrl)
 
     // Which should be editable?
@@ -60,6 +60,8 @@ const BikeCRUDAdmin = () => {
             meta_data: {},
         };
 
+        console.log("formatted yikes",JSON.stringify(formattedBike));
+
         try {
             const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`, {
                 method: 'PATCH', // or 'PUT' depending on whether you're creating or updating
@@ -102,38 +104,37 @@ const BikeCRUDAdmin = () => {
         });
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
-
-    const bikeToArray = (bike) => { // onödig?
-        if (!bike || !bike.data) {
-            console.error("Invalid bike data");
-            return [];
+    const deleteBike = async (event) => {
+        event.preventDefault(); // Prevent page refresh
+    
+        // Show confirmation dialog
+        const confirmDelete = window.confirm("Are you sure you want to delete this bike?");
+    
+        if (!confirmDelete) {
+            console.log("Delete action canceled by user.");
+            return; // Exit the function if the user cancels
         }
     
-        const { id, attributes, relationships, links } = bike.data;
-        const { battery_lvl, last_position, is_available, created_at, updated_at } = attributes || {};
-        const cityId = relationships?.city?.data?.id || null;
-    
-        const bikeById = links || {};  // Extract the bike-level links
-        const bikesAll = bike.links || {};  // Extract the top-level links
-    
-        return [
-            { key: 'id', value: id },
-            { key: 'battery_lvl', value: battery_lvl },
-            { key: 'last_position', value: last_position },
-            { key: 'is_available', value: is_available },
-            { key: 'created_at', value: created_at },
-            { key: 'updated_at', value: updated_at },
-            { key: 'cityId', value: cityId },
-            { key: 'bikeById', value: bikeById.self },
-            { key: 'bikesAll', value: bikesAll.self }
-        ];
+        console.log(`Attempting to delete bike with ID: ${bikeId}`);
+
+        try {
+            const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.status === 204) {
+                console.log('Bike deleted successfully');
+            } else {
+                throw new Error('Failed to delete the bike');
+            }
+        } catch (error) {
+            console.error('Error deleting bike:', error);
+        }
     };
+    
 
-    const bikeArray = bikeToArray(bike);
-    console.log(bikeArray);
-
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
@@ -248,6 +249,11 @@ const BikeCRUDAdmin = () => {
             {/* Submit Button (No functionality yet) */}
             <div>
                 <button type="submit">Submit</button>
+            </div>
+            <div>
+                <button type="submit" onClick={deleteBike}>
+                    Delete
+                </button>
             </div>
         </form>
     );
