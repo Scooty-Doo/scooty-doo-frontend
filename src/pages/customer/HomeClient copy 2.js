@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
@@ -10,10 +12,12 @@ const HomeClient = () => {
     // State för att kolla om användaren har en resa igång
     const [rideActive, setRideActive] = useState(false); 
 
+    const navigate = useNavigate();
+
     // Hanterar start av resa (ändra sen till api)
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
         const response = await fetch('http://127.0.0.1:8000/v1/trips/', {
             method: 'POST',
             headers: {
@@ -21,7 +25,7 @@ const HomeClient = () => {
             },
             body: JSON.stringify({
                 "user_id": "652134919185249719",
-                "bike_id": "1"
+                "bike_id": "2"
             }),
         });
 
@@ -30,34 +34,23 @@ const HomeClient = () => {
             console.log("Resa startad", trip);
             setRideActive(true);
         }
+
+        console.log("Resa startad", trip);
+        setRideActive(true);
+
     };
 
     // Hantera avslutning av resa (ändra sen till api)
     const handleEndRide = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://127.0.0.1:8000/v1/trips/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "user_id": "652134919185249719",
-                "bike_id": "1"
-            }),
-        });
-
-        if (response.ok) {
-            const trip = await response.json();
-            console.log("Resa avslutad!", trip);
-            setRideActive(false);
-            setBikeId(''); 
-
-        console.log("Resa avslutad!", trip);
+        console.log("Resa avslutad!");
         setRideActive(false);
-        setBikeId(''); 
+        setBikeId('');
 
+        const id = "12345"
 
+        navigate(`/ridehistory`);
     };
 
     return (

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "../../styles/HistoryClient.module.css"; // Antag att du skapar en egen CSS-modul
+import { Link } from 'react-router-dom';
 
 // Visa tidigare åk för kund
 const HistoryClient = () => {
@@ -29,6 +30,8 @@ const HistoryClient = () => {
                             />
                             <p><strong>Rutt:</strong> {ride.route}</p>
                             <p><strong>Datum:</strong> {ride.date}</p>
+
+                            <p><strong><Link to="/ridehistory">{ride.date}</Link></strong></p>
                             <p><strong>Tid:</strong> {ride.time}</p>
                             <p><strong>Pris:</strong> {ride.price}</p>
                         </div>
