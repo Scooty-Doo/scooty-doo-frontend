@@ -38,6 +38,10 @@
 /* Style for the nav links */
 .navLink {
   color: #2c3e50;
+  font-family: "Sofia Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Normal vikt för text */
+  font-style: normal;
   text-decoration: none;
   font-size: 18px;
   font-weight: bold;

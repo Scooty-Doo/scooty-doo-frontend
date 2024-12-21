@@ -52,7 +52,12 @@ const HomeClient = () => {
             console.log("Resa avslutad!", trip);
             setRideActive(false);
             setBikeId(''); 
-        }
+
+        console.log("Resa avslutad!", trip);
+        setRideActive(false);
+        setBikeId(''); 
+
+
     };
 
     return (

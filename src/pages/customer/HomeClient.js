@@ -60,7 +60,7 @@ const HomeClient = () => {
                 {rideActive ? (
                 <div className={styles.formcontainer}>
                     <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Ride in progress</h2>
+                        <h2>Resa igång</h2>
                         <button onClick={handleEndRide} className={styles.endButton}>
                             Avsluta resa
                         </button>
@@ -68,14 +68,14 @@ const HomeClient = () => {
                 ) : (
                     <div className={styles.formcontainer}>
                     <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Activate your bike</h2>
+                        <h2>Starta din resa</h2>
                         <form onSubmit={handleSubmit}>
                             <input 
                                 type="text" 
                                 id="bikeId" 
                                 value={bikeId} 
                                 onChange={(e) => setBikeId(e.target.value)}
-                                placeholder="Bike ID"
+                                placeholder="Ange cykelns ID"
                                 required
                             />
                             <button type="submit">Start</button>
