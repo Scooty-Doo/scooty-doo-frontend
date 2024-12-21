@@ -11,10 +11,25 @@ const HomeClient = () => {
     const [rideActive, setRideActive] = useState(false); 
 
     // Hanterar start av resa (ändra sen till api)
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Cykel ID skickades:", bikeId);
-        setRideActive(true);
+
+        const response = await fetch('http://127.0.0.1:8000/v1/trips/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "user_id": "652134919185249719",
+                "bike_id": "1"
+            }),
+        });
+
+        if (response.ok) {
+            const trip = await response.json();
+            console.log("Resa startad", trip);
+            setRideActive(true);
+        }
     };
 
     // Hantera avslutning av resa (ändra sen till api)
