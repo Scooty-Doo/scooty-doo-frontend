@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
+import L, { map } from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
 import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
+import BikeMarker from './marker';
 
 // Formatera om backends position till leaflet (lng och lat)
 const parsePoint = (point) => {
@@ -16,14 +17,12 @@ const parsePoint = (point) => {
 };
 
 
-const MapView = ({ userType }) => {
+const MapView = ({ userType, socket }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
     const [userPosition, setUserPosition] = useState(null);
 
-
-    // Skapa en anpassad ikon för markörerna
     const bikeIcon = new L.Icon({
         iconUrl: 'https://img.icons8.com/?size=100&id=OLbgdgI722qP&format=png&color=000000',
         iconSize: [32, 32], // Storleken på ikonen
@@ -52,8 +51,12 @@ const MapView = ({ userType }) => {
         }
 
         const fetchBikes = async () => {
+            // Sets the route depending on the usertype
+            let url = userType === "admin"
+            ? "http://127.0.0.1:8000/v1/bikes/"
+            : "http://127.0.0.1:8000/v1/bikes/available"
             try {
-                const response = await fetch('http://127.0.0.1:8000/v1/bikes/available');
+                const response = await fetch(url);
                 const data = await response.json();
                 console.log(data.data)
                 setBikes(data.data);
@@ -97,9 +100,50 @@ const MapView = ({ userType }) => {
         fetchBikes();
     }, []);
 
+    // useEffect to get updates from socket
+    useEffect(() => {
+        if (userType != "admin" || !socket) {
+            return
+        }
+
+        const update_bike = (data) => {
+            let bike = bikes.find((bike) =>  bike.id == data.bike_id);
+            // Could be done with a for loop
+            // Updates the bikes-list, but doesn't update the marker.
+            bike.attributes.battery_lvl = data.battery_lvl;
+            bike.attributes.city_id = data.city_id;
+            bike.attributes.last_position = data.last_position;
+            bike.attributes.is_available = data.is_available;
+            bike.attributes.meta_data = data.meta_data;
+            update_bike_on_map(bike);            
+        };
+
+        const update_bike_on_map = (bike) => {
+            // This does nothing.
+            let position = check_position(bike);
+            if (!position) {
+                return null;
+            }
+          };
+        socket.on("bike_update", update_bike);
+        return () => {
+            socket.off("bike_update", update_bike)
+        }
+    }, [socket, bikes]);
+
+    const check_position = (bike) => {
+        const position = parsePoint(bike.attributes.last_position);
+        // Kontrollera att positionen är giltig
+        if (!position) {
+            console.warn(`Ogiltig position för cykel ${bike.id}:`, bike.attributes.last_position);
+            return false;
+        }
+        return position;
+    };
+
     return (
         <MapContainer
-            center={[55.604981, 13.003822]}
+            center={userPosition ?? [55.604981, 13.003822]}
             zoom={15}
             className={styles.mapContainer}
         >
@@ -113,29 +157,23 @@ const MapView = ({ userType }) => {
                     <Popup>Här är du!</Popup>
                 </Marker>
             )}
-
             {bikes.map((bike) => {
-                const position = parsePoint(bike.attributes.last_position);
-
-                // Kontrollera att positionen är giltig
+                let position = check_position(bike);
                 if (!position) {
-                    console.warn(`Ogiltig position för cykel ${bike.id}:`, bike.attributes.last_position);
                     return null;
                 }
-
                 return (
-                    <Marker
-                        key={bike.id}
-                        position={position}
-                        icon={bikeIcon}
-                    >
-                        <Popup>
-                            Cykel {bike.id}: {bike.attributes.battery_lvl}% batteri.
-                        </Popup>
-                    </Marker>
-                );
+                        <Marker
+                            key={bike.id}
+                            position={position}
+                            icon={bikeIcon}
+                            >
+                            <Popup>
+                                Cykel {bike.id}: {bike.attributes.battery_lvl}% batteri.
+                            </Popup>
+                        </Marker>
+                )
             })}
-
 
             {/* Lägg till polygoner från zondata */}
             {zones.map((zone) => {
