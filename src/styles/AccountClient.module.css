@@ -83,7 +83,7 @@ h2 {
 
 /* Spara-knappens stil */
 .saveButton {
-    background-color: #c5d3e8;
+    background-color: #d4d4d4;
     color: #2c3e50c8;
     padding: 10px 15px;
     border: none;
@@ -95,7 +95,7 @@ h2 {
 
 /* Effekter vid hover (när användaren håller musen över knappen) */
 .saveButton:hover {
-    background-color: #999999;
+    background-color: #a8a8a8;
 }
 
 /* Effekter vid fokus (när knappen är markerad eller vald) */
@@ -117,7 +117,7 @@ h2 {
 
 /* Effekter vid hover (när användaren håller musen över knappen) */
 .saveButtonSaldo:hover {
-    background-color: #999999;
+    background-color: #34495e;
 }
 
 /* Effekter vid fokus (när knappen är markerad eller vald) */
