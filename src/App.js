@@ -19,6 +19,7 @@ import AccountClient  from './pages/customer/AccountClient';
 import HistoryClient  from './pages/customer/HistoryClient';
 import LoginClient    from './pages/customer/LoginClient';
 import CreateAccount  from './pages/customer/CreateAccount';
+import Ride from './pages/customer/Ride';
 
 // Components for Oauth
 import GitHubLogin    from './pages/oauth/GitHubLogin';
@@ -33,6 +34,7 @@ const Layout = ({ children }) => {
   let navbar = null;
   if (location.pathname.startsWith('/homeclient') || 
       location.pathname.startsWith('/accountclient') || 
+      location.pathname.startsWith('/ridehistory') || 
       location.pathname.startsWith('/historyclient')) {
     navbar = <NavbarClient />;
   } else if (
@@ -70,6 +72,7 @@ const App = () => {
           <Route path="/homeclient"    element={<HomeClient token={token} />} />
           <Route path="/accountclient" element={<AccountClient />} />
           <Route path="/historyclient" element={<HistoryClient />} />
+          <Route path="/ridehistory" element={<Ride />} />
           <Route path="/createaccount" element={<CreateAccount />} />
           <Route path="/githublogin"   element={<GitHubLogin setToken={setToken}/>} />
           <Route path="*"              element={<h1>404: Page Not Found</h1>} />
