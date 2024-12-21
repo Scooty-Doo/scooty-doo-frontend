@@ -4,7 +4,6 @@ import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../../styles/HistoryRideClient.module.css";
 
-// Mockdata 
 const ridehistory = [
   {
     bike_id: 77,
@@ -18,7 +17,6 @@ const ridehistory = [
     total_fee: 10.89,
   },
 ];
-
 
 // Hämta tid
 const formatTime = (isoString) => {

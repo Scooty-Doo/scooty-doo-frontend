@@ -19,8 +19,7 @@ const HistoryClient = () => {
                     <div key={index} className={styles.rideItem}>
                         <div className={styles.rideDetails}>
                             <p><strong>
-                                <Link to="/ridehistory">Rutt:</Link></strong> {ride.route}</p>
-                            <p><strong>Datum:</strong> {ride.date}</p>
+                                <Link to="/ridehistory">{ride.date}</Link></strong></p>
                             <p><strong>Tid:</strong> {ride.time}</p>
                             <p><strong>Pris:</strong> {ride.price}</p>
                         </div>
