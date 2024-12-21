@@ -3,6 +3,7 @@ import styles from "../../styles/AccountClient.module.css";
 
 // Accountklienten ska hantera användarinfo och kontoändringar
 const AccountClient = () => {
+
     // Skapa test-användare
     const [userInfo, setUserInfo] = useState({
         name: "Maya Edlund",
@@ -11,10 +12,6 @@ const AccountClient = () => {
         phone: "0701234567",
         wallet: 513,
     });
-
-    // Hålla reda på lösenord och det bekräftade lösenordet
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
 
     // Hantera inputförändringar i formuläret
     const handleInputChange = (e) => {
@@ -28,18 +25,14 @@ const AccountClient = () => {
     // Kolla om lösenordet matchar
     const handleSaveChanges = (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            alert("Lösenorden matchar inte! Försök igen.");
-            return;
-        }
         // Skriv ut ändringarna
-        console.log("Uppdaterade användardetaljer:", userInfo, "Nytt lösenord:", password);
+        console.log("Uppdaterade användardetaljer:", userInfo);
         alert("Dina ändringar har sparats!");
     };
 
     return (
         <div className={styles.accountContainer}>
-            <h1 className={styles.heading}>Konto</h1>
+            <h1>Konto</h1>
             <div className={styles.accountGrid}>
                 {/* Vänster kolumn */}
                 <div className={styles.leftColumn}>

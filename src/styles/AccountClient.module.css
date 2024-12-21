@@ -2,124 +2,127 @@
 
 /* Huvudcontainer för kontosidan */
 .accountContainer {
-    padding: 20px; /* Lägger till inre marginal för att ge utrymme runt innehållet */
-    max-width: 800px; /* Begränsar bredden på containern till 800px */
-    margin: 0 auto; /* Centrerar containern horisontellt på sidan */
-    margin-top: 100px;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 90px;
+    z-index: 900;
 }
 
 /* Rubrik (Heading) i kontosidan */
 .heading {
     text-align: left;
     width: 100%;
-    margin-bottom: 20px; /* Lägger till ett avstånd under rubriken */
-    font-size: 2rem; /* Sätter storlek på texten */
-    color: #2c3e50; /* Definierar textfärgen */
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #2c3e50;
 }
 
 /* Gridlayout för att placera vänster och höger kolumn jämnt */
 .accountGrid {
     display: flex; /* Flexbox-layout för att arrangera kolumner */
     justify-content: space-between; /* Skapar utrymme mellan kolumnerna */
-    gap: 20px; /* Definierar avstånd mellan objekten i grid */
-    width: 100%; /* Gör gridens bredd lika med föräldrarkontainerns bredd */
+    gap: 20px;
+    width: 100%;
 }
 
 /* Vänster kolumn med en mörk bakgrund */
 .leftColumn {
-    color: beige; /* Textfärg */
-    padding: 20px; /* Inre marginal för innehållet */
+    color: beige;
+    padding: 20px;
     border-radius: 8px; /* Rundar hörnen */
-    background-color: #2c3e50; /* Mörk bakgrundsfärg */
-    flex: 1; /* Kolumnen tar upp lika mycket utrymme som den högra kolumnen */
+    background-color: #2c3e50c8;
+    flex: 1;
 }
 
 /* Höger kolumn, med en annan bakgrundsfärg och centrerad layout */
 .rightColumn {
-    color: beige; /* Textfärg */
-    padding: 20px; /* Inre marginal */
-    border-radius: 8px; /* Rundade hörn */
+    color: beige;
+    padding: 20px;
+    border-radius: 8px;
     background-image: url('../pic/white1.jpg');
     background-position: center;
-    flex: 1; /* Kolumnen tar upp lika mycket utrymme som den vänstra kolumnen */
-    display: flex; /* Flexbox för att arrangera innehållet */
-    flex-direction: column; /* Vertikal layout för innehållet */
-    justify-content: center; /* Centrerar innehållet vertikalt */
-    align-items: center; /* Centrerar innehållet horisontellt */
-    height: 300px; /* Höjd på kolumnen */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
 }
 
 /* Grupp för formulärkomponenter */
 .formGroup {
-    margin-bottom: 15px; /* Lägger till ett avstånd under varje formulärkomponent */
+    margin-bottom: 15px;
 }
+
+
 
 /* Etikett för formulärfält */
 .label {
-    display: block; /* Gör etiketten till en blocknivå, så den tar upp hela bredden */
-    font-weight: bold; /* Fet stil på texten */
-    margin-bottom: 5px; /* Lägger till ett avstånd under etiketten */
-    color: #fff; /* Textfärg vit */
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #fff;
 }
 
 /* Rubrik för formulärsektioner */
 h2 {
-    font-size: 1.5rem; /* Storlek på rubriken */
-    margin-bottom: 10px; /* Lägger till ett avstånd under rubriken */
+    font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 
 /* Inputfält för användarinmatning */
 .input {
-    padding: 12px; /* Inre marginal för fältet */
-    border: 1px solid #ddd; /* Lägger till en lätt ram kring fältet */
-    border-radius: 4px; /* Rundar hörnen på inputfältet */
-    color: #2c3e50; /* Textfärg */
-    width: 90%; /* Gör fältet 100% av sin förälders bredd */
-    max-width: 400px; /* Begränsar fältets bredd till 400px */
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #2c3e50;
+    width: 90%;
+    max-width: 400px;
 }
 
 /* Spara-knappens stil */
 .saveButton {
-    background-color: #c5d3e8; /* Ljus bakgrundsfärg */
-    color: white; /* Vit textfärg */
-    padding: 10px 15px; /* Lägger till inre marginaler på knappen */
-    border: none; /* Ingen kantlinje */
-    border-radius: 4px; /* Rundar hörnen på knappen */
-    cursor: pointer; /* Byter muspekare till en pekare för att visa att det är klickbart */
-    width: 100%; /* Knappen tar upp hela bredden */
-    max-width: 400px; /* Maximal bredd på knappen */
+    background-color: #c5d3e8;
+    color: #2c3e50c8;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
 }
 
 /* Effekter vid hover (när användaren håller musen över knappen) */
 .saveButton:hover {
-    background-color: #999999; /* Gör knappen mörkare när den är i hover-läge */
+    background-color: #999999;
 }
 
 /* Effekter vid fokus (när knappen är markerad eller vald) */
 .saveButton:focus {
-    outline: 3px solid #3498db; /* Lägger till en blå ram för fokus */
+    outline: 3px solid #3498db;
 }
 
 /* Spara-knappens stil */
 .saveButtonSaldo {
-    background-color: #2c3e50;; /* Ljus bakgrundsfärg */
-    color: white; /* Vit textfärg */
-    padding: 10px 15px; /* Lägger till inre marginaler på knappen */
-    border: none; /* Ingen kantlinje */
-    border-radius: 4px; /* Rundar hörnen på knappen */
-    cursor: pointer; /* Byter muspekare till en pekare för att visa att det är klickbart */
-    width: 100%; /* Knappen tar upp hela bredden */
-    max-width: 400px; /* Maximal bredd på knappen */
+    background-color: #2c3e50c8;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
 }
 
 /* Effekter vid hover (när användaren håller musen över knappen) */
 .saveButtonSaldo:hover {
-    background-color: #999999; /* Gör knappen mörkare när den är i hover-läge */
+    background-color: #999999;
 }
 
 /* Effekter vid fokus (när knappen är markerad eller vald) */
 .saveButtonSaldo:focus {
-    outline: 3px solid #3498db; /* Lägger till en blå ram för fokus */
+    outline: 3px solid #3498db;
 }
 
 .saldo {
@@ -130,4 +133,31 @@ h2 {
     font-size: 2.5em; 
     color: #2c3e50;
     font-weight: bolder;
+}
+
+/* Media Query för små skärmar */
+@media (max-width: 768px) {
+    .accountContainer {
+        padding: 20px;
+        margin: 0 auto;
+        padding-bottom: 50px;
+    }
+    .accountGrid {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .leftColumn, .rightColumn {
+        flex: none;
+        padding-top: 30px;
+    }
+
+    /* Justera storleken på text och knappar för mobil */
+    .saldo, .money {
+        font-size: 2rem;
+    }
+
+    .saveButton, .saveButtonSaldo {
+        max-width: 100%;
+    }
 }
