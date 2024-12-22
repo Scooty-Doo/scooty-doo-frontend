@@ -18,7 +18,6 @@ const fetchRide = async (rideId) => {
     if (response.ok) {
       const ridehistory = await response.json();
       console.log("Resa hämtad", ridehistory);
-      console.log(ridehistory.data.attributes.path_taken)
       return ridehistory; // Skicka tillbaka datan för att kunna sätta den i state
     } else {
       console.error("Misslyckades att hämta resa, status:", response.status);

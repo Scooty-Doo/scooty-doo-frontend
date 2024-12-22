@@ -70,7 +70,7 @@ const App = () => {
           <Route path="/homeclient"    element={<HomeClient token={token} />} />
           <Route path="/accountclient" element={<AccountClient />} />
           <Route path="/historyclient" element={<HistoryClient />} />
-          <Route path="/ridehistory" element={<Ride />} />
+          <Route path="/ridehistory/:tripId" element={<Ride />} />
           <Route path="/githublogin"   element={<GitHubLogin setToken={setToken}/>} />
           <Route path="*"              element={<h1>404: Page Not Found</h1>} />
         </Routes>

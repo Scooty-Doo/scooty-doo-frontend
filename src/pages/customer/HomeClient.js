@@ -7,6 +7,9 @@ import { useNavigate } from 'react-router-dom';
 const HomeClient = () => {
     // State för att hålla koll på cykelns-ID
     const [bikeId, setBikeId] = useState('');
+    
+    // State för att hålla koll på tripId
+    const [tripId, setTripId] = useState(null);
 
     // State för att kolla om användaren har en resa igång
     const [rideActive, setRideActive] = useState(false); 
@@ -17,7 +20,6 @@ const HomeClient = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        /*
         const response = await fetch('http://127.0.0.1:8000/v1/trips/', {
             method: 'POST',
             headers: {
@@ -33,21 +35,40 @@ const HomeClient = () => {
             const trip = await response.json();
             console.log("Resa startad", trip);
             setRideActive(true);
-        }*/
+
+            setTripId(trip.data.id);
+        }
 
         console.log("Resa startad");
         setRideActive(true);
     };
 
-       // Hantera avslutning av resa (ändra sen till api)
-       const handleEndRide = async (e) => {
+    // Hantera avslutning av resa (ändra sen till api)
+    const handleEndRide = async (e) => {
         e.preventDefault();
 
-        console.log("Resa avslutad!");
-        setRideActive(false);
-        setBikeId('');
+        if (!tripId) {
+            return;
+        }
 
-        navigate(`/ridehistory`);
+        const response = await fetch(`http://127.0.0.1:8000/v1/trips/${tripId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "user_id": "652134919185249719",
+                "bike_id": "1"
+            }),
+        });
+
+        if (response.ok) {
+            console.log("Resa avslutad!");
+            setRideActive(false);
+            setBikeId('');
+
+            navigate(`/ridehistory/${tripId}`);
+        }
     };
 
     return (
@@ -57,30 +78,30 @@ const HomeClient = () => {
                 <MapView />
             </div>
 
-                {rideActive ? (
+            {rideActive ? (
                 <div className={styles.formcontainer}>
-                        <h2>Resa igång</h2>
-                        <button onClick={handleEndRide} className={styles.endButton}>
-                            Avsluta resa
-                        </button>
+                    <h2>Resa igång</h2>
+                    <button onClick={handleEndRide} className={styles.endButton}>
+                        Avsluta resa
+                    </button>
                 </div>
-                ) : (
-                    <div className={styles.formcontainer}>
-                        <h2>Starta din resa</h2>
-                        <form onSubmit={handleSubmit}>
-                            <input 
-                                type="text" 
-                                id="bikeId" 
-                                value={bikeId} 
-                                onChange={(e) => setBikeId(e.target.value)}
-                                placeholder="Ange cykelns ID"
-                                required
-                            />
-                            <button type="submit">Start</button>
-                        </form>
-                    </div>
-                )}
-            </div>
+            ) : (
+                <div className={styles.formcontainer}>
+                    <h2>Starta din resa</h2>
+                    <form onSubmit={handleSubmit}>
+                        <input 
+                            type="text" 
+                            id="bikeId" 
+                            value={bikeId} 
+                            onChange={(e) => setBikeId(e.target.value)}
+                            placeholder="Ange cykelns ID"
+                            required
+                        />
+                        <button type="submit">Start</button>
+                    </form>
+                </div>
+            )}
+        </div>
     );
 }
 

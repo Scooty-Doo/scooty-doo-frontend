@@ -28,7 +28,7 @@ const HistoryClient = () => {
                                 alt="Map Icon" 
                                 className={styles.mapIcon} 
                             />
-                            <p className={styles.date}><strong><Link to="/ridehistory">{ride.date}</Link></strong></p>
+                            <p className={styles.date}><strong><Link to="/ridehistory/1">{ride.date}</Link></strong></p>
                             <p><strong>Tid:</strong> {ride.time}</p>
                             <p><strong>Pris:</strong> {ride.price}</p>
                         </div>
