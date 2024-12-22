@@ -7,7 +7,7 @@
     background-image: url('../pic/white1.jpg');
     background-position: center;
     padding-left: 0px;
-    padding-top: 80px;
+    padding-top: 120px;
   }
   
 .map {
@@ -30,13 +30,14 @@ padding-left: 30px;
 
 .formcontainer {
     flex: 1;
-    width: 100%;
-    height: 60vh;
-    max-width: 600px;
+    max-width: 600px; /* Begränsa formulärets storlek */
     background-color: rgba(255, 255, 255, 0.912);
     padding: 15px;
     border-radius: 10px;
-    margin-right: 150px;
+    margin-right: 50px;
+    margin-left: 20px;
+    padding-bottom: 50px;
+    max-height: 30vh;
 }
   
 
@@ -91,19 +92,22 @@ button:hover {
     
     .map {
         width: 100%;
-        height: 100vh;
-        z-index: 1; /* Lägst z-index för att placera den under både navbar och formulär */
+        max-width: none; /* Ta bort gränsen */
+        margin-right: 0px;
+        margin-left: 10px;
+        padding-left: 0px;
       }
       
 
     .formcontainer {
         position: fixed;
-        top: 65%;
+        background-color: #b9cee2d4;
+        margin-left: 0;
+        padding: 15px;
+        top: 60%;
         left: 50%;
         transform: translateX(-50%);
         width: 70%;
-        background-color: rgba(11, 11, 11, 0.8);
-        padding: 15px;
         border-radius: 10px;
         z-index: 900; /* Lägre än navbaren, men högre än kartan */
       }
@@ -118,83 +122,5 @@ button:hover {
     }
     .quote {
         display: none;
-    }
-}
-
-/* Mediumstora skärmar, t.ex. surfplattor */
-@media (max-width: 900px) {
-    .homecontaianer {
-        display: flex;
-        flex-direction: row; /* Gör att innehållet ordnas vertikalt */
-        justify-content: flex-start; 
-        height: 100vh; /* Full höjd på sidan */
-        text-align: center; /* Centrerar texten */
-        background-image: url('../pic/white1.jpg');
-        background-position: center;
-        padding-left: 0px;
-    }
-    
-    .map {
-    width: 100%;
-    max-width: none; /* Ta bort gränsen */
-    margin-right: 0px;
-    margin-left: 10px;
-    padding-left: 0px;
-    }
-
-
-    .quote {
-        display: none;
-    }
-
-    .formcontainer {
-        flex: 1;
-        width: 100%;
-        height: 30vh;
-        max-width: 600px; /* Begränsa formulärets storlek */
-        background-color: rgba(255, 255, 255, 0.912);
-        padding: 15px;
-        border-radius: 10px;
-        margin-right: 50px;
-        margin-left: 20px;
-    }
-}
-
-/* Mindre än standard*/
-@media (max-width: 1600px) {
-    .homecontaianer {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start; 
-        height: 100vh; /* Full höjd på sidan */
-        text-align: center; /* Centrerar texten */
-        background-image: url('../pic/white1.jpg');
-        background-position: center;
-        padding-left: 0px;
-    }
-    
-    .map {
-    width: 100%;
-    max-width: none;
-    margin-right: 0px;
-    margin-left: 10px;
-    padding-left: 0px;
-    }
-
-
-    .quote {
-        display: none;
-    }
-
-    .formcontainer {
-        flex: 1;
-        width: 100%;
-        height: 30vh;
-        max-width: 600px; /* Begränsa formulärets storlek */
-        background-color: rgba(255, 255, 255, 0.912);
-        padding: 15px;
-        border-radius: 10px;
-        margin-right: 50px;
-        margin-left: 20px;
     }
 }

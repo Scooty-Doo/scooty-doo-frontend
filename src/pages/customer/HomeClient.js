@@ -59,7 +59,6 @@ const HomeClient = () => {
 
                 {rideActive ? (
                 <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
                         <h2>Resa igång</h2>
                         <button onClick={handleEndRide} className={styles.endButton}>
                             Avsluta resa
@@ -67,7 +66,6 @@ const HomeClient = () => {
                 </div>
                 ) : (
                     <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
                         <h2>Starta din resa</h2>
                         <form onSubmit={handleSubmit}>
                             <input 

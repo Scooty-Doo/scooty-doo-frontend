@@ -160,4 +160,12 @@ h2 {
     .saveButton, .saveButtonSaldo {
         max-width: 100%;
     }
+
+    .rightColumn {
+        margin-bottom: 20px;
+    }
+
+    .leftColumn {
+        margin-top: 10px;
+    }
 }
