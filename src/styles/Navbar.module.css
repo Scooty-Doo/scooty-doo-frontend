@@ -70,12 +70,16 @@
     background-color: #ffffff;
     padding: 25px 30px;
     position: fixed;
+    bottom: 0;
+    top: auto;
     left: 0;
     width: 100%;
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 15px 20px;
     box-sizing: border-box;
+    border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
   }
   .navbar {

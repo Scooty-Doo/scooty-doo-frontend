@@ -32,7 +32,7 @@ const AccountClient = () => {
 
     return (
         <div className={styles.accountContainer}>
-            <h1>Konto</h1>
+            <h1>Ditt konto</h1>
             <div className={styles.accountGrid}>
                 {/* Vänster kolumn */}
                 <div className={styles.leftColumn}>

@@ -47,9 +47,6 @@ p {
         font-size: 1.5em;
     }
 
-    body {
-        padding: 10px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -59,9 +56,5 @@ p {
 
     h2 {
         font-size: 1.2em;
-    }
-
-    body {
-        padding: 5px;
     }
 }

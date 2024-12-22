@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 import { useNavigate } from 'react-router-dom';
+import { startRide, endRide } from '../../api/tripsApi'; 
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
-    // State för att hålla koll på cykelns-ID
+    // State för att hålla koll på cykelns-ID, tripId, RideActive
     const [bikeId, setBikeId] = useState('');
-
-    // State för att kolla om användaren har en resa igång
+    const [tripId, setTripId] = useState(null);
     const [rideActive, setRideActive] = useState(false); 
 
     const navigate = useNavigate();
@@ -16,38 +16,26 @@ const HomeClient = () => {
     // Hanterar start av resa (ändra sen till api)
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+          const trip = await startRide("652134919185249719", bikeId);
+          console.log("Resa startad", trip);
+          setTripId(trip.data.id);
+          setRideActive(true);
+        } catch (error) {
+          console.error("Failed to start ride:", error);
+        }
+      };
 
-        /*
-        const response = await fetch('http://127.0.0.1:8000/v1/trips/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "user_id": "652134919185249719",
-                "bike_id": "1"
-            }),
-        });
-
-        if (response.ok) {
-            const trip = await response.json();
-            console.log("Resa startad", trip);
-            setRideActive(true);
-        }*/
-
-        console.log("Resa startad");
-        setRideActive(true);
-    };
-
-       // Hantera avslutning av resa (ändra sen till api)
-       const handleEndRide = async (e) => {
-        e.preventDefault();
-
+    const handleEndRide = async () => {
+    try {
+        await endRide(tripId, "652134919185249719", bikeId);
         console.log("Resa avslutad!");
         setRideActive(false);
         setBikeId('');
-
-        navigate(`/ridehistory`);
+        navigate(`/ridehistory/${tripId}`);
+    } catch (error) {
+        console.error("Failed to end ride:", error);
+    }
     };
 
     return (
@@ -57,32 +45,30 @@ const HomeClient = () => {
                 <MapView />
             </div>
 
-                {rideActive ? (
+            {rideActive ? (
                 <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Resa igång</h2>
-                        <button onClick={handleEndRide} className={styles.endButton}>
-                            Avsluta resa
-                        </button>
+                    <h2>Resa igång</h2>
+                    <button onClick={handleEndRide} className={styles.endButton}>
+                        Avsluta resa
+                    </button>
                 </div>
-                ) : (
-                    <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Starta din resa</h2>
-                        <form onSubmit={handleSubmit}>
-                            <input 
-                                type="text" 
-                                id="bikeId" 
-                                value={bikeId} 
-                                onChange={(e) => setBikeId(e.target.value)}
-                                placeholder="Ange cykelns ID"
-                                required
-                            />
-                            <button type="submit">Start</button>
-                        </form>
-                    </div>
-                )}
-            </div>
+            ) : (
+                <div className={styles.formcontainer}>
+                    <h2>Starta din resa</h2>
+                    <form onSubmit={handleSubmit}>
+                        <input 
+                            type="text" 
+                            id="bikeId" 
+                            value={bikeId} 
+                            onChange={(e) => setBikeId(e.target.value)}
+                            placeholder="Ange cykelns ID"
+                            required
+                        />
+                        <button type="submit">Start</button>
+                    </form>
+                </div>
+            )}
+        </div>
     );
 }
 
