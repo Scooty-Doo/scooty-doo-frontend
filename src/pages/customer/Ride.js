@@ -44,37 +44,35 @@ const calculateCenter = (path) => {
 };
 
 const Ride = () => (
-  <div className={styles.history}>
+  <div className={styles.historyContainer}> 
     <h1>Din resa</h1>
-    <table className={styles.historyTable}>
-      <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Tid</th>
-          <th>Pris</th>
-          <th>Resa</th>
-        </tr>
-      </thead>
-      <tbody>
-        {ridehistory.map((ride, index) => {
-          const pathCenter = calculateCenter(ride.path_taken);
-          return (
-            <tr key={index}>
-              <td>{new Date(ride.start_time).toLocaleDateString()}</td>
-              <td>{formatTime(ride.start_time)} - {formatTime(ride.end_time)}</td>
-              <td>{ride.total_fee} kr</td>
-              <td>
-                <MapContainer center={pathCenter} zoom={13} style={{ height: "200px", width: "100%" }}>
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <Polyline positions={parsePath(ride.path_taken)} />
-                </MapContainer>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className={styles.history}>
+      {ridehistory.map((ride, index) => {
+        const pathCenter = calculateCenter(ride.path_taken);
+        return (
+          <div key={index} className={styles.historyItem}>
+            {/* Karta visas först */}
+
+            <div className={styles.rideDetails}>
+              <p><strong>{new Date(ride.start_time).toLocaleDateString()},  {formatTime(ride.start_time)} - {formatTime(ride.end_time)}</strong></p>
+            </div>
+            <div className={styles.mapContainer}>
+              <MapContainer center={pathCenter} zoom={13} style={{ height: "200px", width: "100%" }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Polyline positions={parsePath(ride.path_taken)} />
+              </MapContainer>
+            </div>
+            <div className={styles.rideDetails}>
+              <p><strong>Pris:</strong> {ride.total_fee} kr</p>
+            </div>
+            {/* Textinformation visas nedanför */}
+          </div>
+        );
+      })}
+    </div>
   </div>
+
 );
+
 
 export default Ride;
