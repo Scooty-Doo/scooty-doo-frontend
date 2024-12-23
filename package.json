@@ -19,7 +19,8 @@
     "test": "react-scripts test",
     "lint": "eslint 'src/**/*{js}'",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && rsync -av --delete build/ vima23@ssh.student.bth.se:www/scooty-doo"
+    "deploy": "npm run build && rsync -av --delete build/ vima23@ssh.student.bth.se:www/scooty-doo",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage"
   },
   "eslintConfig": {
     "extends": [
@@ -40,14 +41,26 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^13.5.0",
+    "babel-jest": "^29.7.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
-    "react-router-dom": "^7.1.0",
+    "react-router-dom": "^6.26.2",
     "react-test-renderer": "^18.3.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[tj]sx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!react-leaflet|some-other-module)/"
+    ]
   }
 }
