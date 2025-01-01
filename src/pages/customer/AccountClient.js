@@ -1,17 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/AccountClient.module.css";
+import { fetchUser } from "../../api/userApi";
 
-// Accountklienten ska hantera användarinfo och kontoändringar
 const AccountClient = () => {
+    const user_id = 1; // Eller hämta från props/context om det behövs
 
-    // Skapa test-användare
+    // State för användarinfo
     const [userInfo, setUserInfo] = useState({
-        name: "Maya Edlund",
-        email: "maya@example.com",
-        address: "Testgatan 1, 12345 Teststad",
-        phone: "0701234567",
-        wallet: 513,
+        name: "",
+        email: "",
+        address: "", // Address finns inte i datan; kan vara statisk eller borttagen
+        phone: "", // Phone finns inte i datan; kan vara statisk eller borttagen
+        wallet: 0,
     });
+
+    // Hämta användarinfo från API vid komponentens första render
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                const userData = await fetchUser(user_id);
+                // Omforma datan från API till det format som används i `userInfo`
+                const formattedData = {
+                    name: userData.data.attributes.full_name,
+                    email: userData.data.attributes.email,
+                    address: "", // Lämna tom om address inte används
+                    phone: "", // Lämna tom om phone inte används
+                    wallet: userData.data.attributes.balance,
+                };
+                setUserInfo(formattedData); // Uppdatera state
+            } catch (error) {
+                console.error("Error fetching user info:", error);
+                alert("Kunde inte hämta användarinformation.");
+            }
+        };
+
+        getUserInfo();
+    }, [user_id]); // Kör om `user_id` ändras
 
     // Hantera inputförändringar i formuläret
     const handleInputChange = (e) => {
@@ -22,10 +46,9 @@ const AccountClient = () => {
         }));
     };
 
-    // Kolla om lösenordet matchar
+    // Spara ändringar
     const handleSaveChanges = (e) => {
         e.preventDefault();
-        // Skriv ut ändringarna
         console.log("Uppdaterade användardetaljer:", userInfo);
         alert("Dina ändringar har sparats!");
     };
@@ -67,7 +90,6 @@ const AccountClient = () => {
                                 value={userInfo.address}
                                 onChange={handleInputChange}
                                 className={styles.input}
-                                required
                             />
                         </div>
                         <div className={styles.formGroup}>
@@ -78,7 +100,6 @@ const AccountClient = () => {
                                 value={userInfo.phone}
                                 onChange={handleInputChange}
                                 className={styles.input}
-                                required
                             />
                         </div>
                         <button type="submit" className={styles.saveButton}>
@@ -91,7 +112,7 @@ const AccountClient = () => {
                     <h2 className={styles.saldo}>Scooty Saldo:</h2>
                     <p className={styles.money}>{userInfo.wallet} :-</p>
                     <button className={styles.saveButtonSaldo}>
-                            Fyll på Saldo
+                        Fyll på Saldo
                     </button>
                 </div>
             </div>
