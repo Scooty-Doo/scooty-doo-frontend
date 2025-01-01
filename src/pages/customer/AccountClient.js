@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../styles/AccountClient.module.css";
 import { fetchUser } from "../../api/userApi";
+import { userDetails } from "../../api/userApi";
+import Stripe from "../../components/Stripe";
 
 const AccountClient = () => {
-    const user_id = 1; // Eller hämta från props/context om det behövs
+    const user_id = 1;
 
     // State för användarinfo
     const [userInfo, setUserInfo] = useState({
         name: "",
         email: "",
-        address: "", // Address finns inte i datan; kan vara statisk eller borttagen
-        phone: "", // Phone finns inte i datan; kan vara statisk eller borttagen
+        address: "",
+        phone: "",
         wallet: 0,
+        use_prepay: "",
     });
 
     // Hämta användarinfo från API vid komponentens första render
@@ -19,13 +22,11 @@ const AccountClient = () => {
         const getUserInfo = async () => {
             try {
                 const userData = await fetchUser(user_id);
-                // Omforma datan från API till det format som används i `userInfo`
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
-                    address: "", // Lämna tom om address inte används
-                    phone: "", // Lämna tom om phone inte används
                     wallet: userData.data.attributes.balance,
+                    use_prepay: userData.data.attributes.use_prepay,
                 };
                 setUserInfo(formattedData); // Uppdatera state
             } catch (error) {
@@ -35,7 +36,7 @@ const AccountClient = () => {
         };
 
         getUserInfo();
-    }, [user_id]); // Kör om `user_id` ändras
+    }, [user_id]);
 
     // Hantera inputförändringar i formuläret
     const handleInputChange = (e) => {
@@ -46,11 +47,17 @@ const AccountClient = () => {
         }));
     };
 
+
     // Spara ändringar
-    const handleSaveChanges = (e) => {
+    const handleSaveChanges = async (e) => {
         e.preventDefault();
-        console.log("Uppdaterade användardetaljer:", userInfo);
-        alert("Dina ändringar har sparats!");
+        try {
+            await userDetails(user_id, userInfo.name, userInfo.email, userInfo.use_prepay);
+            alert("Dina ändringar har sparats!");
+        } catch (error) {
+            console.error("Failed to update user details:", error);
+            alert("Kunde inte spara ändringar.");
+        }
     };
 
     return (
@@ -82,26 +89,17 @@ const AccountClient = () => {
                                 required
                             />
                         </div>
-                        <div className={styles.formGroup}>
-                            <input
-                                type="text"
-                                id="address"
-                                name="address"
-                                value={userInfo.address}
-                                onChange={handleInputChange}
-                                className={styles.input}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <input
-                                type="tel"
-                                id="phone"
-                                name="phone"
-                                value={userInfo.phone}
-                                onChange={handleInputChange}
-                                className={styles.input}
-                            />
-                        </div>
+                        <label htmlFor="payment-method">Välj betalningsmetod:</label>
+
+                        <select
+                            id="payment-method"
+                            name="use_prepay"
+                            value={userInfo.use_prepay}
+                            onChange={handleInputChange}
+                        >
+                            <option value="false">Faktura</option>
+                            <option value="true">Plånbok</option>
+                        </select>
                         <button type="submit" className={styles.saveButton}>
                             Spara ändringar
                         </button>
@@ -111,9 +109,7 @@ const AccountClient = () => {
                 <div className={styles.rightColumn}>
                     <h2 className={styles.saldo}>Scooty Saldo:</h2>
                     <p className={styles.money}>{userInfo.wallet} :-</p>
-                    <button className={styles.saveButtonSaldo}>
-                        Fyll på Saldo
-                    </button>
+                    <Stripe />
                 </div>
             </div>
         </div>
