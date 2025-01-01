@@ -5,7 +5,7 @@ import L, { map } from 'leaflet'; // Importera Leaflet för att skapa en anpassa
 import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
-import BikeMarker from './marker';
+// import BikeMarker from './marker';
 
 // Formatera om backends position till leaflet (lng och lat)
 const parsePoint = (point) => {
@@ -118,13 +118,13 @@ const MapView = ({ userType, socket }) => {
             update_bike_on_map(bike);            
         };
 
-        const update_bike_on_map = (bike) => {
-            // This does nothing.
-            let position = check_position(bike);
-            if (!position) {
-                return null;
-            }
-          };
+        const update_bike_on_map = (updatedBike) => { // bikes update on map now, not entierly sure how this works
+            setBikes((prevBikes) =>
+                prevBikes.map((bike) =>
+                    bike.id === updatedBike.id ? updatedBike : bike // If bike.id is match to updatedBike.id then replace old bike with new bike info
+                )
+            );
+        };
         socket.on("bike_update", update_bike);
         return () => {
             socket.off("bike_update", update_bike)
