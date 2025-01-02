@@ -86,6 +86,39 @@ const Customer = () => {
         });
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent page refresh on submit
+        console.log("on submit",JSON.stringify(customer)); // debugging
+
+        const formattedCustomer = { // formatted after the requested body for api use
+            full_name: customer.data.attributes.full_name,
+            email: customer.data.attributes.email,
+            use_prepay: customer.data.attributes.use_prepay,
+            meta_data: {},
+        };
+
+        console.log("formatted customer", JSON.stringify(formattedCustomer))
+
+        try {
+            const response = await fetch (`http://localhost:8000/v1/users/${customerId}`,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formattedCustomer), // send customer object as JSON
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit the customer data');
+            }
+
+            const result = await response.json();
+            console.log('Customer data submitted successfully:', result);
+        } catch (error) {
+            console.log("Error submitting customer data:", error)
+        }
+    };
+
     // Handling loading state
     if (loading) {
         return <p>Loading user data...</p>;
@@ -98,7 +131,7 @@ const Customer = () => {
 
     return (
         <div>
-            <form>
+            <form onSubmit={handleSubmit}>
             <label>
                 Full Name
                 <input
@@ -164,6 +197,9 @@ const Customer = () => {
                 value={customer?.data?.links?.self}
                 readOnly />
             </label>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
             </form>
             <button onClick={handleShowTrips}>Show Trips</button>
             {showTrips && <TripsList trips={trips} />}
