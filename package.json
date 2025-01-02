@@ -23,7 +23,8 @@
     "test": "react-scripts test",
     "lint": "eslint 'src/**/*{js}'",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && rsync -av --delete build/ vima23@ssh.student.bth.se:www/scooty-doo"
+    "deploy": "npm run build && rsync -av --delete build/ vima23@ssh.student.bth.se:www/scooty-doo",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage"
   },
   "eslintConfig": {
     "extends": [
