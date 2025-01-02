@@ -53,7 +53,7 @@ const MapView = ({ userType }) => {
 
         const fetchBikes = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/v1/bikes');
+                const response = await fetch('http://127.0.0.1:8000/v1/bikes/');
                 const data = await response.json();
                 console.log(data.data)
                 setBikes(data.data);
