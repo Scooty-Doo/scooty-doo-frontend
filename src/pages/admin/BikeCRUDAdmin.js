@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Assuming you're using React Router
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../styles/BikeCRUDAdmin.module.css';
+import CreateBike from '../../components/CreateBike';
 
     // What does this file need to be able to do?
     // Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
@@ -32,10 +33,10 @@ const BikeCRUDAdmin = () => {
     useEffect(() => {
         const fetchBike = async () => { // hämtar information om biken som admin försöker ändra
             try {
-                const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`); // Replace with your API endpoint
+                const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`); // ändra till en variable av länken i bike objektet?
                 if (!response.ok) throw new Error('Failed to fetch bike details');
                 const data = await response.json();
-                console.log(data); // temporary log for debugging
+                console.log("Fetch debug log",data); // temporary log for debugging
                 setBike(data);
             } catch (err) {
                 setError(err.message);
@@ -137,7 +138,7 @@ const BikeCRUDAdmin = () => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <form onSubmit={handleSubmit}>
+        <><form onSubmit={handleSubmit}>
             {/* Bike ID (non-editable) */}
             <div>
                 <label htmlFor="id">Bike ID:</label>
@@ -146,8 +147,7 @@ const BikeCRUDAdmin = () => {
                     id="id"
                     name="id"
                     value={bike?.data?.id || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Battery Level (non-editable) */}
@@ -158,8 +158,7 @@ const BikeCRUDAdmin = () => {
                     id="battery_lvl"
                     name="battery_lvl"
                     value={bike?.data?.attributes?.battery_lvl || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Last Position (non-editable) */}
@@ -170,8 +169,7 @@ const BikeCRUDAdmin = () => {
                     id="last_position"
                     name="last_position"
                     value={bike?.data?.attributes?.last_position || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Is Available (editable) */}
@@ -182,8 +180,7 @@ const BikeCRUDAdmin = () => {
                     id="is_available"
                     name="is_available"
                     checked={bike?.data?.attributes?.is_available || false}
-                    onChange={handleChange}
-                />
+                    onChange={handleChange} />
             </div>
 
             {/* Created At (non-editable) */}
@@ -194,8 +191,7 @@ const BikeCRUDAdmin = () => {
                     id="created_at"
                     name="created_at"
                     value={bike?.data?.attributes?.created_at || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Updated At (non-editable) */}
@@ -206,8 +202,7 @@ const BikeCRUDAdmin = () => {
                     id="updated_at"
                     name="updated_at"
                     value={bike?.data?.attributes?.updated_at || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* City ID (editable) */}
@@ -218,8 +213,7 @@ const BikeCRUDAdmin = () => {
                     id="cityId"
                     name="cityId"
                     value={bike?.data?.relationships?.city?.data?.id || ""}
-                    onChange={handleChange}
-                />
+                    onChange={handleChange} />
             </div>
 
             {/* Bike Link (non-editable) */}
@@ -230,8 +224,7 @@ const BikeCRUDAdmin = () => {
                     id="bikeLink"
                     name="bikeLink"
                     value={bike?.data?.links?.self || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Top-Level Link (non-editable) */}
@@ -242,11 +235,10 @@ const BikeCRUDAdmin = () => {
                     id="topLevelLink"
                     name="topLevelLink"
                     value={bike?.links?.self || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
-            {/* Submit Button (No functionality yet) */}
+
             <div>
                 <button type="submit">Submit</button>
             </div>
@@ -255,7 +247,7 @@ const BikeCRUDAdmin = () => {
                     Delete
                 </button>
             </div>
-        </form>
+        </form><div><CreateBike /></div></>
     );
 };
 
