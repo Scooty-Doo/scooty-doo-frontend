@@ -17,25 +17,25 @@ const HomeClient = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const trip = await startRide("652134919185249719", bikeId);
-          console.log("Resa startad", trip);
-          setTripId(trip.data.id);
-          setRideActive(true);
+            const trip = await startRide("652134919185249719", bikeId);
+            console.log("Resa startad", trip);
+            setTripId(trip.data.id);
+            setRideActive(true);
         } catch (error) {
-          console.error("Failed to start ride:", error);
+            console.error("Failed to start ride:", error);
         }
-      };
+    };
 
     const handleEndRide = async () => {
-    try {
-        await endRide(tripId, "652134919185249719", bikeId);
-        console.log("Resa avslutad!");
-        setRideActive(false);
-        setBikeId('');
-        navigate(`/ridehistory/${tripId}`);
-    } catch (error) {
-        console.error("Failed to end ride:", error);
-    }
+        try {
+            await endRide(tripId, "652134919185249719", bikeId);
+            console.log("Resa avslutad!");
+            setRideActive(false);
+            setBikeId('');
+            navigate(`/ridehistory/${tripId}`);
+        } catch (error) {
+            console.error("Failed to end ride:", error);
+        }
     };
 
     return (

@@ -7,32 +7,32 @@ import MapRide from "../../components/MapRide";
 import styles from "../../styles/HistoryRideClient.module.css";
 
 const Ridehistory = () => {
-  const { tripId } = useParams();
-  const [rideHistory, setRideHistory] = useState(null);
+    const { tripId } = useParams();
+    const [rideHistory, setRideHistory] = useState(null);
 
-  useEffect(() => {
-    if (tripId) {
-      fetchRide(tripId).then((data) => {
-        setRideHistory(data);
-      });
+    useEffect(() => {
+        if (tripId) {
+            fetchRide(tripId).then((data) => {
+                setRideHistory(data);
+            });
+        }
+    }, [tripId]);
+
+    if (!rideHistory) {
+        return <div>Laddar resa...</div>;
     }
-  }, [tripId]);
 
-  if (!rideHistory) {
-    return <div>Laddar resa...</div>;
-  }
+    const pathCoordinates = parsePath(rideHistory.data.attributes.path_taken);
 
-  const pathCoordinates = parsePath(rideHistory.data.attributes.path_taken);
+    return (
+        <div className={styles.historyContainer}>
+            <h2>Din resa</h2>
 
-  return (
-    <div className={styles.historyContainer}>
-      <h2>Din resa</h2>
-
-      <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
-      <MapRide pathCoordinates={pathCoordinates} />
-      <button>Boka en ny cykel</button>
-    </div>
-  );
+            <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
+            <MapRide pathCoordinates={pathCoordinates} />
+            <button>Boka en ny cykel</button>
+        </div>
+    );
 };
 
 export default Ridehistory;

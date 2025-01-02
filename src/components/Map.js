@@ -149,9 +149,9 @@ const MapView = ({ userType }) => {
                             positions={leafletPolygon.getLatLngs()}
                             color={
                                 zone.type === 'Parking' ? 'blue' :
-                                zone.type === 'Slow' ? 'orange' :
-                                zone.type === 'Forbidden' ? 'red' :
-                                zone.type === 'Charging' ? 'green' : 'gray'
+                                    zone.type === 'Slow' ? 'orange' :
+                                        zone.type === 'Forbidden' ? 'red' :
+                                            zone.type === 'Charging' ? 'green' : 'gray'
                             }
                             fillOpacity={0.4}
                         >

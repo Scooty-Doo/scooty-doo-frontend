@@ -4,12 +4,12 @@ import ListBikeCity from '../../components/ListBikeCity'; // Import the ListBike
 
 const HomeAdmin = () => {
     return (
-      <div>
-        <h1>Bike Inventory</h1>
-        {/* <ListBike /> */}
-        <ListBikeCity />
-      </div>
+        <div>
+            <h1>Bike Inventory</h1>
+            {/* <ListBike /> */}
+            <ListBikeCity />
+        </div>
     );
-  };
+};
 
 export default HomeAdmin;
