@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import styles from "../styles/AccountClient.module.css";
 import { fillWallet } from "../api/stripeApi";
 
@@ -10,7 +11,7 @@ const ProductDisplay = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await fillWallet(amount);
+      const response = await fillWallet(amount, window.location.href);
       window.location.href = response.data.url;
     } catch (error) {
       console.error(`Failed to add to wallet. Please try again. Details ${error}`)
@@ -48,27 +49,27 @@ const ProductDisplay = () => {
 
 const Message = ({ message }) => (
   <section>
-    <p>{message}</p>
+    <p className={styles.stripemessage} >{message}</p>
   </section>
 );
 
 export default function Stripe() {
-  const [message, setMessage] = useState("");
+    const [message, setMessage] = useState();
+    const [searchParams, setSearchParams] = useSearchParams();
+    useEffect(() => {
+        if (searchParams.get("success")) {
+            setMessage("Saldo påfyllt!");
+        }
 
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
+        if (searchParams.get("canceled")) {
+        setMessage("Påfyllning av saldo avbruten.");
+        }
 
-    if (query.get("success")) {
-      setMessage("Saldo påfyllt!");
-    }
-
-    if (query.get("canceled")) {
-      setMessage(
-        "Påfyllning av saldo avbruten."
-      );
-    }
-  }, []);
+        if (searchParams.size == 0)
+        {
+            setMessage("");
+        }
+    }, [searchParams]);
 
   return message ? (
     <Message message={message} />

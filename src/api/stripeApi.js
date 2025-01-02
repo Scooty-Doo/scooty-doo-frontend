@@ -1,6 +1,6 @@
 const API_BASE_URL = "http://127.0.0.1:8000/v1/stripe/";
 
-export const fillWallet = async (amount) => {
+export const fillWallet = async (amount, frontend_url) => {
   try {
       const response = await fetch(`${API_BASE_URL}`, {
           method: "POST",
@@ -8,7 +8,8 @@ export const fillWallet = async (amount) => {
               "Content-Type": "application/json",
           },
           body: JSON.stringify({
-              amount: amount
+              amount: amount,
+              frontend_url: frontend_url 
           }),
       });
 
