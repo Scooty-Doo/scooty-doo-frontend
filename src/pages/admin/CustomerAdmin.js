@@ -8,12 +8,12 @@ import TripsList from '../../components/TripsList'; // Import the TripsList comp
         // Visa trips / transactions listorna för selectad kund genom en knapp under formen
     // Vad för update ska admin kunna göra?
         // Admin ska kunna ändra:
-        // Username? == no
-        // Email? == no
-        // Balance? == no
+        // Username? == yes
+        // Email? == maybe (hold)
+        // Balance? == yes (keep simple for now)
         // created at? == no
         // updated at? == no
-        // use prepay? == no
+        // use prepay? == yes
         // profile link? == no
         // ska admin bara kunna se användarets konton?
             // i ett mer utförligt system skulle admin kunna ge en chargeback om kundens pengar dras fel
@@ -63,6 +63,29 @@ const Customer = () => {
         if (!showTrips) fetchTrips();
     };
 
+    const handleChange = (e) => {
+        const { name, type, value, checked } = e.target;
+        const newValue = type === 'checkbox' ? checked : value;
+
+        setCustomer((prevCustomer) => {
+            // Creates a shallow copt of the customer data
+            const updatedCustomer = { ...prevCustomer };
+
+            // Finds and updates the corresponding value in customer
+            if (name === 'full_Name') {
+                updatedCustomer.data.attributes.full_name = newValue;
+            } else if (name === 'email') {
+                updatedCustomer.data.attributes.email = newValue;
+            } else if (name === 'use_prepay') {
+                updatedCustomer.data.attributes.use_prepay = newValue;
+            }
+
+            // Returns the updatedCustomer
+            console.log("Handle Change",updatedCustomer);
+            return updatedCustomer;
+        });
+    };
+
     // Handling loading state
     if (loading) {
         return <p>Loading user data...</p>;
@@ -73,37 +96,73 @@ const Customer = () => {
         return <p>Error: {error}</p>;
     }
 
-    const { attributes, links } = customer.data;
     return (
         <div>
             <form>
             <label>
                 Full Name
-                <input type="text" value={attributes.full_name} readOnly />
+                <input
+                    type="text"
+                    id="full_Name"
+                    name="full_Name"
+                    value={customer?.data?.attributes?.full_name}
+                    onChange={handleChange} />
             </label>
             <label>
                 Email
-                <input type="text" value={attributes.email} readOnly />
+                <input
+                type="text"
+                id="email"
+                name="email"
+                value={customer?.data?.attributes?.email}
+                onChange={handleChange} />
             </label>
             <label>
                 Balance kr
-                <input type="text" value={attributes.balance} readOnly />
+                <input
+                type="text"
+                id="balance"
+                name="balance"
+                value={customer?.data?.attributes?.balance}
+                readOnly />
             </label>
             <label>
                 Created At
-                <input type="text" value={attributes.created_at} readOnly />
+                <input
+                type="text"
+                id="created_at"
+                name="created_at"
+                value={customer?.data?.attributes?.created_at}
+                readOnly />
             </label>
             <label>
                 Updated At
-                <input type="text" value={attributes.updated_at} readOnly />
+                <input
+                type="text"
+                id="updated_at"
+                name="updated_at"
+                value={customer?.data?.attributes?.updated_at}
+                readOnly />
             </label>
-            <label>
-                Use Prepay
-                <input type="text" value={attributes.use_prepay ? "Yes" : "No"} readOnly />
-            </label>
+            <div>
+                <label>
+                    Use Prepay
+                    <input
+                    type="checkbox"
+                    id="use_prepay"
+                    name="use_prepay"
+                    checked={customer?.data?.attributes?.use_prepay || false}
+                    onChange={handleChange} />
+                </label>
+            </div>
             <label>
                 Profile Link
-                <input type="text" value={links.self} readOnly />
+                <input
+                type="text"
+                id="profile_link"
+                name="profile_link"
+                value={customer?.data?.links?.self}
+                readOnly />
             </label>
             </form>
             <button onClick={handleShowTrips}>Show Trips</button>
