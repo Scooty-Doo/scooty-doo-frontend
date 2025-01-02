@@ -10,7 +10,8 @@ const ProductDisplay = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await fillWallet(amount)
+      const response = await fillWallet(amount);
+      window.location.href = response.data.url;
     } catch (error) {
       console.error(`Failed to add to wallet. Please try again. Details ${error}`)
     }
