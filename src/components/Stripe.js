@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "../styles/AccountClient.module.css";
-import { fillWallet } from "../api/stripeApi";
+import { fillWallet, stripeSuccessCall } from "../api/stripeApi";
 
 // Hämta senaste resa pris 
 
@@ -56,8 +56,16 @@ const Message = ({ message }) => (
 export default function Stripe() {
     const [message, setMessage] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const addMoney = async () => {
+        const response = await stripeSuccessCall(searchParams.get('session_id'));
+        console.log(response)
+        return response
+    }
+
     useEffect(() => {
         if (searchParams.get("success")) {
+            console.log(addMoney()) // Här! Här ska userInfo uppdateras! HÄR MAYA!
             setMessage("Saldo påfyllt!");
         }
 
