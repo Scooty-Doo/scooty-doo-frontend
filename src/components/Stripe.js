@@ -66,6 +66,7 @@ export default function Stripe() {
     useEffect(() => {
         if (searchParams.get("success")) {
             console.log(addMoney()) // Här! Här ska userInfo uppdateras! HÄR MAYA!
+            window.history.replaceState(null, "", `${window.location.pathname}#/homeclient`);
             setMessage("Saldo påfyllt!");
         }
 
