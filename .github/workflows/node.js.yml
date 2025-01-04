@@ -59,10 +59,8 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV }}
-          files: ./coverage/lcov.info 
-          flags: unittests
-          name: codecov-umbrella
+          slug: Scooty-Doo/scooty-doo-frontend
