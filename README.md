@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/Scooty-Doo/scooty-doo-frontend/graph/badge.svg?token=4SNOPRGXQ3)](https://codecov.io/gh/Scooty-Doo/scooty-doo-frontend)
+
 # scooty-doo-frontend!
 Frontend for the Scooty Doo web application
 
