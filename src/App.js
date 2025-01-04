@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, HashRouter } from 'react-router-dom';
+import { Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 
 // Import for components
 import Navbar from './components/Navbar';
