@@ -53,7 +53,7 @@ const MapView = ({ userType }) => {
 
         const fetchBikes = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/v1/bikes');
+                const response = await fetch('http://127.0.0.1:8000/v1/bikes/');
                 const data = await response.json();
                 console.log(data.data)
                 setBikes(data.data);
@@ -149,9 +149,9 @@ const MapView = ({ userType }) => {
                             positions={leafletPolygon.getLatLngs()}
                             color={
                                 zone.type === 'Parking' ? 'blue' :
-                                zone.type === 'Slow' ? 'orange' :
-                                zone.type === 'Forbidden' ? 'red' :
-                                zone.type === 'Charging' ? 'green' : 'gray'
+                                    zone.type === 'Slow' ? 'orange' :
+                                        zone.type === 'Forbidden' ? 'red' :
+                                            zone.type === 'Charging' ? 'green' : 'gray'
                             }
                             fillOpacity={0.4}
                         >

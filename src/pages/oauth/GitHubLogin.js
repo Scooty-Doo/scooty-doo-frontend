@@ -6,7 +6,6 @@ import { fetchLogin } from '../../api/oauthApi';
 const GitHubLogin = ({setToken}) => {
     const navigate = useNavigate();
 
-
     useEffect(() => {
         const login = async () => {
             try {
