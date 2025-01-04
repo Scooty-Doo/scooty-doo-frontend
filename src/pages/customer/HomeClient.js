@@ -22,9 +22,9 @@ const HomeClient = () => {
           setTripId(trip.data.id);
           setRideActive(true);
         } catch (error) {
-          console.error("Failed to start ride:", error);
+            console.error("Failed to start ride:", error);
         }
-      };
+    };
 
     const handleEndRide = async () => {
     try {

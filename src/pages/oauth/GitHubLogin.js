@@ -9,20 +9,20 @@ const GitHubLogin = ({setToken}) => {
         const [hashPath, queryString] = window.location.hash.split("?");
         const params = new URLSearchParams(queryString);
 
-    // Ta bort 'code'-parametern
-//       params.delete("code");
+        // Ta bort 'code'-parametern
+        //       params.delete("code");
         console.log(hashPath)
-    // Återskapa hash utan 'code'
+        // Återskapa hash utan 'code'
         const cleanHash = params.toString()
-        ? `${hashPath}?${params.toString()}`
-        : hashPath;
+            ? `${hashPath}?${params.toString()}`
+            : hashPath;
 
-    // Uppdatera URL utan att ladda om sidan
+        // Uppdatera URL utan att ladda om sidan
         window.history.replaceState(null, "/homeclient", `${window.location.pathname}#${cleanHash}`);
     }
 
     useEffect(() => {
-            // Maybe move to fetch model, if you use one.
+        // Maybe move to fetch model, if you use one.
         async function fetchLogin(code) {
             const backendURL = "http://localhost:8000/"
             try {
