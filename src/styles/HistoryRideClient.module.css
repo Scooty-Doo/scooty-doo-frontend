@@ -26,6 +26,10 @@
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
+
+.newRide {
+    margin-top: 20px;
+}
   
 /* Mindre skärmar, t.ex. mobiltelefoner */
 @media (max-width: 600px) {
