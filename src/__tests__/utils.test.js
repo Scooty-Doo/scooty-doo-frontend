@@ -1,5 +1,5 @@
-import { parsePath, formatTime } from '../components/utils.js'; // Justera importen beroende på var din fil ligger
-import Wkt from 'wicket';
+/* eslint-env jest */
+import { parsePath, formatTime } from '../components/utils.js';
 
 describe('Utility Functions', () => {
     describe('parsePath', () => {

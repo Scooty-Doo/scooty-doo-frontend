@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchLogin } from '../../api/oauthApi';
@@ -29,9 +30,13 @@ const GitHubLogin = ({setToken}) => {
         navigate("/")
         window.history.replaceState(null, "", `${window.location.pathname}#/homeclient`);
         return
-    }, []);
+    }, [navigate, setToken]); //La till dem pga felmeddelande
     // This needs some styling
     return <div>Processing GitHub login...</div>;
 }
+
+GitHubLogin.propTypes = {
+    setToken: PropTypes.func.isRequired,
+};
 
 export default GitHubLogin
