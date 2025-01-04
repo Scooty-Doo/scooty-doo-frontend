@@ -135,6 +135,14 @@ h2 {
     font-weight: bolder;
 }
 
+.stripeform {
+    padding-bottom: 10px;
+}
+
+.stripemessage {
+    color: #000;
+}
+
 /* Media Query för små skärmar */
 @media (max-width: 768px) {
     .accountContainer {
