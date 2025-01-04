@@ -13,7 +13,6 @@ import Account  from './pages/admin/AccountAdmin';
 import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
-import BikeCRUDAdmin from './pages/admin/BikeCRUDAdmin';
 
 // Components for customer
 import HomeClient     from './pages/customer/HomeClient';
@@ -60,7 +59,7 @@ Layout.propTypes = {
 };
 
 const App = () => {
-    const basename = process.env.NODE_ENV === 'production' ? "/~vima23/scooty-doo" : "";
+    const basename = process.env.NODE_ENV === 'production' ? "" : "";
     const [token, setToken] = useState(sessionStorage.getItem("token"));
 
     return (

@@ -1,38 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Assuming you're using React Router
-import styles from '../../styles/BikeCRUDAdmin.module.css';
+import { useParams } from 'react-router-dom'; // Assuming you're using React Router
 
-    // What does this file need to be able to do?
-    // Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
-        // this is to be done later, for now just set a variable bikeId to a static number (2)
-    // Have a form that displays the information of the bike
-    // Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for)
-    // Given that the JSON data of the bike contains a link to self that just contains the fetch link to call via id we COULD just take that from the previous page and put it into a variable called (fetchBikeUrl)
+// What does this file need to be able to do?
+// Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
+// this is to be done later, for now just set a variable bikeId to a static number (2)
+// Have a form that displays the information of the bike
+// Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for)
+// Given that the JSON data of the bike contains a link to self that just contains the fetch link to call via id we COULD just take that from the previous page and put it into a variable called (fetchBikeUrl)
 
-    // Which should be editable?
-    // bikeId == no
-    // batterylvl == no
-    // location == no
-    // available == yes
-    // created date == no
-    // updated date == no?
-    // cityId == yes
-    // links == no
-    // links2 == no
+// Which should be editable?
+// bikeId == no
+// batterylvl == no
+// location == no
+// available == yes
+// created date == no
+// updated date == no?
+// cityId == yes
+// links == no
+// links2 == no
 
 const BikeCRUDAdmin = () => {
     const { id } = useParams(); // Get bike ID from URL params
     const [bike, setBike] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const bikeId = 3;
 
     // Fetch bike details
     useEffect(() => {
         const fetchBike = async () => { // hämtar information om biken som admin försöker ändra
             try {
-                const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`); // Replace with your API endpoint
+                const response = await fetch(`http://localhost:8000/v1/bikes/${id}`); // Replace with your API endpoint
                 if (!response.ok) throw new Error('Failed to fetch bike details');
                 const data = await response.json();
                 console.log(data); // temporary log for debugging
@@ -45,7 +42,7 @@ const BikeCRUDAdmin = () => {
         };
 
         fetchBike();
-    }, [bikeId]);
+    }, [id]);
 
     // Function to handle form submission
     const handleSubmit = async (event) => {
@@ -61,7 +58,7 @@ const BikeCRUDAdmin = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`, {
+            const response = await fetch(`http://localhost:8000/v1/bikes/${id}`, {
                 method: 'PATCH', // or 'PUT' depending on whether you're creating or updating
                 headers: {
                     'Content-Type': 'application/json',

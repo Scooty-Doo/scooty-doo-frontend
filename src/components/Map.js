@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L, { map } from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
+import L from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
 import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
+import PropTypes from 'prop-types';
+import { Socket } from 'socket.io-client';
 // import BikeMarker from './marker';
 
 // Formatera om backends position till leaflet (lng och lat)
@@ -53,8 +55,8 @@ const MapView = ({ userType, socket }) => {
         const fetchBikes = async () => {
             // Sets the route depending on the usertype
             let url = userType === "admin"
-            ? "http://127.0.0.1:8000/v1/bikes/"
-            : "http://127.0.0.1:8000/v1/bikes/available"
+                ? "http://127.0.0.1:8000/v1/bikes/"
+                : "http://127.0.0.1:8000/v1/bikes/available"
             try {
                 const response = await fetch(url);
                 const data = await response.json();
@@ -98,7 +100,7 @@ const MapView = ({ userType, socket }) => {
         ];
         setZones(mockZones);
         fetchBikes();
-    }, []);
+    }, [userType]);
 
     // useEffect to get updates from socket
     useEffect(() => {
@@ -129,7 +131,7 @@ const MapView = ({ userType, socket }) => {
         return () => {
             socket.off("bike_update", update_bike)
         }
-    }, [socket, bikes]);
+    }, [socket, bikes, userType]);
 
     const check_position = (bike) => {
         const position = parsePoint(bike.attributes.last_position);
@@ -141,6 +143,9 @@ const MapView = ({ userType, socket }) => {
         return position;
     };
 
+    if (loading) {
+        return <p>Loading</p>
+    }
     return (
         <MapContainer
             center={userPosition ?? [55.604981, 13.003822]}
@@ -163,15 +168,15 @@ const MapView = ({ userType, socket }) => {
                     return null;
                 }
                 return (
-                        <Marker
-                            key={bike.id}
-                            position={position}
-                            icon={bikeIcon}
-                            >
-                            <Popup>
+                    <Marker
+                        key={bike.id}
+                        position={position}
+                        icon={bikeIcon}
+                    >
+                        <Popup>
                                 Cykel {bike.id}: {bike.attributes.battery_lvl}% batteri.
-                            </Popup>
-                        </Marker>
+                        </Popup>
+                    </Marker>
                 )
             })}
 
@@ -203,6 +208,11 @@ const MapView = ({ userType, socket }) => {
             })}
         </MapContainer>
     );
+};
+
+MapView.propTypes = {
+    userType: PropTypes.string,
+    socket: Socket
 };
 
 export default MapView;
