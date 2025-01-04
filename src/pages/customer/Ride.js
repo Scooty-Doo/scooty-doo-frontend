@@ -30,7 +30,7 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button>Boka en ny cykel</button>
+            <button className={styles.newRide}>Boka en ny cykel</button>
         </div>
     );
 };
