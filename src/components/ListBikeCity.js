@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../styles/HomeAdmin.module.css';
+import styles from '../styles/ListBikeCity.module.css';
 
 const ListBikeCity = () => {
     const [bikes, setBikes] = useState([]);
