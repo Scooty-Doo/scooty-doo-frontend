@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 
@@ -52,6 +53,10 @@ const Layout = ({ children }) => {
             {children}
         </>
     );
+};
+
+Layout.propTypes = {
+    children: PropTypes.node  // Validera children som en React node
 };
 
 const App = () => {

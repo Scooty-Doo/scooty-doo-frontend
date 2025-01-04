@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import styles from '../../styles/LoginClient.module.css';
 import { FaGithub } from 'react-icons/fa';
 
 const LoginClient = ({basename}) => {
-    const navigate = useNavigate();
 
     useEffect(() => {
     // Lägg till en unik klass på body
@@ -17,10 +16,6 @@ const LoginClient = ({basename}) => {
         };
     }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        navigate('/homeclient');
-    };
 
     const gitHubLogin = (e) => {
         e.preventDefault();
@@ -50,6 +45,10 @@ const LoginClient = ({basename}) => {
             </p>
         </div>
     );
+};
+
+LoginClient.propTypes = {
+    basename: PropTypes.string.isRequired,
 };
 
 export default LoginClient;

@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/HistoryRideClient.module.css";
@@ -19,5 +21,12 @@ const MapRide = ({ pathCoordinates }) => {
         </div>
     );
 };
+
+MapRide.propTypes = {
+    pathCoordinates: PropTypes.arrayOf(
+        PropTypes.arrayOf(PropTypes.number).isRequired
+    ).isRequired,
+};
+
 
 export default MapRide;

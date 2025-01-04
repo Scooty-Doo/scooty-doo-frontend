@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import styles from "../styles/HistoryRideClient.module.css";
 
 const RideDetails = ({ rideHistory, formatTime }) => {
@@ -15,6 +17,19 @@ const RideDetails = ({ rideHistory, formatTime }) => {
             </p>
         </div>
     );
+};
+
+RideDetails.propTypes = {
+    rideHistory: PropTypes.shape({
+        data: PropTypes.shape({
+            attributes: PropTypes.shape({
+                start_time: PropTypes.string.isRequired,
+                end_time: PropTypes.string.isRequired,
+                total_fee: PropTypes.number.isRequired,
+            }).isRequired,
+        }).isRequired,
+    }).isRequired,
+    formatTime: PropTypes.func.isRequired,
 };
   
 export default RideDetails;

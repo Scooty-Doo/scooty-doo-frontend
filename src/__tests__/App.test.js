@@ -1,5 +1,6 @@
+/* eslint-env jest */
 import React from 'react';
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import App from '../App';
 
 describe('Test main app functionality', () => {
