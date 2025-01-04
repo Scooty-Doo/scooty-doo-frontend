@@ -88,13 +88,14 @@ const AccountClient = () => {
                                 required
                             />
                         </div>
-                        <label htmlFor="payment-method">Välj betalningsmetod:</label>
+                        <label className={styles.paymentLabel} htmlFor="payment-method">Välj betalningsmetod:</label>
 
                         <select
                             id="payment-method"
                             name="use_prepay"
                             value={userInfo.use_prepay}
                             onChange={handleInputChange}
+                            className={styles.paymentMethod}
                         >
                             <option value="false">Faktura</option>
                             <option value="true">Plånbok</option>

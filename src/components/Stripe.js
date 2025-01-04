@@ -24,7 +24,7 @@ const ProductDisplay = () => {
     };
 
     return (
-        <section>
+        <div>
             <form className={styles.stripeform} onSubmit={handleSubmit}>
                 <div className="product">
                     <div className={styles.stripeform}>
@@ -35,6 +35,7 @@ const ProductDisplay = () => {
                             min="0"
                             value={amount}
                             onChange={handleInputChange}
+                            className={styles.stripeAmount}
                             required>
                         </input>
                     </div>
@@ -43,7 +44,7 @@ const ProductDisplay = () => {
         Fyll på saldo
                 </button >
             </form>
-        </section>
+        </div>
     )
     // Om senaste resa inte betald - knapp betala din senaste resa
 };
