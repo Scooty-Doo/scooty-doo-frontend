@@ -13,10 +13,9 @@ const AccountClient = () => {
         email: "",
         address: "",
         phone: "",
-        wallet: 0,
         use_prepay: "",
+        wallet: 0.0
     });
-
     // Hämta användarinfo från API vid komponentens första render
     useEffect(() => {
         const getUserInfo = async () => {
@@ -25,8 +24,8 @@ const AccountClient = () => {
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
-                    wallet: userData.data.attributes.balance,
                     use_prepay: userData.data.attributes.use_prepay,
+                    wallet: userData.data.attributes.balance
                 };
                 setUserInfo(formattedData); // Uppdatera state
             } catch (error) {
@@ -107,9 +106,7 @@ const AccountClient = () => {
                 </div>
                 {/* Höger kolumn */}
                 <div className={styles.rightColumn}>
-                    <h2 className={styles.saldo}>Scooty Saldo:</h2>
-                    <p className={styles.money}>{userInfo.wallet} :-</p>
-                    <Stripe />
+                    <Stripe wallet={userInfo.wallet}/>
                 </div>
             </div>
         </div>
