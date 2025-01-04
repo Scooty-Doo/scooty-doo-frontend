@@ -1,26 +1,70 @@
-import React, { useState } from "react";
-import styles from "../../styles/HistoryClient.module.css"; // Antag att du skapar en egen CSS-modul
+import React, { useState, useEffect } from "react";
+import styles from "../../styles/HistoryClient.module.css";
+import { Link } from "react-router-dom";
+import { fetchUserTrips } from "../../api/userApi";
 
-// Visa tidigare åk för kund
 const HistoryClient = () => {
-    // Test för tidigare åk
-    const [rideHistory] = useState([
-        { route: "Malmö-Lund", date: "2024-12-01", time: "12:48", price: "38 SEK" },
-        { route: "Lund-Malmö", date: "2024-11-28", time: "08:30", price: "40 SEK" },
-        { route: "Stockholm-Göteborg", date: "2024-10-15", time: "16:20", price: "120 SEK" }
-    ]);
+    const user_id = 1; // ID för användaren
+    const [userTrips, setUserTrips] = useState([]); // Initiera som tom array
+    const [loading, setLoading] = useState(true); // Hantera laddningstillstånd
+    const [error, setError] = useState(null); // Hantera fel
+
+    const mapIconUrl = "https://img.icons8.com/?size=100&id=8212&format=png&color=2C3E50";
+
+    useEffect(() => {
+        const getUserTrips = async () => {
+            try {
+                const data = await fetchUserTrips(user_id); // Hämta resor
+                setUserTrips(data.data); // Sätt resorna i state
+            } catch (err) {
+                console.error("Error fetching user trips:", err);
+                setError("Kunde inte hämta resor.");
+            } finally {
+                setLoading(false); // Sätt laddningstillstånd till falskt
+            }
+        };
+
+        getUserTrips();
+    }, [user_id]);
+
+    // Formatera tid
+    const formatTime = (time) => {
+        return new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    };
+
+    if (loading) {
+        return <div className={styles.historyContainer}>Laddar resor...</div>;
+    }
+
+    if (error) {
+        return <div className={styles.historyContainer}>{error}</div>;
+    }
 
     return (
         <div className={styles.historyContainer}>
             <h1>Historik</h1>
             <div className={styles.historyList}>
-                {rideHistory.map((ride, index) => (
+                {userTrips.map((trip, index) => (
                     <div key={index} className={styles.rideItem}>
                         <div className={styles.rideDetails}>
-                            <p><strong>Rutt:</strong> {ride.route}</p>
-                            <p><strong>Datum:</strong> {ride.date}</p>
-                            <p><strong>Tid:</strong> {ride.time}</p>
-                            <p><strong>Pris:</strong> {ride.price}</p>
+                            {/* Lägg till kartikonen */}
+                            <img src={mapIconUrl} alt="Map Icon" className={styles.mapIcon} />
+                            {/* Länk till resans historik */}
+                            <p className={styles.date}>
+                                <strong>
+                                    <Link to={`/ridehistory/${trip.id}`}>
+                                        {new Date(trip.attributes.start_time).toLocaleDateString()}
+                                    </Link>
+                                </strong>
+                            </p>
+                            {/* Visning av resans detaljer */}
+                            <p>
+                                <strong>Tid:</strong> {formatTime(trip.attributes.start_time)} -{" "}
+                                {formatTime(trip.attributes.end_time)}
+                            </p>
+                            <p>
+                                <strong>Pris:</strong> {trip.attributes.total_fee} kr
+                            </p>
                         </div>
                     </div>
                 ))}

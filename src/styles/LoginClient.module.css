@@ -145,10 +145,20 @@
 
 /* Responsiv design för små skärmar */
 @media screen and (max-width: 600px) {
+
+    .loginBody {
+        background-position: right;
+    }
+
     .loginContainer {
-        padding: 6px; /* Ytterligare minskning av padding */
-        width: 85%; /* Minska bredden för att skapa mer utrymme */
-        margin-top: 5px;
+        width: 60%; /* Minska bredden för att skapa mer utrymme */
+        align-content: center;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        margin-top: 200px;
+
+
     }
 
     .title {
@@ -184,9 +194,8 @@
 /* För tablet-storlekar */
 @media screen and (max-width: 768px) {
     .loginContainer {
-        height: 75vh;
         max-width: 90%; /* Låt login-container vara bredare på tablet */
-        margin-top: 40px;
+        margin-top: 200px;
     }
 
     .title {

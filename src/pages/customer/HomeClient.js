@@ -1,27 +1,41 @@
 import React, { useState } from 'react';
 import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
+import { useNavigate } from 'react-router-dom';
+import { startRide, endRide } from '../../api/tripsApi'; 
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
-    // State för att hålla koll på cykelns-ID
+    // State för att hålla koll på cykelns-ID, tripId, RideActive
     const [bikeId, setBikeId] = useState('');
-
-    // State för att kolla om användaren har en resa igång
+    const [tripId, setTripId] = useState(null);
     const [rideActive, setRideActive] = useState(false); 
 
+    const navigate = useNavigate();
+
     // Hanterar start av resa (ändra sen till api)
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Cykel ID skickades:", bikeId);
-        setRideActive(true);
+        try {
+          const trip = await startRide("1", bikeId);
+          console.log("Resa startad", trip);
+          setTripId(trip.data.id);
+          setRideActive(true);
+        } catch (error) {
+            console.error("Failed to start ride:", error);
+        }
     };
 
-    // Hantera avslutning av resa (ändra sen till api)
-    const handleEndRide = () => {
+    const handleEndRide = async () => {
+    try {
+        await endRide(tripId, "1", bikeId);
         console.log("Resa avslutad!");
-        setRideActive(false); // Avsluta resan
-        setBikeId(''); // Återställ cykel-ID
+        setRideActive(false);
+        setBikeId('');
+        navigate(`/ridehistory/${tripId}`);
+    } catch (error) {
+        console.error("Failed to end ride:", error);
+    }
     };
 
     return (
@@ -31,32 +45,30 @@ const HomeClient = () => {
                 <MapView />
             </div>
 
-                {rideActive ? (
+            {rideActive ? (
                 <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Ride in progress</h2>
-                        <button onClick={handleEndRide} className={styles.endButton}>
-                            Avsluta resa
-                        </button>
+                    <h2>Resa igång</h2>
+                    <button onClick={handleEndRide} className={styles.endButton}>
+                        Avsluta resa
+                    </button>
                 </div>
-                ) : (
-                    <div className={styles.formcontainer}>
-                    <h2 className={styles.quote}> Start your scooty doo ride!</h2>
-                        <h2>Activate your bike</h2>
-                        <form onSubmit={handleSubmit}>
-                            <input 
-                                type="text" 
-                                id="bikeId" 
-                                value={bikeId} 
-                                onChange={(e) => setBikeId(e.target.value)}
-                                placeholder="Bike ID"
-                                required
-                            />
-                            <button type="submit">Start</button>
-                        </form>
-                    </div>
-                )}
-            </div>
+            ) : (
+                <div className={styles.formcontainer}>
+                    <h2>Starta din resa</h2>
+                    <form aria-label="trip-form" onSubmit={handleSubmit}>
+                        <input 
+                            type="text" 
+                            id="bikeId" 
+                            value={bikeId} 
+                            onChange={(e) => setBikeId(e.target.value)}
+                            placeholder="Ange cykelns ID"
+                            required
+                        />
+                        <button type="submit">Start</button>
+                    </form>
+                </div>
+            )}
+        </div>
     );
 }
 

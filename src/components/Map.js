@@ -148,7 +148,7 @@ const MapView = ({ userType, socket }) => {
             className={styles.mapContainer}
         >
             <TileLayer
-                url="https://tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=b50533aeae574d949113dae3897804bc"
+                url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=b50533aeae574d949113dae3897804bc"
                 attribution='&copy; <a href="https://www.thunderforest.com/">Thunderforest</a> contributors'
             />
 
@@ -187,9 +187,9 @@ const MapView = ({ userType, socket }) => {
                             positions={leafletPolygon.getLatLngs()}
                             color={
                                 zone.type === 'Parking' ? 'blue' :
-                                zone.type === 'Slow' ? 'orange' :
-                                zone.type === 'Forbidden' ? 'red' :
-                                zone.type === 'Charging' ? 'green' : 'gray'
+                                    zone.type === 'Slow' ? 'orange' :
+                                        zone.type === 'Forbidden' ? 'red' :
+                                            zone.type === 'Charging' ? 'green' : 'gray'
                             }
                             fillOpacity={0.4}
                         >
