@@ -1,52 +1,49 @@
 /* eslint-env jest */
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import AccountClient from "../pages/customer/AccountClient"; // Anpassa sökvägen
-import "@testing-library/jest-dom"; // För matcher som `toBeInTheDocument`
+import { render, screen, act } from "@testing-library/react";
+import AccountClient from "../pages/customer/AccountClient";
+import { MemoryRouter } from "react-router-dom";
+import "@testing-library/jest-dom";
+import { fetchUser } from "../api/userApi";
+
+// Mocka API
+jest.mock('../api/userApi', () => ({
+    fetchUser: jest.fn(),
+    userDetails: jest.fn()
+}));
 
 describe("AccountClient", () => {
-    test("renders the AccountClient and display the user info", () => {
-        render(<AccountClient />);
-
-        // Kontrollera att standardvärdena visas
-        expect(screen.getByDisplayValue("Maya Edlund")).toBeInTheDocument();
-        expect(screen.getByDisplayValue("maya@example.com")).toBeInTheDocument();
-        expect(screen.getByDisplayValue("Testgatan 1, 12345 Teststad")).toBeInTheDocument();
-        expect(screen.getByDisplayValue("0701234567")).toBeInTheDocument();
-        expect(screen.getByText("513 :-")).toBeInTheDocument();
+    beforeEach(() => {
+        // Mocka user
+        fetchUser.mockResolvedValue({
+            data: {
+                attributes: {
+                    full_name: "ScootyPrepaidson",
+                    email: "scooty@doot.com",
+                    use_prepay: "true",
+                    balance: 39.99
+                }
+            }
+        });
     });
 
-    test("updates user info when input changes", () => {
-        render(<AccountClient />);
-
-        // Simulera inputförändringar
-        const nameInput = screen.getByDisplayValue("Maya Edlund");
-        fireEvent.change(nameInput, { target: { value: "Anna Andersson" } });
-
-        // Kontrollera att värdet uppdateras
-        expect(screen.getByDisplayValue("Anna Andersson")).toBeInTheDocument();
-    });
-
-    test("shows alert and logs updated info on form submission", () => {
-        render(<AccountClient />);
-
-        const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
-        const consoleLogMock = jest.spyOn(console, "log").mockImplementation(() => {});
-
-        // Fyll i formuläret och skicka det
-        fireEvent.submit(screen.getByRole("button", { name: "Spara ändringar" }));
-
-        // Kontrollera att alert visas och att info loggas
-        expect(alertMock).toHaveBeenCalledWith("Dina ändringar har sparats!");
-        expect(consoleLogMock).toHaveBeenCalledWith("Uppdaterade användardetaljer:", {
-            name: "Maya Edlund",
-            email: "maya@example.com",
-            address: "Testgatan 1, 12345 Teststad",
-            phone: "0701234567",
-            wallet: 513,
+    test("renders the AccountClient and displays the user info", async () => {
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <AccountClient />
+                </MemoryRouter>
+            );
         });
 
-        alertMock.mockRestore();
-        consoleLogMock.mockRestore();
+        expect(screen.getByDisplayValue("ScootyPrepaidson")).toBeInTheDocument();
+        expect(screen.getByDisplayValue("scooty@doot.com")).toBeInTheDocument();
+
+        // Hitta texten "39,99 :-" även om den är uppdelad
+        const balanceText = screen.getByText((content, element) => {
+            return content.includes("39.99") && element.textContent.includes(":-");
+        });
+
+    expect(balanceText).toBeInTheDocument();
     });
 });

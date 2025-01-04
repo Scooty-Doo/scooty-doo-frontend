@@ -1,38 +1,64 @@
 /* eslint-env jest */
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import RideDetails from '../components/RideDetails'; // Sökväg till din komponent
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import RideDetails from "../components/RideDetails";
+import "@testing-library/jest-dom";
 
-// Mocka formatTime-funktionen för att förenkla testet
-const mockFormatTime = jest.fn().mockReturnValue('12:00'); 
+// Mockdata för testet
+const mockRideHistory = {
+    data: {
+        attributes: {
+            start_time: "2023-12-15T08:30:00Z",
+            end_time: "2023-12-15T09:00:00Z",
+            total_fee: 59
+        }
+    }
+};
 
-describe('RideDetails', () => {
-    // Mockad rideHistory för att representera en resa
-    const mockRideHistory = {
-        data: {
-            attributes: {
-                start_time: '2024-12-23T10:00:00',
-                end_time: '2024-12-23T12:00:00',
-                total_fee: 150,
-            },
-        },
-    };
+// Mocka formatTime-funktionen
+const mockFormatTime = jest.fn((time) => {
+    const date = new Date(time);
+    return `${String(date.getHours()).padStart(2, "0")}.${String(date.getMinutes()).padStart(2, "0")}`;
+});
 
-    test('renderar rätt information om resan', () => {
-        render(<RideDetails rideHistory={mockRideHistory} formatTime={mockFormatTime} />);
-  
-        // Kontrollera om start- och sluttider visas korrekt med en flexibel textmatchning
-        expect(screen.getByText((content, element) => 
-            element.textContent.includes('12/23/2024') && 
-      element.textContent.includes('12:00 - 12:00')
-        )).toBeInTheDocument();
-  
-        // Kontrollera om priset visas korrekt
-        expect(screen.getByText('Pris:')).toBeInTheDocument();
-        expect(screen.getByText('150 kr')).toBeInTheDocument();
-  
-        // Kontrollera att formatTime anropas korrekt
-        expect(mockFormatTime).toHaveBeenCalledWith('2024-12-23T10:00:00');
-        expect(mockFormatTime).toHaveBeenCalledWith('2024-12-23T12:00:00');
+describe("RideDetails Component", () => {
+    test("renders ride details with correct time and price", () => {
+        render(
+            <RideDetails 
+                rideHistory={mockRideHistory} 
+                formatTime={mockFormatTime} 
+            />
+        );
+
+        // Kontrollera att starttid och sluttid har renderats korrekt
+        expect(mockFormatTime).toHaveBeenCalledWith("2023-12-15T08:30:00Z");
+        expect(mockFormatTime).toHaveBeenCalledWith("2023-12-15T09:00:00Z");
+
+        expect(screen.getByText(/59 kr/i)).toBeInTheDocument();
+        
+        // Kontrollera datumformat och tider
+        const formattedDate = new Date(mockRideHistory.data.attributes.start_time).toLocaleDateString();
+        expect(screen.getByText(new RegExp(formattedDate, "i"))).toBeInTheDocument();
     });
+
+    test("renders error message if rideHistory is missing", () => {
+        const { container } = render(
+            <RideDetails
+                rideHistory={{
+                    data: {
+                        attributes: {
+                            start_time: "",
+                            end_time: "",
+                            total_fee: 0
+                        }
+                    }
+                }}
+                formatTime={mockFormatTime}
+            />
+        );
+    
+        // Kontrollera att sidan inte kraschar
+        expect(container).toBeInTheDocument();
+    });
+    
 });

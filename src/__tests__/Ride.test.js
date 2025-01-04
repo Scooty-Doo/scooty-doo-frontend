@@ -11,7 +11,6 @@ jest.mock('../api/tripsApi', () => ({
     endRide: jest.fn(),
 }));
 
-// Mocka karta
 jest.mock('../components/Map.js', () => {
     const MockMap = () => <div>Mocked MapView</div>;
     MockMap.displayName = 'MockMap';
