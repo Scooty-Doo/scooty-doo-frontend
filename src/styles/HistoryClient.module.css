@@ -1,32 +1,75 @@
 /* Container för historiksidan, som håller allting centrerat och med viss padding */
 .historyContainer {
-    padding: 20px; /* Lägger till inre marginal för att ge utrymme runt innehållet */
-    max-width: 800px; /* Begränsar bredden på containern till 800px */
-    margin: 0 auto; /* Centrerar containern horisontellt på sidan */
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
     margin-top: 100px;
 }
 
 /* Lista som visar historik för resor */
 .historyList {
-    margin-top: 20px; /* Lägger till avstånd ovanför listan */
+    margin-top: 20px;
+}
+
+.date {
+    font-size: 30px;
+    text-decoration: none;
 }
 
 /* Styler varje enskild resa i listan med flexbox för att ordna elementen horisontellt */
 .rideItem {
-    display: flex; /* Använder flexbox för att ordna elementen horisontellt */
-    align-items: center; /* Centrerar elementen vertikalt inom flexcontainer */
-    margin-bottom: 15px; /* Lägger till ett avstånd under varje reseobjekt */
-    border-bottom: 1px solid #5b799d; /* Lägger till en tunn, blågrå linje under varje resa */
-    padding-bottom: 10px; /* Lägger till ett litet avstånd under varje ride-item */
+    display: flex;
+    align-items: center; 
+    margin-bottom: 15px;
+    border-bottom: 1px solid #5b799d;
+    padding-bottom: 10px;
 }
 
 /* Detaljer för varje resa, som visas i ett stycke */
+.rideDetails {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
 .rideDetails p {
-    margin: 5px 0; /* Lägger till ett litet avstånd ovanför och under varje stycke */
-    font-size: 14px; /* Sätter textstorleken till 14px för detaljer */
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.rideDetails a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #2C3E50;
 }
 
 /* Gör stark text fet inom rideDetails */
 .rideDetails p strong {
-    font-weight: bold; /* Gör texten fet när den är innesluten i <strong> */
+    font-weight: bold;
+}
+
+/* Ikonens stil */
+.mapIcon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Mindre skärmar, t.ex. mobiltelefoner */
+@media (max-width: 600px) {
+    .historyContainer {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Gör om layouten för mobilskärmar */
+    .rideItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rideDetails {
+        flex-direction: row;
+        gap: 10px;
+    }
 }

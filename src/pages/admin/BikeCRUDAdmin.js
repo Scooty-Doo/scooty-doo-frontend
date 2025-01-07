@@ -27,8 +27,6 @@ const BikeCRUDAdmin = () => {
     const [bike, setBike] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const bikeId = 3;
 
     // Fetch bike details
     useEffect(() => {
@@ -39,7 +37,6 @@ const BikeCRUDAdmin = () => {
         } if (!bike) {
             setLoading(false);
         }
-
         // fetchBike();
     }, [bikeId]);
 

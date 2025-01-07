@@ -1,0 +1,43 @@
+.historyContainer {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 80px;
+}
+
+.history {
+    padding: 20px; /* Lägger till inre marginal för att ge utrymme runt innehållet */
+    max-width: 800px; /* Begränsar bredden på containern till 800px */
+    margin: 0 auto; /* Centrerar containern horisontellt på sidan */
+    margin-top: 20px;
+    background-image: url('../pic/white1.jpg');
+    background-position: center;
+}
+  
+.historyTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+.historyTable th,
+.historyTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.newRide {
+    margin-top: 20px;
+}
+  
+/* Mindre skärmar, t.ex. mobiltelefoner */
+@media (max-width: 600px) {
+    .historyContainer {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+}
+  
+  

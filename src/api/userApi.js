@@ -51,7 +51,7 @@ export const fetchUserTransactions = async (user_id) => {
             },
         });
 
-        if (!response.ok) {
+      if (!response.ok) {
             throw new Error(`Failed to fetch user: ${response.status}`);
         }
 

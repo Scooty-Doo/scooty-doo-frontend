@@ -35,11 +35,9 @@ export const stripeSuccessCall  = async (session_id) => {
                 session_id: session_id
             }),
         });
-
         if (!response.ok) {
             throw new Error(`Server error: ${response.message}`);
         }
-
         return await response.json();
     } catch (error) {
         console.error("Error:", error);
