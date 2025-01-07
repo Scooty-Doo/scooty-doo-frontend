@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchUser, fetchUserTrips, userDetails } from "../../api/userApi";
 import TripsList from '../../components/TripsList'; // Import the TripsList component
 
     // Vad ska admin Customer-CRUD kunna göra?
@@ -29,38 +30,25 @@ const Customer = () => {
 
     // Fetch Customer details
     useEffect(() => {
-        const fetchCustomer = async () => {
-            try {
-                const response = await fetch(`http://localhost:8000/v1/users/${customerId}`); // ändra till en variable av länken i customer objektet?
-                if (!response.ok) throw new Error('Failed to fetch customer details');
-                const data = await response.json();
-                console.log("Fetch debug log",data); // temporary log for debugging
+        if (customerId) {
+            fetchUser(customerId).then((data) => {
                 setCustomer(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+            });
+        } if (!customer) {
+            setLoading(false);
+        }
 
-        fetchCustomer();
+        // fetchUser();
     }, [customerId]);
 
-    const fetchTrips = async () => {
-        try {
-            const response = await fetch(`http://localhost:8000/v1/users/${customerId}/trips`);
-            if (!response.ok) throw new Error('Failed to fetch trips');
-            const data = await response.json();
-            console.log("Trips fetch",data); // temporary log for debugging
-            setTrips(data);
-        } catch (err) {
-            setError(err.message);
-        }
-    };
 
     const handleShowTrips = () => {
         setShowTrips(!showTrips);
-        if (!showTrips) fetchTrips();
+        if (!showTrips) {
+            fetchUserTrips(customerId).then((data) => {
+                setTrips(data);
+            });
+        }
     };
 
     const handleChange = (e) => {
@@ -90,30 +78,14 @@ const Customer = () => {
         event.preventDefault(); // Prevent page refresh on submit
         console.log("on submit",JSON.stringify(customer)); // debugging
 
-        const formattedCustomer = { // formatted after the requested body for api use
-            full_name: customer.data.attributes.full_name,
-            email: customer.data.attributes.email,
-            use_prepay: customer.data.attributes.use_prepay,
-            meta_data: {},
-        };
-
-        console.log("formatted customer", JSON.stringify(formattedCustomer))
+        // Load the variables with user info for readability
+        const full_name = customer.data.attributes.full_name;
+        const email = customer.data.attributes.email;
+        const use_prepay = customer.data.attributes.use_prepay;
 
         try {
-            const response = await fetch (`http://localhost:8000/v1/users/${customerId}`,{
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formattedCustomer), // send customer object as JSON
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit the customer data');
-            }
-
-            const result = await response.json();
-            console.log('Customer data submitted successfully:', result);
+            await userDetails(customerId, full_name, email, use_prepay);
+            console.log("Account Info Saved");
         } catch (error) {
             console.log("Error submitting customer data:", error)
         }

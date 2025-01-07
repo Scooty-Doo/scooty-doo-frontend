@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/ListBikeCity.module.css';
+import { fetchBikeByCityApi, fetchBike } from "../api/bikeApi";
 
 const ListBikeCity = () => {
   const [bikes, setBikes] = useState([]);
@@ -13,39 +14,23 @@ const ListBikeCity = () => {
     setLoading(true);
     setError(null);
 
-    // gör api request setup
-    const apiUrl = `http://localhost:8000/v1/bikes?city_id=${cityId}`;
-
-    fetch(apiUrl) // hämtar alla bikes från backend
-      .then((response) => response.json())
-      .then((data) => {
-        setBikes(data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
+    console.log("city Id is", cityId);
+    fetchBikeByCityApi(cityId).then((data) => {
+      setBikes(data.data);
+      setLoading(false);
+    });
   };
 
   const fetchBikeById = () => {
-    if (!bikeId) return; // om ingent bikeId är givet
+    if (!bikeId) return;
     setLoading(true);
     setError(null);
 
-    // gör api request setup
-    const apiUrl = `http://localhost:8000/v1/bikes/${bikeId}`;
-
-    fetch(apiUrl) // hämtar bike med givet id
-      .then((response) => response.json())
-      .then((data) => {
-        setBikes([data.data]); // Sätt biken i en array
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
+    console.log("city Id is", cityId);
+    fetchBike(bikeId).then((data) => {
+      setBikes([data.data]);
+      setLoading(false);
+    });
   };
 
   return (

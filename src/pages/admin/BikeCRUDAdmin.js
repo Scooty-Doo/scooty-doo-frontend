@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../styles/BikeCRUDAdmin.module.css';
+import { fetchBike, bikeDetails, bikeDelete } from "../../api/bikeApi";
 import CreateBike from '../../components/CreateBike';
 
     // What does this file need to be able to do?
@@ -31,21 +32,15 @@ const BikeCRUDAdmin = () => {
 
     // Fetch bike details
     useEffect(() => {
-        const fetchBike = async () => { // hämtar information om biken som admin försöker ändra
-            try {
-                const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`); // ändra till en variable av länken i bike objektet?
-                if (!response.ok) throw new Error('Failed to fetch bike details');
-                const data = await response.json();
-                console.log("Fetch debug log",data); // temporary log for debugging
+        if (bikeId) {
+            fetchBike(bikeId).then((data) => {
                 setBike(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+            });
+        } if (!bike) {
+            setLoading(false);
+        }
 
-        fetchBike();
+        // fetchBike();
     }, [bikeId]);
 
     // Function to handle form submission
@@ -61,23 +56,17 @@ const BikeCRUDAdmin = () => {
             meta_data: {},
         };
 
+        // Load the variables with bike info for readability
+        const battery_lvl = bike.data.attributes.battery_lvl;
+        const city_id = bike.data.relationships.city.data.id;
+        const last_position = bike.data.attributes.last_position;
+        const is_available = bike.data.attributes.is_available;
+
         console.log("formatted yikes",JSON.stringify(formattedBike));
 
         try {
-            const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`, {
-                method: 'PATCH', // or 'PUT' depending on whether you're creating or updating
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formattedBike), // Send bike object as JSON
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit the bike data');
-            }
-
-            const result = await response.json();
-            console.log('Bike data submitted successfully:', result);
+            await bikeDetails(bikeId, battery_lvl, city_id, last_position, is_available);
+            console.log("Bike Info Saved");
         } catch (error) {
             console.error('Error submitting bike data:', error);
         }
@@ -107,32 +96,9 @@ const BikeCRUDAdmin = () => {
 
     const deleteBike = async (event) => {
         event.preventDefault(); // Prevent page refresh
-    
-        // Show confirmation dialog
-        const confirmDelete = window.confirm("Are you sure you want to delete this bike?");
-    
-        if (!confirmDelete) {
-            console.log("Delete action canceled by user.");
-            return; // Exit the function if the user cancels
-        }
-    
-        console.log(`Attempting to delete bike with ID: ${bikeId}`);
-
-        try {
-            const response = await fetch(`http://localhost:8000/v1/bikes/${bikeId}`, {
-                method: 'DELETE',
-            });
-
-            if (response.status === 204) {
-                console.log('Bike deleted successfully');
-            } else {
-                throw new Error('Failed to delete the bike');
-            }
-        } catch (error) {
-            console.error('Error deleting bike:', error);
-        }
+        await bikeDelete(bikeId);
     };
-    
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
