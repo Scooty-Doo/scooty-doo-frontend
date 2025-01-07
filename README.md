@@ -4,6 +4,7 @@
 Frontend for the Scooty Doo web application.
 
 ## Table of Contents
+
 - [Installation](#installation)
 - [Startup](#startup)
 - [Run Tests](#run-tests)
