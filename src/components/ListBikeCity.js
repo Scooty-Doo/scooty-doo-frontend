@@ -14,26 +14,26 @@ const ListBikeCity = () => {
         setLoading(true);
         setError(null);
 
-    console.log("city Id is", cityId);
-    fetchBikeByCityApi(cityId).then((data) => {
-      setBikes(data.data);
-      setLoading(false);
-    });
-  };
+        console.log("city Id is", cityId);
+        fetchBikeByCityApi(cityId).then((data) => {
+            setBikes(data.data);
+            setLoading(false);
+        });
+    };
 
-  const fetchBikeById = () => {
-    if (!bikeId) return;
-    setLoading(true);
-    setError(null);
+    const fetchBikeById = () => {
+        if (!bikeId) return;
+        setLoading(true);
+        setError(null);
 
-    console.log("city Id is", cityId);
-    fetchBike(bikeId).then((data) => {
-      setBikes([data.data]);
-      setLoading(false);
-    });
-  };
+        console.log("city Id is", cityId);
+        fetchBike(bikeId).then((data) => {
+            setBikes([data.data]);
+            setLoading(false);
+        });
+    };
 
-  return (
+    return (
         <div>
             <h2>Bikes List</h2>
             <div>

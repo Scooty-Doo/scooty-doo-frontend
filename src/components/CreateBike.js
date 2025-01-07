@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import styles from '../styles/BikeCRUDAdmin.module.css';
+import React, { useState } from 'react';
+// import styles from '../styles/BikeCRUDAdmin.module.css';
 
 
-    // The component works as intended, however i have not polished the code.
-        // remove old code from bikeCRUDAdmin.js
-        // make component be able to submitt bike data to create a new bike
-        // make component find the lowest currently available bike ID to assign to the new bike
-        // profit?
+// The component works as intended, however i have not polished the code.
+// remove old code from bikeCRUDAdmin.js
+// make component be able to submitt bike data to create a new bike
+// make component find the lowest currently available bike ID to assign to the new bike
+// profit?
 
 const CreateBike = () => {
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
     const [bike, setBike] = useState({
         data: {
             attributes: {
@@ -45,7 +45,7 @@ const CreateBike = () => {
         console.log("formatted yikes",JSON.stringify(formattedBike));
 
         try {
-            const response = await fetch(`http://localhost:8000/v1/bikes`, {
+            const response = await fetch(`http://localhost:8000/v1/bikes/`, {
                 method: 'POST', // request type
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const CreateBike = () => {
     };
 
 
-    if (error) return <p>Error: {error}</p>;
+    // if (error) return <p>Error: {error}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
