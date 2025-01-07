@@ -21,7 +21,9 @@ const LoginClient = ({basename}) => {
         e.preventDefault();
         const clientId = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_GITHUB_CLIENT : process.env.REACT_APP_GITHUB_CLIENT_DEV;
     
-        const redirectURI = window.location.href + basename + "#/githublogin";
+        const redirectURI = window.location.href.endsWith(basename)
+            ? `${window.location.href}#/githublogin`
+            : `${window.location.href.replace(basename, '')}${basename}#/githublogin`;
         window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}`
     }
 

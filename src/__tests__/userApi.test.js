@@ -9,7 +9,7 @@ import fetchMock from "jest-fetch-mock";
 
 fetchMock.enableMocks();
 
-describe("userApi functions", () => {
+describe("userApi", () => {
     beforeEach(() => {
         fetchMock.resetMocks();
     });
@@ -46,16 +46,14 @@ describe("userApi functions", () => {
         fetchMock.mockResponseOnce(null, { status: 404 });
 
         await expect(fetchUser(1)).rejects.toThrow("Failed to fetch user: 404");
-
-        expect(fetchMock).toHaveBeenCalledWith(
-            "http://127.0.0.1:8000/v1/users/1",
-            expect.objectContaining({
-                method: "GET",
-            })
-        );
     });
 
-    // Test för fetchUserTrips
+    test("fetchUser handles invalid JSON response", async () => {
+        fetchMock.mockResponseOnce("invalid-json");
+
+        await expect(fetchUser(1)).rejects.toThrow();
+    });
+
     test("fetchUserTrips fetches user trips successfully", async () => {
         const mockTrips = {
             trips: [
@@ -84,7 +82,35 @@ describe("userApi functions", () => {
         await expect(fetchUserTrips(1)).rejects.toThrow("Failed to fetch user: 500");
     });
 
-    // Test för userDetails (PATCH-anrop)
+    //(NYTT TEST)
+    test("fetchUserTransactions fetches user transactions successfully", async () => {
+        const mockTransactions = {
+            transactions: [
+                { id: 1, amount: 150, type: "deposit" },
+                { id: 2, amount: -75, type: "withdrawal" }
+            ]
+        };
+
+        fetchMock.mockResponseOnce(JSON.stringify(mockTransactions));
+
+        const transactions = await fetchUserTransactions(1);
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            "http://127.0.0.1:8000/v1/users/1/transactions",
+            expect.objectContaining({
+                method: "GET",
+            })
+        );
+
+        expect(transactions).toEqual(mockTransactions);
+    });
+
+    test("fetchUserTransactions handles API errors", async () => {
+        fetchMock.mockResponseOnce(null, { status: 404 });
+
+        await expect(fetchUserTransactions(1)).rejects.toThrow("Failed to fetch user: 404");
+    });
+
     test("userDetails updates user successfully", async () => {
         const mockResponse = { message: "User updated successfully" };
 
@@ -113,5 +139,19 @@ describe("userApi functions", () => {
         await expect(userDetails(1, "Scooty Prepaidson", "scooty@example.com", true))
             .rejects
             .toThrow("Failed to update user details: 400");
+    });
+
+    test("fetchUser handles network errors", async () => {
+        fetchMock.mockRejectOnce(new Error("Network Error"));
+
+        await expect(fetchUser(1)).rejects.toThrow("Network Error");
+    });
+
+    test("userDetails handles network errors", async () => {
+        fetchMock.mockRejectOnce(new Error("Network Error"));
+
+        await expect(userDetails(1, "Scooty", "scooty@doot.com", true))
+            .rejects
+            .toThrow("Network Error");
     });
 });
