@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // Assuming you're using React Router
+import 'react-router-dom';
+// import styles from '../../styles/BikeCRUDAdmin.module.css';
+import { fetchBike, bikeDetails, bikeDelete } from "../../api/bikeApi";
+import CreateBike from '../../components/CreateBike';
 
 // What does this file need to be able to do?
 // Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
-// this is to be done later, for now just set a variable bikeId to a static number (2)
-// Have a form that displays the information of the bike
-// Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for)
+// this is to be done later, for now just set a variable bikeId to a static number
+// Have a form that displays the information of the bike (done)
+// Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for) (done)
 // Given that the JSON data of the bike contains a link to self that just contains the fetch link to call via id we COULD just take that from the previous page and put it into a variable called (fetchBikeUrl)
 
 // Which should be editable?
@@ -20,29 +23,27 @@ import { useParams } from 'react-router-dom'; // Assuming you're using React Rou
 // links2 == no
 
 const BikeCRUDAdmin = () => {
-    const { id } = useParams(); // Get bike ID from URL params
+    // const { id } = useParams(); // Get bike ID from URL params
     const [bike, setBike] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
+    const bikeId = 3;
 
     // Fetch bike details
     useEffect(() => {
-        const fetchBike = async () => { // hämtar information om biken som admin försöker ändra
-            try {
-                const response = await fetch(`http://localhost:8000/v1/bikes/${id}`); // Replace with your API endpoint
-                if (!response.ok) throw new Error('Failed to fetch bike details');
-                const data = await response.json();
-                console.log(data); // temporary log for debugging
+        if (bikeId) {
+            fetchBike(bikeId).then((data) => {
                 setBike(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+            });
+        }
+        // fetchBike();
+    }, [bikeId]);
 
-        fetchBike();
-    }, [id]);
+    useEffect(() => {
+        if (!bike) {
+            setLoading(false);
+        }
+    }, [bike])
 
     // Function to handle form submission
     const handleSubmit = async (event) => {
@@ -57,21 +58,17 @@ const BikeCRUDAdmin = () => {
             meta_data: {},
         };
 
+        // Load the variables with bike info for readability
+        const battery_lvl = bike.data.attributes.battery_lvl;
+        const city_id = bike.data.relationships.city.data.id;
+        const last_position = bike.data.attributes.last_position;
+        const is_available = bike.data.attributes.is_available;
+
+        console.log("formatted yikes",JSON.stringify(formattedBike));
+
         try {
-            const response = await fetch(`http://localhost:8000/v1/bikes/${id}`, {
-                method: 'PATCH', // or 'PUT' depending on whether you're creating or updating
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formattedBike), // Send bike object as JSON
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit the bike data');
-            }
-
-            const result = await response.json();
-            console.log('Bike data submitted successfully:', result);
+            await bikeDetails(bikeId, battery_lvl, city_id, last_position, is_available);
+            console.log("Bike Info Saved");
         } catch (error) {
             console.error('Error submitting bike data:', error);
         }
@@ -99,41 +96,17 @@ const BikeCRUDAdmin = () => {
         });
     };
 
+    const deleteBike = async (event) => {
+        event.preventDefault(); // Prevent page refresh
+        await bikeDelete(bikeId);
+    };
+
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
-    const bikeToArray = (bike) => { // onödig?
-        if (!bike || !bike.data) {
-            console.error("Invalid bike data");
-            return [];
-        }
-    
-        const { id, attributes, relationships, links } = bike.data;
-        const { battery_lvl, last_position, is_available, created_at, updated_at } = attributes || {};
-        const cityId = relationships?.city?.data?.id || null;
-    
-        const bikeById = links || {};  // Extract the bike-level links
-        const bikesAll = bike.links || {};  // Extract the top-level links
-    
-        return [
-            { key: 'id', value: id },
-            { key: 'battery_lvl', value: battery_lvl },
-            { key: 'last_position', value: last_position },
-            { key: 'is_available', value: is_available },
-            { key: 'created_at', value: created_at },
-            { key: 'updated_at', value: updated_at },
-            { key: 'cityId', value: cityId },
-            { key: 'bikeById', value: bikeById.self },
-            { key: 'bikesAll', value: bikesAll.self }
-        ];
-    };
-
-    const bikeArray = bikeToArray(bike);
-    console.log(bikeArray);
-
-
     return (
-        <form onSubmit={handleSubmit}>
+        <><form onSubmit={handleSubmit}>
             {/* Bike ID (non-editable) */}
             <div>
                 <label htmlFor="id">Bike ID:</label>
@@ -142,8 +115,7 @@ const BikeCRUDAdmin = () => {
                     id="id"
                     name="id"
                     value={bike?.data?.id || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Battery Level (non-editable) */}
@@ -154,8 +126,7 @@ const BikeCRUDAdmin = () => {
                     id="battery_lvl"
                     name="battery_lvl"
                     value={bike?.data?.attributes?.battery_lvl || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Last Position (non-editable) */}
@@ -166,8 +137,7 @@ const BikeCRUDAdmin = () => {
                     id="last_position"
                     name="last_position"
                     value={bike?.data?.attributes?.last_position || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Is Available (editable) */}
@@ -178,8 +148,7 @@ const BikeCRUDAdmin = () => {
                     id="is_available"
                     name="is_available"
                     checked={bike?.data?.attributes?.is_available || false}
-                    onChange={handleChange}
-                />
+                    onChange={handleChange} />
             </div>
 
             {/* Created At (non-editable) */}
@@ -190,8 +159,7 @@ const BikeCRUDAdmin = () => {
                     id="created_at"
                     name="created_at"
                     value={bike?.data?.attributes?.created_at || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Updated At (non-editable) */}
@@ -202,8 +170,7 @@ const BikeCRUDAdmin = () => {
                     id="updated_at"
                     name="updated_at"
                     value={bike?.data?.attributes?.updated_at || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* City ID (editable) */}
@@ -214,8 +181,7 @@ const BikeCRUDAdmin = () => {
                     id="cityId"
                     name="cityId"
                     value={bike?.data?.relationships?.city?.data?.id || ""}
-                    onChange={handleChange}
-                />
+                    onChange={handleChange} />
             </div>
 
             {/* Bike Link (non-editable) */}
@@ -226,8 +192,7 @@ const BikeCRUDAdmin = () => {
                     id="bikeLink"
                     name="bikeLink"
                     value={bike?.data?.links?.self || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
             {/* Top-Level Link (non-editable) */}
@@ -238,15 +203,19 @@ const BikeCRUDAdmin = () => {
                     id="topLevelLink"
                     name="topLevelLink"
                     value={bike?.links?.self || ""}
-                    readOnly
-                />
+                    readOnly />
             </div>
 
-            {/* Submit Button (No functionality yet) */}
+
             <div>
                 <button type="submit">Submit</button>
             </div>
-        </form>
+            <div>
+                <button type="submit" onClick={deleteBike}>
+                    Delete
+                </button>
+            </div>
+        </form><div><CreateBike /></div></>
     );
 };
 

@@ -44,6 +44,6 @@ describe("AccountClient", () => {
             return content.includes("39.99") && element.textContent.includes(":-");
         });
 
-    expect(balanceText).toBeInTheDocument();
+        expect(balanceText).toBeInTheDocument();
     });
 });
