@@ -13,6 +13,7 @@ import Account  from './pages/admin/AccountAdmin';
 import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
+import BikeCRUDAdmin from './pages/admin/BikeCRUDAdmin';
 
 // Components for customer
 import HomeClient     from './pages/customer/HomeClient';
@@ -73,6 +74,7 @@ const App = () => {
                     <Route path="/history"       element={<History />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
+                    <Route path="/bikeCRUD"      element={<BikeCRUDAdmin />} />
                     <Route path="/homeclient"    element={<HomeClient token={token} />} />
                     <Route path="/accountclient" element={<AccountClient />} />
                     <Route path="/historyclient" element={<HistoryClient />} />

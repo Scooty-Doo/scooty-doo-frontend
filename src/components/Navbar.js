@@ -44,6 +44,12 @@ const Navbar = () => {
                     </Link>
                 </li>
                 <li className={styles.navItem}>
+                    <Link className={styles.navLink} to="/bikeCRUD">
+                        <span className={styles.navText}>bikeCRUD</span>
+                        <FaUser className={styles.navIcon} />
+                    </Link>
+                </li>
+                <li className={styles.navItem}>
                     <Link className={styles.navLink} to="/homeclient">
                         <span className={styles.navText}>StartK</span>
                         <FaHome className={styles.navIcon} />
