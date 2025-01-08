@@ -1,5 +1,16 @@
 import React from 'react';
+import MapWithZones from '../../components/MapDrawZones';
 
-const Zone = () => <h1>Zone Page</h1>;
+const ZoneAdmin = () => {
 
-export default Zone;
+    return (
+        <div>
+
+            <div><MapWithZones /></div>
+        </div>
+    );
+
+
+};
+
+export default ZoneAdmin;

@@ -2,7 +2,7 @@
 import {
     fetchUser,
     fetchUserTrips,
-    fetchUserTransactions,
+    // fetchUserTransactions,
     userDetails
 } from "../api/userApi";
 import fetchMock from "jest-fetch-mock";
