@@ -1,8 +1,9 @@
-const API_BASE_URL = "http://127.0.0.1:8000/v1/stripe/";
+const API_STRIPE_BASE_URL = "http://127.0.0.1:8000/v1/stripe/";
+const API_TRANSACTION_BASE_URL = "http://127.0.0.1:8000/v1/transactions/";
 
 export const fillWallet = async (amount, frontend_url) => {
     try {
-        const response = await fetch(`${API_BASE_URL}`, {
+        const response = await fetch(`${API_STRIPE_BASE_URL}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -26,13 +27,16 @@ export const fillWallet = async (amount, frontend_url) => {
 
 export const stripeSuccessCall  = async (session_id) => {
     try {
-        const response = await fetch(`${API_BASE_URL}success`, {
+        const response = await fetch(`${API_TRANSACTION_BASE_URL}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                session_id: session_id
+                session_id: session_id,
+                // HÅRDKODAD USER_ID
+                user_id: 1
+
             }),
         });
         if (!response.ok) {
