@@ -56,11 +56,12 @@ describe("stripeApi functions", () => {
         const response = await stripeSuccessCall("sess_12345");
 
         expect(fetchMock).toHaveBeenCalledWith(
-            "http://127.0.0.1:8000/v1/stripe/success",
+            "http://127.0.0.1:8000/v1/transactions/",
             expect.objectContaining({
                 method: "POST",
                 body: JSON.stringify({
                     session_id: "sess_12345",
+                    user_id: 1,
                 }),
                 headers: { "Content-Type": "application/json" },
             })
