@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
 import Wkt from 'wicket'; // Importera Wicket
@@ -8,16 +8,9 @@ import styles from '../styles/MapView.module.css';
 import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
+import 'leaflet.markercluster';
 // import BikeMarker from './marker';
 
-// Formatera om backends position till leaflet (lng och lat)
-const parsePoint = (point) => {
-    if (!point) return null;
-    const match = point.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
-    if (!match) return null; // Returnera null om formatet är fel
-    const [, lng, lat] = match; // Extrahera längd och latitud
-    return { lat: parseFloat(lat), lng: parseFloat(lng) };
-};
 
 const MapView = ({ userType, socket }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
@@ -90,6 +83,53 @@ const MapView = ({ userType, socket }) => {
         fetchBikes();
     }, [userType]);
 
+    const ClusterMarkers = () => {
+        const map = useMap();
+    
+        useEffect(() => {
+            const cluster = L.markerClusterGroup({
+                maxClusterRadius: 50,
+                iconCreateFunction: (cluster) => {
+                    const childCount = cluster.getChildCount();
+    
+                    return new L.DivIcon({
+                        html: `
+                            <div class="div-icon-cluster">
+                                <span>${childCount}</span>
+                                <svg height="40" width="40" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-60.48 -60.48 624.96 624.96" xml:space="preserve" fill="#0081d1" stroke="#0081d1" stroke-width="14.112">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> <circle style="fill:#ffffff;" cx="252" cy="252" r="252"></circle> 
+                                <g> <path style="fill:#324A5E;" d="M374.1,290.1c-21.5,0-39,17.5-39,39s17.5,39,39,39s39-17.5,39-39 C413.2,307.6,395.7,290.1,374.1,290.1z"></path> <path style="fill:#324A5E;" d="M141,290.1c-21.5,0-39,17.5-39,39s17.5,39,39,39s39-17.5,39-39S162.5,290.1,141,290.1z"></path> </g> <path style="fill:#80b7ff;" d="M318.3,109.8h28.5c6.3,0,11.4-5.1,11.4-11.4S353.1,87,346.8,87h-89.3c-6.3,0-11.4,5.1-11.4,11.4 s5.1,11.4,11.4,11.4h37.1L334,258.7l-31,30.9h-96.3c-9.5-26-36.9-45.3-66.4-45.3c-37.3,0-70,30.1-70,64.5c0,6.3,5.1,11.4,11.4,11.4 s11.4-5.1,11.4-11.4c0-19.7,20.2-41.7,47.2-41.7c24.6,0,43.4,18.7,46.6,36c1,5.5,6,9.3,11.4,9.3c0.2,0,0.5,0.1,0.7,0.1h108.7 c3,0,5.9-1.2,8.1-3.3l39-39c3-2.9,4.1-7.3,2.9-11.3L318.3,109.8z"></path> 
+                                <g> <circle style="fill:#aea8ff;" cx="374.1" cy="329.2" r="18.7"></circle> <circle style="fill:#aea8ff;" cx="141" cy="329.2" r="18.7"></circle> </g> </g></svg>
+                            </div>`,
+                        className: 'marker-cluster',
+                        iconSize: [50, 50],
+                        iconAnchor: [25, 25],
+                    });
+                },
+            });
+    
+            bikes.forEach(bike => {
+                const position = bike.attributes.last_position.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+                if (position) {
+                    const [, lng, lat] = position;
+                    const marker = L.marker([parseFloat(lat), parseFloat(lng)], { icon: bikeIcon });
+                    marker.bindPopup(`Cykel ${bike.id}: ${bike.attributes.battery_lvl}% batteri.`);
+                    cluster.addLayer(marker);
+                }
+            });
+    
+            map.addLayer(cluster);
+    
+            return () => {
+                map.removeLayer(cluster);
+            };
+        }, [map]);
+    
+        return null;
+    };
+    
     // useEffect to get updates from socket
     useEffect(() => {
         if (userType != "admin" || !socket) {
@@ -120,16 +160,7 @@ const MapView = ({ userType, socket }) => {
             socket.off("bike_update", update_bike)
         }
     }, [socket, bikes, userType]);
-
-    const check_position = (bike) => {
-        const position = parsePoint(bike.attributes.last_position);
-        // Kontrollera att positionen är giltig
-        if (!position) {
-            console.warn(`Ogiltig position för cykel ${bike.id}:`, bike.attributes.last_position);
-            return false;
-        }
-        return position;
-    };
+    
 
     if (loading) {
         return <p>Loading</p>
@@ -144,29 +175,13 @@ const MapView = ({ userType, socket }) => {
                 url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=b50533aeae574d949113dae3897804bc"
                 attribution='&copy; <a href="https://www.thunderforest.com/">Thunderforest</a> contributors'
             />
+            <ClusterMarkers />
 
             {userPosition && (
                 <Marker position={userPosition} icon={userIcon}>
                     <Popup>Här är du!</Popup>
                 </Marker>
             )}
-            {bikes.map((bike) => {
-                let position = check_position(bike);
-                if (!position) {
-                    return null;
-                }
-                return (
-                    <Marker
-                        key={bike.id}
-                        position={position}
-                        icon={bikeIcon}
-                    >
-                        <Popup>
-                                Cykel {bike.id}: {bike.attributes.battery_lvl}% batteri.
-                        </Popup>
-                    </Marker>
-                )
-            })}
 
             {/* Lägg till polygoner från zondata */}
             {zones.map((zone) => {

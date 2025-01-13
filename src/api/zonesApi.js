@@ -11,12 +11,12 @@ export const fetchZones = async () => {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch bikes: ${response.status}`);
+            throw new Error(`Failed to fetch zones: ${response.status}`);
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Error fetching bikes:", error);
+        console.error("Error fetching zones:", error);
         throw error;
     }
 };
