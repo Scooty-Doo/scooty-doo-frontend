@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 import { useNavigate } from 'react-router-dom';
 import { startRide, endRide } from '../../api/tripsApi'; 
+import { fetchUser } from "../../api/userApi";
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
@@ -10,8 +11,29 @@ const HomeClient = () => {
     const [bikeId, setBikeId] = useState('');
     const [tripId, setTripId] = useState(null);
     const [rideActive, setRideActive] = useState(false); 
+    const [userInfo, setUserInfo] = useState(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                const userData = await fetchUser(user_id);
+                const formattedData = {
+                    name: userData.data.attributes.full_name,
+                    email: userData.data.attributes.email,
+                    use_prepay: userData.data.attributes.use_prepay,
+                    wallet: userData.data.attributes.balance
+                };
+                setUserInfo(formattedData); // Uppdatera state
+            } catch (error) {
+                console.error("Error fetching user info:", error);
+                alert("Kunde inte hämta användarinformation.");
+            }
+        };
+
+        getUserInfo();
+    }, []);
 
     // Hanterar start av resa (ändra sen till api)
     const handleSubmit = async (e) => {
@@ -55,17 +77,26 @@ const HomeClient = () => {
             ) : (
                 <div className={styles.formcontainer}>
                     <h2>Starta din resa</h2>
-                    <form aria-label="trip-form" onSubmit={handleSubmit}>
-                        <input 
-                            type="text" 
-                            id="bikeId" 
-                            value={bikeId} 
-                            onChange={(e) => setBikeId(e.target.value)}
-                            placeholder="Ange cykelns ID"
-                            required
-                        />
-                        <button type="submit">Start</button>
-                    </form>
+                    {userInfo?.use_prepay && userInfo?.wallet < 0 ? (
+                        <button 
+                            onClick={() => navigate('/accountclient')} 
+                            className={styles.rechargeButton}
+                        >
+                            Fyll på ditt saldo innan du kan starta resa
+                        </button>
+                    ) : (
+                        <form aria-label="trip-form" onSubmit={handleSubmit}>
+                            <input 
+                                type="text" 
+                                id="bikeId" 
+                                value={bikeId} 
+                                onChange={(e) => setBikeId(e.target.value)}
+                                placeholder="Ange cykelns ID"
+                                required
+                            />
+                            <button type="submit">Start</button>
+                        </form>
+                    )}
                 </div>
             )}
         </div>
