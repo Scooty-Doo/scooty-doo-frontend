@@ -5,7 +5,7 @@ import styles from '../../styles/HomeAdmin.module.css';
 import { io } from 'socket.io-client';
 
 const HomeAdmin = () => {
-    const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
+    const URL = process.env.NODE_ENV === 'production' ? "http://127.0.0.1:8000" : 'http://127.0.0.1:8000';
     const socket = io(URL);
     socket.connect();
 
