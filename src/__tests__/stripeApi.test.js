@@ -2,7 +2,6 @@
 import { fillWallet, stripeSuccessCall } from "../api/stripeApi";
 import fetchMock from "jest-fetch-mock";
 
-// Aktivera fetchMock
 fetchMock.enableMocks();
 
 describe("stripeApi functions", () => {
@@ -10,7 +9,6 @@ describe("stripeApi functions", () => {
         fetchMock.resetMocks();
     });
 
-    // Test för fillWallet
     test("fillWallet adds to wallet", async () => {
         const mockResponse = {
             message: "Wallet updated successfully",

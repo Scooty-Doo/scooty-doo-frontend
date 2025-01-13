@@ -29,8 +29,22 @@ const HistoryClient = () => {
 
     // Formatera tid
     const formatTime = (time) => {
-        return new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        return new Date(time).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "UTC",
+        });
     };
+    
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "UTC",
+        });
+    };
+    
 
     if (loading) {
         return <div className={styles.historyContainer}>Laddar resor...</div>;
@@ -53,15 +67,16 @@ const HistoryClient = () => {
                             <p className={styles.date}>
                                 <strong>
                                     <Link to={`/ridehistory/${trip.id}`}>
-                                        {new Date(trip.attributes.start_time).toLocaleDateString()}
+                                        {formatDate(trip.attributes.start_time)}
                                     </Link>
                                 </strong>
                             </p>
+
                             {/* Visning av resans detaljer */}
                             <p>
-                                <strong>Tid:</strong> {formatTime(trip.attributes.start_time)} -{" "}
-                                {formatTime(trip.attributes.end_time)}
+                                <strong>Tid:</strong> {`${formatTime(trip.attributes.start_time)} - ${formatTime(trip.attributes.end_time)}`}
                             </p>
+
                             <p>
                                 <strong>Pris:</strong> {trip.attributes.total_fee} kr
                             </p>

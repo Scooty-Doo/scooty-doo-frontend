@@ -10,7 +10,7 @@ describe("fetchLogin function", () => {
         fetchMock.resetMocks();
     });
 
-    test("fetchLogin successfully logs in with GitHub code", async () => {
+    test("fetchLogin successfully logs in with GitHub", async () => {
         const mockResponse = {
             token: "abcd1234",
             user: {
@@ -37,7 +37,6 @@ describe("fetchLogin function", () => {
         expect(response).toEqual(mockResponse);
     });
 
-    // Test för API-fel (exempelvis felaktig kod)
     test("fetchLogin handles API error", async () => {
         fetchMock.mockResponseOnce(JSON.stringify({ error: "Invalid code" }), {
             status: 400
@@ -58,7 +57,6 @@ describe("fetchLogin function", () => {
         expect(response.error).toBe("Invalid code");
     });
 
-    // Test för nätverksfel
     test("fetchLogin handles network errors", async () => {
         fetchMock.mockReject(new Error("Network error"));
 
