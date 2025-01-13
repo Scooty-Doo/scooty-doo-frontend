@@ -7,6 +7,7 @@ import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
 import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
+import { fetchZones } from "../api/zonesApi";
 // import BikeMarker from './marker';
 
 // Formatera om backends position till leaflet (lng och lat)
@@ -68,36 +69,24 @@ const MapView = ({ userType, socket }) => {
             }
         };
 
-        // Testdata för zoner, hämta från api sen
-        const mockZones = [
-            {
-                id: 1,
-                name: 'Malmö C',
-                wkt: 'POLYGON((12.999047 55.60899, 12.999326 55.608445, 12.999219 55.608439, 12.99895 55.608984, 12.999047 55.60899))',
-                type: 'Parking',
-            },
-            {
-                id: 2,
-                name: 'Slow Zone - Gamla Stan',
-                wkt: 'POLYGON((13.0105 55.5985, 13.0112 55.5987, 13.0120 55.5980, 13.0115 55.5975, 13.0108 55.5978, 13.0105 55.5985))',
-                type: 'Slow',
-            },
-            
-            {
-                id: 3,
-                name: 'Gamla Stan',
-                wkt: 'POLYGON((13.000722 55.605184, 13.002591 55.604784, 13.004537 55.605037, 13.004352 55.606366, 13.002155 55.606819, 13.000722 55.605184))',
-                type: 'Forbidden',
-            },
-            {
-                id: 4,
-                name: 'Charging Zone - Malmö C',
-                wkt: 'POLYGON((12.9995 55.6092, 13.0001 55.6091, 13.0002 55.6095, 12.9996 55.6096, 12.9995 55.6092))',
-                type: 'Charging',
-            },
-            
-        ];
-        setZones(mockZones);
+        const fetchMapZones = async () => {
+            try {
+                const zoneData = await fetchZones();
+                setZones(zoneData.data.map(zone => ({
+                    id: zone.id,
+                    name: zone.attributes.zone_name,
+                    wkt: zone.attributes.boundary,
+                    type: zone.attributes.zone_type_id === 1 ? 'Parking' :
+                        zone.attributes.zone_type_id === 2 ? 'Slow' :
+                            zone.attributes.zone_type_id === 3 ? 'Forbidden' :
+                                zone.attributes.zone_type_id === 4 ? 'Charging' : 'Unknown'
+                })));
+            } catch (error) {
+                console.error('Error fetching zones:', error);
+            }
+        };
+    
+        fetchMapZones();
         fetchBikes();
     }, [userType]);
 
