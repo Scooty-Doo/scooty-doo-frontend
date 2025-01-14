@@ -45,7 +45,9 @@ import 'leaflet-draw/dist/leaflet.draw.css';
     // make sure that the old zones can be edited and deleted
     // make sure that the old zones are labled as old zones and labled if they have been edited or no for patching pourposes
     // figure out a way to send a delete request to api if zone has been deleted (just do in delete function using _zone_id?)
-const MapWithZones = () => {
+
+    // fixa så att zoner kan editas (edit fins men det verkar inte updatera zonerna)
+    const MapWithZones = () => {
     const ZOOM_LEVEL = 13;
     const MAP_CENTER = [55.605, 13.0038];
     const mapRef = useRef();
@@ -103,25 +105,6 @@ const MapWithZones = () => {
         });
     }
 
-    // const parseWKT = (wkt) => {
-    //     const coordinates = wkt
-    //         .match(/\(\((.*)\)\)/)[1]
-    //         .split(', ')
-    //         .map((coord) => {
-    //             const [lng, lat] = coord.split(' ').map(Number);
-    //             return [lat, lng];
-    //         });
-    //     return coordinates;
-    // };
-
-    // function formatLatlngsToWKT(latlngs) {
-    //     // Map latlng objects to strings in "lng lat" format
-    //     const coordinates = latlngs.map(({ lat, lng }) => `${lng} ${lat}`).join(", ");
-      
-    //     // Return the WKT formatted string
-    //     return `POLYGON((${coordinates}))`;
-    //   }
-
     const handleCreated = (e) => {
         console.log("CREATED E: ",e)
 
@@ -158,7 +141,7 @@ const MapWithZones = () => {
                     boundary: boundary,
                     latlngs: layer.getLatLngs()[0],
                 },
-        ]);
+            ]);
         }
     };
 
@@ -183,11 +166,14 @@ const MapWithZones = () => {
         try {
             // Iterate over each layer in mapLayers and post them one by one
             for (const layer of mapLayers) {
+                console.log("AAAAAAAAAAAAAA",mapLayers);
+                const formattedPoints = mapLayers.latlngs.map(point => `${point.lng} ${point.lat}`);
+                console.log("HELL: ",formattedPoints);
                 const zoneData = {
                     zone_name: layer.zone_name,
                     zone_type_id: layer.zone_type_id,
                     city_id: 1, // temp way to get city id
-                    boundary: layer.boundary, // WKT format
+                    boundary: formattedPoints, // WKT format
                 };
                 console.log("ZoneData from saved: ",zoneData);
                 console.log("ZoneData JSON.Stringify from saved: ",JSON.stringify(zoneData));
@@ -250,40 +236,40 @@ const addZonesToMap = (zones) => {
     console.log("Adding zones to the map:", zones); // Log the zones being added
     console.log("Feature group before adding zones:", featureGroup);
 
-    // Update mapLayers with the new zones
-    const newMapLayers = zones.map((zone) => {
-        const polygon = L.polygon(zone.latlngs, {
-            color: getZoneColor(zone.zone_type_id),
-            fillColor: getZoneColor(zone.zone_type_id),
-            fillOpacity: 0.5,
-            boundary: zone.latlngs,
-        });
+    // // Update mapLayers with the new zones
+    // const newMapLayers = zones.map((zone) => {
+    //     const polygon = L.polygon(zone.latlngs, {
+    //         color: getZoneColor(zone.zone_type_id),
+    //         fillColor: getZoneColor(zone.zone_type_id),
+    //         fillOpacity: 0.5,
+    //         boundary: zone.latlngs,
+    //     });
 
-        polygon.options = {
-            ...polygon.options,
-            zoneId: zone.id,
-            isNew: false,
-            zone_type_id: zone.zone_type_id,
-            boundary: zone.boundary,
-        };
+    //     polygon.options = {
+    //         ...polygon.options,
+    //         zoneId: zone.id,
+    //         isNew: false,
+    //         zone_type_id: zone.zone_type_id,
+    //         boundary: zone.boundary,
+    //     };
 
-        featureGroup.addLayer(polygon);
-        console.log("Added polygon with options:", polygon.options); // Log polygon options after creation
+    //     featureGroup.addLayer(polygon);
+    //     console.log("Added polygon with options:", polygon.options); // Log polygon options after creation
 
-        return {
-            id: polygon._leaflet_id, // Unique ID for each polygon
-            zone_type_id: zone.zone_type_id,
-            isNew: false,
-            zone_name: zone.name || "default name", // Assuming zone has a name property
-            city_id: zone.city_id || 0, // Assuming zone has a city_id property
-            boundary: `POLYGON((${zone.latlngs[0].map(coord => `${coord.lng} ${coord.lat}`).join(', ')}))`, // Generate boundary as POLYGON
-            latlngs: zone.latlngs,
-        };
-    });
+    //     return {
+    //         id: polygon._leaflet_id, // Unique ID for each polygon
+    //         zone_type_id: zone.zone_type_id,
+    //         isNew: false,
+    //         zone_name: zone.name || "default name", // Assuming zone has a name property
+    //         city_id: zone.city_id || 0, // Assuming zone has a city_id property
+    //         boundary: `POLYGON((${zone.latlngs[0].map(coord => `${coord.lng} ${coord.lat}`).join(', ')}))`, // Generate boundary as POLYGON
+    //         latlngs: zone.latlngs,
+    //     };
+    // });
 
     // Update the mapLayers state with the new zones
-    setMapLayers((layers) => [...layers, ...newMapLayers]);
-    map.addLayer(layer);
+    // setMapLayers((layers) => [...layers, ...newMapLayers]);
+    // map.addLayer(layer);
     console.log("Feature group after adding zones:", featureGroup); // Log feature group after all zones are added
 };
 
