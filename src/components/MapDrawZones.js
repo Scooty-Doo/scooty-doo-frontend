@@ -35,23 +35,23 @@ import 'leaflet-draw/dist/leaflet.draw.css';
     // fixed:
     // creat new zones, be able to edit and delete those new zones before sending them to api
     // readd the zones getting the correct zone color and correct zonetyping based on what selected zone type is selected
+    // add a way to post created zones to api
 
     // probably fixed but not tested:
     // make sure that the new zones we can create are labled as new in their data for post/patch differencing
 
     // not fixed:
-    // add a way to post created zones to api
     // make sure the old zones are added to the layer so it can be edited
     // make sure that the old zones can be edited and deleted
     // make sure that the old zones are labled as old zones and labled if they have been edited or no for patching pourposes
-    // figure out a way to send a delete request to api if zone has been deleted (just do in delete function?)
+    // figure out a way to send a delete request to api if zone has been deleted (just do in delete function using _zone_id?)
 const MapWithZones = () => {
     const ZOOM_LEVEL = 13;
     const MAP_CENTER = [55.605, 13.0038];
     const mapRef = useRef();
     const oldZonesRef = useRef();
     const [mapLayers, setMapLayers] = useState([]);
-    const [oldZones] = useState([]);
+    const [oldZones, setOldZones] = useState([]);
     // const [newZones, setNewZones] = useState([]);
     // const [editedZones, setEditedZones] = useState([]);
     const [selectedZoneType, setSelectedZoneType] = useState(1);
@@ -66,16 +66,26 @@ const MapWithZones = () => {
 
         // Fetch old zones from backend
         useEffect(() => { // flytta ut ur useEffect och in i något annat? useEffect kommmer nog overrida oldZone när den inte borde. (är teorin åtminstone)
-            const fetchZones = async () => {
+            const fetchZones = async () => { // move to zones api? (maya har redan fixat zone api kansek kan använda den)
                 try {
                     const response = await fetch('http://localhost:8000/v1/zones/');
                     const data = await response.json();
 
-                    const parsedZones = data.map((zone) => ({
+                    setOldZones(data.data.map((zone) => ({ // old stinky code to test a thing
+                        id: zone.id,             // Include id
+                        type: zone.type,         // Include type
+                        attributes: zone.attributes, // Include attributes
+                        links: zone.links        // Include links
+                    })));
+                    console.log("fetched old zones",data);
+
+
+                    const parsedZones = data.data.map((zone) => ({
                         id: zone.id,
                         latlngs: parseWKTPolygon(zone.attributes.boundary),
                         zone_type_id: zone.attributes.zone_type_id,
                     }));
+                    console.log("parsedZones",parsedZones);
                     addZonesToMap(parsedZones);
                 } catch (error) {
                     console.error("Failed to fetch zones:", error);
@@ -218,7 +228,7 @@ const MapWithZones = () => {
         });
     };
 
-    const getZoneColor = (type) => {
+    const getZoneColor = (type) => { // move to utils?
         switch (type) {
             case 1:
                 return 'blue';
@@ -233,26 +243,50 @@ const MapWithZones = () => {
         }
     };
 
-    // Function to add zones to the map
-    const addZonesToMap = (zones) => {
-        const featureGroup = oldZonesRef.current;
-        zones.forEach((zone) => {
-            const polygon = L.polygon(zone.latlngs, {
-                color: getZoneColor(zone.zone_type_id),
-                fillColor: getZoneColor(zone.zone_type_id),
-                fillOpacity: 0.5,
-            });
+// Function to add zones to the map
+const addZonesToMap = (zones) => {
+    const featureGroup = oldZonesRef.current;
 
-            polygon.options = {
-                ...polygon.options,
-                zoneId: zone.id,
-                isNew: false,
-                zone_type_id: zone.zone_type_id,
-            };
+    console.log("Adding zones to the map:", zones); // Log the zones being added
+    console.log("Feature group before adding zones:", featureGroup);
 
-            featureGroup.addLayer(polygon);
+    // Update mapLayers with the new zones
+    const newMapLayers = zones.map((zone) => {
+        const polygon = L.polygon(zone.latlngs, {
+            color: getZoneColor(zone.zone_type_id),
+            fillColor: getZoneColor(zone.zone_type_id),
+            fillOpacity: 0.5,
+            boundary: zone.latlngs,
         });
-    };
+
+        polygon.options = {
+            ...polygon.options,
+            zoneId: zone.id,
+            isNew: false,
+            zone_type_id: zone.zone_type_id,
+            boundary: zone.boundary,
+        };
+
+        featureGroup.addLayer(polygon);
+        console.log("Added polygon with options:", polygon.options); // Log polygon options after creation
+
+        return {
+            id: polygon._leaflet_id, // Unique ID for each polygon
+            zone_type_id: zone.zone_type_id,
+            isNew: false,
+            zone_name: zone.name || "default name", // Assuming zone has a name property
+            city_id: zone.city_id || 0, // Assuming zone has a city_id property
+            boundary: `POLYGON((${zone.latlngs[0].map(coord => `${coord.lng} ${coord.lat}`).join(', ')}))`, // Generate boundary as POLYGON
+            latlngs: zone.latlngs,
+        };
+    });
+
+    // Update the mapLayers state with the new zones
+    setMapLayers((layers) => [...layers, ...newMapLayers]);
+    map.addLayer(layer);
+    console.log("Feature group after adding zones:", featureGroup); // Log feature group after all zones are added
+};
+
 
     // console.log("Old Zones", oldZones);
     // console.log("Edited Zones", editedZones);
@@ -271,7 +305,12 @@ const MapWithZones = () => {
                 </label>
                 <button onClick={handleSave}>Save Zones</button>
             </div>
-            <MapContainer center={MAP_CENTER} zoom={ZOOM_LEVEL} ref={mapRef} style={{ height: '90vh', width: '100%' }}>
+            <MapContainer
+            center={MAP_CENTER}
+            zoom={ZOOM_LEVEL} ref={mapRef}
+            whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
+            style={{ height: '90vh', width: '100%' }
+            }>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <FeatureGroup ref={oldZonesRef}>
                     <EditControl
@@ -302,24 +341,6 @@ const MapWithZones = () => {
                         <Popup>type id: {zone.attributes.zone_type_id}<br />{zone.attributes.zone_name}</Popup>
                     </Polygon>
                 ))}
-                {/* {newZones.map((zone) => (
-                    <Polygon
-                    key={`new-${zone.id}`} // Use a unique key for newZones
-                    positions={parseWKTPolygon(zone.attributes.boundary)} // Process boundary here
-                    color={getZoneColor(zone.zone_type_id)} // Use a distinct color for newZones
-                    pathOptions={{
-                        zoneId: zone.id,
-                        isNew: true,
-                        edited: zone.edited,
-                    }}
-                    >
-                    <Popup>
-                        New Zone - type id: {zone.zone_type_id}
-                        <br />
-                        {zone.zone_name}
-                    </Popup>
-                    </Polygon>
-                ))} */}
 
                 </FeatureGroup>
             </MapContainer>
