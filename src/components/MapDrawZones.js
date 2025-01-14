@@ -41,6 +41,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
     // make sure that the new zones we can create are labled as new in their data for post/patch differencing
 
     // not fixed:
+    // when a new zone is created then edited then saved and then edited and saved again then it becomes two different zones since the first saved zone makes it to the api and then the edited zone becomes a different zone that is edited
     // make sure the old zones are added to the layer so it can be edited
     // make sure that the old zones can be edited and deleted
     // make sure that the old zones are labled as old zones and labled if they have been edited or no for patching pourposes
@@ -145,8 +146,6 @@ import 'leaflet-draw/dist/leaflet.draw.css';
         }
     };
 
-
-
     const handleEdited = (e) => {
         console.log("EDITED E: ",e)
 
@@ -166,8 +165,8 @@ import 'leaflet-draw/dist/leaflet.draw.css';
         try {
             // Iterate over each layer in mapLayers and post them one by one
             for (const layer of mapLayers) {
-                console.log("AAAAAAAAAAAAAA",mapLayers);
-                const formattedPoints = mapLayers.latlngs.map(point => `${point.lng} ${point.lat}`);
+                console.log("AAAAAAAAAAAAAA",layer.latlngs[0]);
+                const formattedPoints = `POLYGON((${layer.latlngs[0].map(point => `${point.lng} ${point.lat}`).join(', ')}))`;
                 console.log("HELL: ",formattedPoints);
                 const zoneData = {
                     zone_name: layer.zone_name,
