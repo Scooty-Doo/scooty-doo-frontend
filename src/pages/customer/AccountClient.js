@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../styles/AccountClient.module.css";
-import { fetchUser } from "../../api/userApi";
+import { fetchUser } from "../../api/meApi";
 import { userDetails } from "../../api/userApi";
 import Stripe from "../../components/Stripe";
 
-const AccountClient = () => {
+const AccountClient = ({token}) => {
     const user_id = 1;
-
     // State för användarinfo
     const [userInfo, setUserInfo] = useState({
         name: "",
@@ -20,7 +19,7 @@ const AccountClient = () => {
     useEffect(() => {
         const getUserInfo = async () => {
             try {
-                const userData = await fetchUser(user_id);
+                const userData = await fetchUser({token});
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,

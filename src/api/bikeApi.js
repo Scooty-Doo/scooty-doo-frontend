@@ -1,12 +1,12 @@
 const API_BASE_URL = "http://127.0.0.1:8000/v1/bikes/";
-
 // Hämta information om cyklarna
 export const fetchBikes = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                "Content-Type": "application/json"
             },
         });
 

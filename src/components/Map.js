@@ -8,11 +8,12 @@ import styles from '../styles/MapView.module.css';
 import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
+import { fetchBikes } from '../api/bikeApi';
 import 'leaflet.markercluster';
 // import BikeMarker from './marker';
 
 
-const MapView = ({ userType, socket }) => {
+const MapView = ({ userType, socket, token }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
@@ -45,14 +46,11 @@ const MapView = ({ userType, socket }) => {
             );
         }
 
-        const fetchBikes = async () => {
+        const fetchBikesFromApi = async () => {
             // Sets the route depending on the usertype
-            let url = userType === "admin"
-                ? "http://127.0.0.1:8000/v1/bikes/"
-                : "http://127.0.0.1:8000/v1/bikes/available"
+
             try {
-                const response = await fetch(url);
-                const data = await response.json();
+                const data = await fetchBikes(token);
                 console.log(data.data)
                 setBikes(data.data);
             } catch (error) {
@@ -80,7 +78,7 @@ const MapView = ({ userType, socket }) => {
         };
     
         fetchMapZones();
-        fetchBikes();
+        fetchBikesFromApi();
     }, [userType]);
 
     const ClusterMarkers = () => {
@@ -215,7 +213,8 @@ const MapView = ({ userType, socket }) => {
 
 MapView.propTypes = {
     userType: PropTypes.string,
-    socket: Socket
+    socket: Socket,
+    token: PropTypes.string
 };
 
 export default MapView;
