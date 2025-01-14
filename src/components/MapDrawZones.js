@@ -47,6 +47,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
     // make sure that the old zones are labled as old zones and labled if they have been edited or no for patching pourposes
     // figure out a way to send a delete request to api if zone has been deleted (just do in delete function using _zone_id?)
 
+    // force refesh the page when saving zones?
     // fixa så att zoner kan editas (edit fins men det verkar inte updatera zonerna)
     const MapWithZones = () => {
     const ZOOM_LEVEL = 13;
@@ -120,6 +121,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
             const isNew = true;
 
             const coordinates = layer.getLatLngs()[0];
+            console.log("LatLngs formatt: ",layer.getLatLngs());
             const firstCoordinate = coordinates[0];
 
             coordinates.push(firstCoordinate);
@@ -140,7 +142,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
                     zone_name: "default name",
                     city_id: 0,
                     boundary: boundary,
-                    latlngs: layer.getLatLngs()[0],
+                    latlngs: layer.getLatLngs(),
                 },
             ]);
         }
@@ -165,7 +167,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
         try {
             // Iterate over each layer in mapLayers and post them one by one
             for (const layer of mapLayers) {
-                console.log("AAAAAAAAAAAAAA",layer.latlngs[0]);
+                console.log("AAAAAAAAAAAAAA",layer.latlngs);
                 const formattedPoints = `POLYGON((${layer.latlngs[0].map(point => `${point.lng} ${point.lat}`).join(', ')}))`;
                 console.log("HELL: ",formattedPoints);
                 const zoneData = {
@@ -200,6 +202,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
             console.error('Error while saving zones:', error);
             alert('An error occurred. Please try again.');
         }
+        window.location.reload(); // Force reloading page to avoid weird save then edit interactions
     };
 
     const handleDeleted = (e) => {
