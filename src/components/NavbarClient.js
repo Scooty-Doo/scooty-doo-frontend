@@ -43,7 +43,7 @@ const NavbarClient = () => {
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <button className={`${styles.navLink} ${styles.logoutButton}`} onClick={handleLogout}>
+                    <button className={`${styles.navLink}`} onClick={handleLogout}>
                         <span className={styles.navText}>Logout</span>
                         <FaSignOutAlt className={styles.navIcon} />
                     </button>
