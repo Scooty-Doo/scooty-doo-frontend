@@ -12,6 +12,7 @@ import Account  from './pages/admin/AccountAdmin';
 import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
+import CustomerUpdate from './pages/admin/CustomerUpdate';
 
 // Components for customer
 import HomeClient     from './pages/customer/HomeClient';
@@ -69,6 +70,7 @@ const App = () => {
                     <Route path="/home"          element={<Home/>} />
                     <Route path="/account"       element={<Account />} />
                     <Route path="/history"       element={<History />} />
+                    <Route path="/customerupdate/:userId"       element={<CustomerUpdate />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
                     <Route path="/homeclient"    element={<HomeClient />} />
