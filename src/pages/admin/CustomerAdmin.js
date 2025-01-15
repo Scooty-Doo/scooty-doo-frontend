@@ -38,73 +38,74 @@ const Customer = () => {
 
     return (
         <div className={styles.container}>
-            <h2>Search Users</h2>
-            <form onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    placeholder="Search by name"
-                    value={nameSearch}
-                    onChange={(e) => setNameSearch(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Search by email"
-                    value={emailSearch}
-                    onChange={(e) => setEmailSearch(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Search by GitHub login"
-                    value={githubLoginSearch}
-                    onChange={(e) => setGithubLoginSearch(e.target.value)}
-                />
-                <button type="submit">Search</button>
-            </form>
-
+            <div className={styles.searchSection}>
+                <h2>Search Users</h2>
+                <form onSubmit={handleSearch}>
+                    <input
+                        type="text"
+                        placeholder="Search by name"
+                        value={nameSearch}
+                        onChange={(e) => setNameSearch(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search by email"
+                        value={emailSearch}
+                        onChange={(e) => setEmailSearch(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search by GitHub login"
+                        value={githubLoginSearch}
+                        onChange={(e) => setGithubLoginSearch(e.target.value)}
+                    />
+                    <button type="submit">Search</button>
+                </form>
+            </div>
             {error && <p className={styles.error}>{error}</p>}
 
-
-            <h3>Search Results</h3>
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>GitHub Login</th>
-                        <th>Balance</th>
-                        <th>Use Prepay</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {searchResults.length > 0 ? (
-                        searchResults.map((user) => (
-                            <tr
-                                key={user.id}
-                                onClick={() => handleRowClick(user.id)}
-                            >
-                                <td>{user.id}</td>
-                                <td>{user.attributes.full_name}</td>
-                                <td>{user.attributes.email}</td>
-                                <td>{user.attributes.github_login}</td>
-                                <td>{user.attributes.balance}</td>
-                                <td>{user.attributes.use_prepay ? "Yes" : "No"}</td>
-                                <td>{new Date(user.attributes.created_at).toLocaleString()}</td>
-                                <td>{new Date(user.attributes.updated_at).toLocaleString()}</td>
-                            </tr>
-                        ))
-                    ) : (
+            <div className={styles.resultsSection}>
+                <h3>Search Results</h3>
+                <table className={styles.table}>
+                    <thead>
                         <tr>
-                            <td colSpan="8" style={{ textAlign: "center" }}>
-                                No users found. Please try a different search.
-                            </td>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>GitHub Login</th>
+                            <th>Balance</th>
+                            <th>Use Prepay</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
-
+                    </thead>
+                    <tbody>
+                        {searchResults.length > 0 ? (
+                            searchResults.map((user) => (
+                                <tr
+                                    key={user.id}
+                                    onClick={() => handleRowClick(user.id)}
+                                >
+                                    <td>{user.id}</td>
+                                    <td>{user.attributes.full_name}</td>
+                                    <td>{user.attributes.email}</td>
+                                    <td>{user.attributes.github_login}</td>
+                                    <td>{user.attributes.balance}</td>
+                                    <td>{user.attributes.use_prepay ? "Yes" : "No"}</td>
+                                    <td>{new Date(user.attributes.created_at).toLocaleString()}</td>
+                                    <td>{new Date(user.attributes.updated_at).toLocaleString()}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="8" style={{ textAlign: "center" }}>
+                                    No users found. Please try a different search.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/LoginClient.module.css';
 import { FaGithub } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
 
 const LoginClient = ({basename}) => {
 
@@ -42,7 +43,8 @@ const LoginClient = ({basename}) => {
         GitHub
             </button>
 
-            <button className={styles.AdminText} onClick={gitHubLogin}>
+            <button className={`${styles.button} ${styles.adminButton}`} onClick={gitHubLogin}>
+                <FaUser className={styles.githubIcon} style={{ marginRight: '10px' }} />
                 Admin
             </button>
         </div>
