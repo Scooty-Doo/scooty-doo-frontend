@@ -2,7 +2,7 @@ const backendURL = "http://localhost:8000/"
 
 export async function fetchLogin(code, role) {
     try {
-            let res = await fetch(backendURL + "v1/oauth/github", {
+        let res = await fetch(backendURL + "v1/oauth/github", {
             method: "POST",
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({'code': code, "role": role})
@@ -21,7 +21,7 @@ export async function getMe() {
         let res = await fetch(backendURL + "v1/users/me", {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
-                      "content-type": "application/json" },
+                "content-type": "application/json" },
         });
         res = await res.json();
         if (!res.ok) {

@@ -185,10 +185,10 @@ const MapWithZones = () => {
                                     zone.type === 'Parking'
                                         ? 'blue'
                                         : zone.type === 'Slow'
-                                        ? 'yellow'
-                                        : zone.type === 'Forbidden'
-                                        ? 'red'
-                                        : 'green'
+                                            ? 'yellow'
+                                            : zone.type === 'Forbidden'
+                                                ? 'red'
+                                                : 'green'
                                 }
                                 pathOptions={{ id: zone.id }}
                             />
