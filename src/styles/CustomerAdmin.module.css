@@ -1,0 +1,62 @@
+.container {
+  padding: 50px;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 120px;
+  border-radius: 8px;
+  color: #000; 
+  align-items: center;
+  background-color: #fff;
+}
+
+/* Styling för tabellen */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+/* Rubrik för tabellen */
+.table th {
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Alternerande rader */
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover-effekt för rader */
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+
+.table-empty-message {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding: 15px;
+  background-color: #fafafa;
+  border-top: 1px solid #ddd;
+}
+
+.error {
+  color: #d9534f;
+  font-size: 16px;
+  margin: 15px 0;
+  font-weight: bold;
+  text-align: center;
+}

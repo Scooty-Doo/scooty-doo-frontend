@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from '../../styles/LoginClient.module.css';
 import { FaGithub } from 'react-icons/fa';
@@ -19,8 +18,9 @@ const LoginClient = ({basename}) => {
 
     const gitHubLogin = (e) => {
         e.preventDefault();
+        sessionStorage.setItem("role", e.target.innerText.toLowerCase())
         const clientId = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_GITHUB_CLIENT : process.env.REACT_APP_GITHUB_CLIENT_DEV;
-    
+        
         const redirectURI = window.location.href.endsWith(basename)
             ? `${window.location.href}#/githublogin`
             : `${window.location.href.replace(basename, '')}${basename}#/githublogin`;
@@ -42,9 +42,9 @@ const LoginClient = ({basename}) => {
         GitHub
             </button>
 
-            <p className={styles.AdminText}>
-                <Link to="/login">Admin</Link>
-            </p>
+            <button className={styles.AdminText} onClick={gitHubLogin}>
+                Admin
+            </button>
         </div>
     );
 };

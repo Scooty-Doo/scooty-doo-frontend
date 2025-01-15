@@ -14,6 +14,14 @@ const HomeClient = () => {
     const [userInfo, setUserInfo] = useState(null);
 
     const navigate = useNavigate();
+    
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     useEffect(() => {
         const getUserInfo = async () => {
@@ -39,7 +47,7 @@ const HomeClient = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const trip = await startRide("1", bikeId);
+            const trip = await startRide(bikeId);
             console.log("Resa startad", trip);
             setTripId(trip.data.id);
             setRideActive(true);
@@ -50,7 +58,7 @@ const HomeClient = () => {
 
     const handleEndRide = async () => {
         try {
-            await endRide(tripId, "1", bikeId);
+            await endRide(tripId, bikeId);
             console.log("Resa avslutad!");
             setRideActive(false);
             setBikeId('');

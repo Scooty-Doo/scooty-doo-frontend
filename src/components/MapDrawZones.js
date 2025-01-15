@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import styles from '../styles/ZoneAdmin.module.css';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 
@@ -138,10 +139,11 @@ const MapWithZones = () => {
 
     return (
         <>
-            <div style={{ padding: '10px' }}>
-                <label>
-          Select Zone Type:{' '}
+            <div className={styles.container}>
+                <label className={styles.label}>
+                    Select Zone Type:
                     <select
+                        className={styles.select}
                         value={selectedZoneType}
                         onChange={(e) => setSelectedZoneType(e.target.value)}
                     >
@@ -151,12 +153,14 @@ const MapWithZones = () => {
                         <option value="Charging">Charging</option>
                     </select>
                 </label>
-                <button onClick={handleSave}>Save Zones</button>
+                <button className={styles.button} onClick={handleSave}>
+                    Save Zones
+                </button>
             </div>
             <MapContainer
+                className={styles.map}
                 center={[55.605, 13.0038]}
                 zoom={13}
-                style={{ height: '90vh', width: '100%' }}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <FeatureGroup>
@@ -172,7 +176,7 @@ const MapWithZones = () => {
                             marker: false,
                         }}
                     />
-                    {zones.map((zone) => (
+                    {zones.map((zone) =>
                         Array.isArray(zone.latlngs) && zone.latlngs.length > 0 ? (
                             <Polygon
                                 key={zone.id}
@@ -181,19 +185,20 @@ const MapWithZones = () => {
                                     zone.type === 'Parking'
                                         ? 'blue'
                                         : zone.type === 'Slow'
-                                            ? 'yellow'
-                                            : zone.type === 'Forbidden'
-                                                ? 'red'
-                                                : 'green'
+                                        ? 'yellow'
+                                        : zone.type === 'Forbidden'
+                                        ? 'red'
+                                        : 'green'
                                 }
                                 pathOptions={{ id: zone.id }}
                             />
                         ) : null
-                    ))}
+                    )}
                 </FeatureGroup>
             </MapContainer>
         </>
     );
+    
 };
 
 export default MapWithZones;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchRide } from "../../api/tripsApi";
+import { useNavigate } from "react-router-dom";
 import { parsePath, formatTime } from "../../components/utils"; // Import helpers
 import RideDetails from "../../components/RideDetails";
 import MapRide from "../../components/MapRide";
@@ -11,6 +12,16 @@ const Ridehistory = () => {
     const { tripId } = useParams();
     const [rideHistory, setRideHistory] = useState(null);
     const [amount, setAmount] = useState(0);
+    const navigate = useNavigate();
+
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
+
 
     useEffect(() => {
         if (tripId) {

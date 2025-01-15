@@ -35,26 +35,36 @@ const ListBikeCity = () => {
 
     return (
         <div>
-            <h2>Bikes List</h2>
-            <div>
-                <input
-                    type="number"
-                    placeholder="Enter City ID"
-                    value={cityId}
-                    onChange={(e) => setCityId(e.target.value)}
-                />
-                <button onClick={fetchBikesByCity}>Search by City ID</button>
+            <div className={styles.searchSection}>
+                <h2 className={styles.title}>Bikes List</h2>
+                
+                <div className={styles.searchGroup}>
+                    <input
+                        className={styles.input}
+                        type="number"
+                        placeholder="Enter City ID"
+                        value={cityId}
+                        onChange={(e) => setCityId(e.target.value)}
+                    />
+                    <button className={styles.button} onClick={fetchBikesByCity}>
+                        Search by City ID
+                    </button>
+                </div>
+
+                <div className={styles.searchGroup}>
+                    <input
+                        className={styles.input}
+                        type="number"
+                        placeholder="Enter Bike ID"
+                        value={bikeId}
+                        onChange={(e) => setBikeId(e.target.value)}
+                    />
+                    <button className={styles.button} onClick={fetchBikeById}>
+                        Search by Bike ID
+                    </button>
+                </div>
             </div>
 
-            <div>
-                <input
-                    type="number"
-                    placeholder="Enter Bike ID"
-                    value={bikeId}
-                    onChange={(e) => setBikeId(e.target.value)}
-                />
-                <button onClick={fetchBikeById}>Search by Bike ID</button>
-            </div>
 
             {loading && <p>Loading bikes...</p>}
             {error && <p>Error loading bikes: {error.message}</p>}
