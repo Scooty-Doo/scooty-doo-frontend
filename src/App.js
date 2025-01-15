@@ -74,7 +74,8 @@ const App = () => {
                     <Route path="/history"       element={<History />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
-                    <Route path="/bikeCRUD"      element={<BikeCRUDAdmin />} />
+                    <Route path="/bikeCRUD" element={<h1>Please select a bike to view its details.</h1>} />
+                    <Route path="/bikeCRUD/:bikeId" element={<BikeCRUDAdmin />} />
                     <Route path="/homeclient"    element={<HomeClient token={token} />} />
                     <Route path="/accountclient" element={<AccountClient />} />
                     <Route path="/historyclient" element={<HistoryClient />} />

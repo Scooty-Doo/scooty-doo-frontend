@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import 'react-router-dom';
+import { useParams } from 'react-router-dom';
 // import styles from '../../styles/BikeCRUDAdmin.module.css';
 import { fetchBike, bikeDetails, bikeDelete } from "../../api/bikeApi";
 import CreateBike from '../../components/CreateBike';
@@ -23,11 +23,11 @@ import CreateBike from '../../components/CreateBike';
 // links2 == no
 
 const BikeCRUDAdmin = () => {
-    // const { id } = useParams(); // Get bike ID from URL params
+    const { bikeId } = useParams(); // Get bike ID from URL params
     const [bike, setBike] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error] = useState(null);
-    const bikeId = 3;
+    // const bikeId = 3;
 
     // Fetch bike details
     useEffect(() => {
