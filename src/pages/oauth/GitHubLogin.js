@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchLogin } from '../../api/oauthApi';
 
-const GitHubLogin = ({setToken}) => {
+const GitHubLogin = () => {
     const navigate = useNavigate();
 
     useEffect(() => {

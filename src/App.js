@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 
 // Import for components
@@ -60,7 +59,6 @@ Layout.propTypes = {
 
 const App = () => {
     const basename = process.env.NODE_ENV === 'production' ? "" : "";
-    const [token, setToken] = useState(sessionStorage.getItem("token"));
 
     return (
         <HashRouter>
@@ -68,13 +66,13 @@ const App = () => {
                 {/* Define Routes */}
                 <Routes>
                     <Route path="/"              element={<LoginClient basename={basename} />} />
-                    <Route path="/home"          element={<Home token={token}/>} />
+                    <Route path="/home"          element={<Home/>} />
                     <Route path="/account"       element={<Account />} />
                     <Route path="/history"       element={<History />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
-                    <Route path="/homeclient"    element={<HomeClient token={token} />} />
-                    <Route path="/accountclient" element={<AccountClient token={token}/>} />
+                    <Route path="/homeclient"    element={<HomeClient />} />
+                    <Route path="/accountclient" element={<AccountClient/>} />
                     <Route path="/historyclient" element={<HistoryClient />} />
                     <Route path="/ridehistory/:tripId" element={<Ride />} />
                     <Route path="/githublogin"   element={<GitHubLogin setToken={setToken}/>} />
