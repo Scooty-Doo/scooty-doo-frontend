@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,14 @@ const HomeClient = () => {
     const [rideActive, setRideActive] = useState(false); 
 
     const navigate = useNavigate();
-    console.log(sessionStorage)
+    
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     // Hanterar start av resa (ändra sen till api)
     const handleSubmit = async (e) => {

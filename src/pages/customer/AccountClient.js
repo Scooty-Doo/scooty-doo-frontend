@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../styles/AccountClient.module.css";
 import { fetchUser } from "../../api/meApi";
 import { userDetails } from "../../api/meApi";
 import Stripe from "../../components/Stripe";
-import PropTypes from 'prop-types';
 
 const AccountClient = () => {
+    const navigate = useNavigate();
+
     // State för användarinfo
     const [userInfo, setUserInfo] = useState({
         name: "",
@@ -15,6 +17,16 @@ const AccountClient = () => {
         use_prepay: "",
         wallet: 0.0
     });
+
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
+
+
     // Hämta användarinfo från API vid komponentens första render
     useEffect(() => {
         const getUserInfo = async () => {
@@ -113,7 +125,4 @@ const AccountClient = () => {
     );
 };
 
-AccountClient.propTypes = {
-    token: PropTypes.string.isRequired, // token måste vara en sträng och är obligatorisk
-};
 export default AccountClient;

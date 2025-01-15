@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchLogin } from '../../api/oauthApi';
@@ -12,11 +11,8 @@ const GitHubLogin = () => {
             try {
                 let res = await fetchLogin(code, role);
                 console.log("Response from fetchLogin:", res);
-
-                console.log("Token:", res.access_token);
         
                 sessionStorage.setItem("token", res.access_token); // Please make this work ;)
-                setToken(res.access_token)
 
         
                 if (role === "admin")
@@ -43,13 +39,10 @@ const GitHubLogin = () => {
         navigate("/")
         window.history.replaceState(null, "", `${window.location.pathname}`);
         return
-    }, [navigate, setToken]);
+    }, [navigate]);
     // This needs some styling
     return <div>Processing GitHub login...</div>;
 }
 
-GitHubLogin.propTypes = {
-    setToken: PropTypes.func.isRequired,
-};
 
 export default GitHubLogin

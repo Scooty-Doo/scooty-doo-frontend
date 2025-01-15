@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../styles/HistoryClient.module.css";
 import { Link } from "react-router-dom";
 import { fetchUserTrips } from "../../api/meApi";
 
 const HistoryClient = () => {
+    const navigate = useNavigate();
     const [userTrips, setUserTrips] = useState([]); // Initiera som tom array
     const [loading, setLoading] = useState(true); // Hantera laddningstillstånd
     const [error, setError] = useState(null); // Hantera fel
 
     const mapIconUrl = "https://img.icons8.com/?size=100&id=8212&format=png&color=2C3E50";
 
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
+    
     useEffect(() => {
         const getUserTrips = async () => {
             try {
