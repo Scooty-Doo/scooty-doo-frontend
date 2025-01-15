@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/NavbarAdmin.module.css'; // Importera CSS-modulen
-import { FaHome, FaHistory, FaUser, FaUsers, FaSignOutAlt, FaCog } from 'react-icons/fa'; // Importera ikoner från react-icons
+import { FaHome, FaUser, FaUsers, FaSignOutAlt, FaCog } from 'react-icons/fa'; // Importera ikoner från react-icons
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -19,12 +19,6 @@ const Navbar = () => {
                     <Link className={styles.navLink} to="/home">
                         <span className={styles.navText}>Home</span>
                         <FaHome className={styles.navIcon} />
-                    </Link>
-                </li>
-                <li className={styles.navItem}>
-                    <Link className={styles.navLink} to="/history">
-                        <span className={styles.navText}>History</span>
-                        <FaHistory className={styles.navIcon} />
                     </Link>
                 </li>
                 <li className={styles.navItem}>

@@ -75,6 +75,24 @@
     align-items: center;
 }
 
+.adminButton { 
+    margin-top: 28px;
+    border-color: #000000;
+    height: 30px;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Montserrat';
+    font-size: 20px;
+    color: #a6a6a6;
+    cursor: pointer;
+    width: 100%; /* Gör knapparna lika breda */
+    margin: 0 auto; /* Centrerar knapparna horisontellt */
+    display: flex; /* Flexbox för att säkerställa att innehållet centreras */
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+
 /* Specifika stilar för login-knappen */
 .loginbutton {
     background: #2c3e50;

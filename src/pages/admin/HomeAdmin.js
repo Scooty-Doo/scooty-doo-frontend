@@ -1,6 +1,6 @@
 import React from 'react';
 import ListBikeCity from '../../components/ListBikeCity'; // Import the ListBikeCity component som har sök funktionalitet
-import MapView from '../../components/Map.js';
+import MapAdmin from '../../components/MapAdmin.js';
 import styles from '../../styles/HomeAdmin.module.css';
 import { io } from 'socket.io-client';
 import PropTypes from 'prop-types';
@@ -12,7 +12,7 @@ const HomeAdmin = ({token}) => {
     return (
         <div className={styles.container}>
             <div className={styles.map}>
-                <MapView userType={"admin"} socket={socket} token={token} />
+                <MapAdmin userType={"admin"} socket={socket} token={token} />
             </div>
             <div className={styles.list}>
                 <ListBikeCity />
