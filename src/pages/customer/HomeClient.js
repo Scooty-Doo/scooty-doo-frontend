@@ -12,12 +12,13 @@ const HomeClient = () => {
     const [rideActive, setRideActive] = useState(false); 
 
     const navigate = useNavigate();
+    console.log(sessionStorage)
 
     // Hanterar start av resa (ändra sen till api)
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const trip = await startRide("1", bikeId);
+            const trip = await startRide(bikeId);
             console.log("Resa startad", trip);
             setTripId(trip.data.id);
             setRideActive(true);
@@ -28,7 +29,7 @@ const HomeClient = () => {
 
     const handleEndRide = async () => {
         try {
-            await endRide(tripId, "1", bikeId);
+            await endRide(tripId, bikeId);
             console.log("Resa avslutad!");
             setRideActive(false);
             setBikeId('');

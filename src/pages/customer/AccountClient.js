@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../styles/AccountClient.module.css";
 import { fetchUser } from "../../api/meApi";
-import { userDetails } from "../../api/userApi";
+import { userDetails } from "../../api/meApi";
 import Stripe from "../../components/Stripe";
+import PropTypes from 'prop-types';
 
-const AccountClient = ({token}) => {
-    const user_id = 1;
+const AccountClient = () => {
     // State för användarinfo
     const [userInfo, setUserInfo] = useState({
         name: "",
@@ -19,7 +19,7 @@ const AccountClient = ({token}) => {
     useEffect(() => {
         const getUserInfo = async () => {
             try {
-                const userData = await fetchUser({token});
+                const userData = await fetchUser();
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
@@ -34,7 +34,7 @@ const AccountClient = ({token}) => {
         };
 
         getUserInfo();
-    }, [user_id]);
+    }, []);
 
     // Hantera inputförändringar i formuläret
     const handleInputChange = (e) => {
@@ -50,7 +50,7 @@ const AccountClient = ({token}) => {
     const handleSaveChanges = async (e) => {
         e.preventDefault();
         try {
-            await userDetails(user_id, userInfo.name, userInfo.email, userInfo.use_prepay);
+            await userDetails(userInfo.name, userInfo.email, userInfo.use_prepay);
             alert("Dina ändringar har sparats!");
         } catch (error) {
             console.error("Failed to update user details:", error);
@@ -113,4 +113,7 @@ const AccountClient = ({token}) => {
     );
 };
 
+AccountClient.propTypes = {
+    token: PropTypes.string.isRequired, // token måste vara en sträng och är obligatorisk
+};
 export default AccountClient;

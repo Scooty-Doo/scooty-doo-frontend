@@ -1,15 +1,21 @@
 const API_BASE_URL = "http://127.0.0.1:8000/v1/trips/";
 
 // Starta en ny resa
-export const startRide = async (userId, bikeId) => {
+export const startRide = async (bikeId) => {
     try {
-        const response = await fetch(API_BASE_URL, {
+        // Hämta token från sessionStorage
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Ingen token hittades i sessionStorage");
+        }
+        const response = await fetch(`${API_BASE_URL}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({
-                user_id: userId,
                 bike_id: bikeId,
             }),
         });
@@ -26,15 +32,21 @@ export const startRide = async (userId, bikeId) => {
 };
 
 // Avsluta en resa
-export const endRide = async (tripId, userId, bikeId) => {
+export const endRide = async (tripId, bikeId) => {
     try {
+        // Hämta token från sessionStorage
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Ingen token hittades i sessionStorage");
+        }
         const response = await fetch(`${API_BASE_URL}${tripId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({
-                user_id: userId,
                 bike_id: bikeId,
             }),
         });
@@ -53,10 +65,18 @@ export const endRide = async (tripId, userId, bikeId) => {
 // Hämta information om en resa
 export const fetchRide = async (tripId) => {
     try {
+
+        // Hämta token från sessionStorage
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Ingen token hittades i sessionStorage");
+        }
         const response = await fetch(`${API_BASE_URL}${tripId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
         });
 

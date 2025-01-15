@@ -8,11 +8,17 @@ const GitHubLogin = ({setToken}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const login = async (code, role) => {
+        const login = async (code, role="user") => {
             try {
                 let res = await fetchLogin(code, role);
+                console.log("Response from fetchLogin:", res);
+
+                console.log("Token:", res.access_token);
+        
                 sessionStorage.setItem("token", res.access_token); // Please make this work ;)
                 setToken(res.access_token)
+
+        
                 if (role === "admin")
                 {
                     navigate("/home", { replace: true});

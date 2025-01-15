@@ -8,12 +8,13 @@ import styles from '../styles/MapView.module.css';
 import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
-import { fetchBikes } from '../api/bikeApi';
+//import { fetchBikes } from '../api/bikeApi';
+import { fetchAvailableBikes } from '../api/bikeApi';
 import 'leaflet.markercluster';
 // import BikeMarker from './marker';
 
 
-const MapView = ({ userType, socket, token }) => {
+const MapView = ({ userType, socket }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
@@ -48,9 +49,10 @@ const MapView = ({ userType, socket, token }) => {
 
         const fetchBikesFromApi = async () => {
             // Sets the route depending on the usertype
+            // if admin - Tim fixaaaaaaaaa
 
             try {
-                const data = await fetchBikes(token);
+                const data = await fetchAvailableBikes();
                 console.log(data.data)
                 setBikes(data.data);
             } catch (error) {

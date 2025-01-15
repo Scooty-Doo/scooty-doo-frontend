@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../styles/HistoryClient.module.css";
 import { Link } from "react-router-dom";
-import { fetchUserTrips } from "../../api/userApi";
+import { fetchUserTrips } from "../../api/meApi";
 
 const HistoryClient = () => {
-    const user_id = 1; // ID för användaren
     const [userTrips, setUserTrips] = useState([]); // Initiera som tom array
     const [loading, setLoading] = useState(true); // Hantera laddningstillstånd
     const [error, setError] = useState(null); // Hantera fel
@@ -14,7 +13,7 @@ const HistoryClient = () => {
     useEffect(() => {
         const getUserTrips = async () => {
             try {
-                const data = await fetchUserTrips(user_id); // Hämta resor
+                const data = await fetchUserTrips(); // Hämta resor
                 setUserTrips(data.data); // Sätt resorna i state
             } catch (err) {
                 console.error("Error fetching user trips:", err);
@@ -25,7 +24,7 @@ const HistoryClient = () => {
         };
 
         getUserTrips();
-    }, [user_id]);
+    }, []);
 
     // Formatera tid
     const formatTime = (time) => {
