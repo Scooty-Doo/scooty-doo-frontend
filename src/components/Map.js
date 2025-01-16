@@ -95,8 +95,8 @@ const MapView = ({ userType, socket }) => {
                     return new L.DivIcon({
                         html: `
                             <div class="div-icon-cluster">
-                                <span>${childCount}</span>
-                                <svg height="40" width="40" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-60.48 -60.48 624.96 624.96" xml:space="preserve" fill="#0081d1" stroke="#0081d1" stroke-width="14.112">
+                                <span style="color: white; font-weight: bold; font-size: 18px; background-color: #78b7ff; padding: 6px; border-radius: 10px;" >${childCount}</span>
+                                <svg height="60" width="60" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-60.48 -60.48 624.96 624.96" xml:space="preserve" fill="#0081d1" stroke="#0081d1" stroke-width="14.112">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                 <g id="SVGRepo_iconCarrier"> <circle style="fill:#ffffff;" cx="252" cy="252" r="252"></circle> 

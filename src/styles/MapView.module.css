@@ -20,6 +20,43 @@
     background-repeat: no-repeat;
 }
 
+.marker-cluster {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 50%;
+    border: 2px solid #0081d1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px; /* Font size for cluster count */
+    font-weight: bold;
+    color: #0081d1;
+    padding: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    width: 50px;
+    height: 50px;
+    text-align: center;
+}
+
+/* Add the SVG icon as a background with the cluster count */
+.marker-cluster::before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%2220%22%20fill%3D%23ffffff%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%2210%22%20fill%3D%23324A5E%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%225%22%20fill%3D%23AEA8FF%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%223%22%20fill%3D%2380B7FF%2F%3E%3C%2Fsvg%3E') no-repeat center;
+    background-size: contain;
+}
+
+/* Add the cluster number */
+.marker-cluster .cluster-number {
+    position: relative;
+    z-index: 2;
+    color: #0081d1;
+}
+
+
+
 
 /* Mediumstora skärmar, t.ex. surfplattor */
 @media (max-width: 900px) {
@@ -32,3 +69,4 @@
         outline-style: none; /* Tar bort outline */
       }
 }
+

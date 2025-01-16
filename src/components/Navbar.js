@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/NavbarAdmin.module.css'; // Importera CSS-modulen
 import { FaHome, FaUser, FaUsers, FaSignOutAlt, FaCog } from 'react-icons/fa'; // Importera ikoner från react-icons
 import { useNavigate } from "react-router-dom";
+import logo from '../pic/logga.png';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -14,6 +15,14 @@ const Navbar = () => {
 
     return (
         <nav className={styles.navbar}>
+            {/* Logotypen */}
+            <Link to="/homeclient">
+                <img 
+                    src={logo} 
+                    alt="Logo" 
+                    className={styles.logo} 
+                />
+            </Link>
             <ul className={styles.navList}>
                 <li className={styles.navItem}>
                     <Link className={styles.navLink} to="/home">
