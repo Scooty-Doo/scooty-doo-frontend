@@ -1,0 +1,101 @@
+.container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    margin-top: 120px;
+}
+
+.label {
+    font-weight: bold;
+    margin-right: 20px;
+    color: #34495e; /* Mörkgrå färg */
+    font-size: 30px;
+    display: inline-block; /* Säkerställer att den placeras korrekt */
+    margin-bottom: 5px; /* Extra spacing om den används vertikalt */
+}
+
+
+.select {
+    margin-left: 20px;
+    padding: 8px 12px;
+    border: 1px solid #bdc3c7; 
+    border-radius: 6px; /* Rundare hörn */
+    background-color: #ecf0f1; 
+    font-size: 20px;
+    color: #2c3e50;
+}
+
+
+.button {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #2c3e50, #34495e); /* Gradient bakgrund */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Rundare hörn */
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.button:hover {
+    background: linear-gradient(135deg, #1e2a38, #273746); 
+}
+
+
+
+.map {
+    height: 90vh;
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 5px;
+        margin-top: 60px; /* Minska marginalen för mindre skärmar */
+        text-align: center; /* Centrerar innehållet */
+    }
+
+    .label {
+        font-size: 18px; /* Minska textstorleken */
+        margin-right: 10px;
+    }
+
+    .select {
+        font-size: 16px; /* Anpassa storleken på dropdown-menyn */
+        margin-left: 0; /* Ta bort vänstermarginal */
+        width: 100%; /* Gör dropdown fullbredd */
+        margin-bottom: 10px; /* Lägg till spacing mellan element */
+    }
+
+    .button {
+        font-size: 16px;
+        width: 100%; /* Gör knappen fullbredd */
+        padding: 8px 12px; /* Minska padding */
+        margin-top: 10px; /* Skapa avstånd till dropdown */
+    }
+
+    .map {
+        height: 70vh; /* Minska höjden på kartan för att passa bättre */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin-top: 40px; /* Ännu mindre marginal för mycket små skärmar */
+    }
+
+    .label {
+        font-size: 16px; /* Ytterligare minskning av textstorlek */
+    }
+
+    .select {
+        font-size: 14px;
+    }
+
+    .button {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+}

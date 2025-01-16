@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet'; // Importera Leaflet för att skapa en anpassad ikon
 import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
-import styles from '../styles/MapView.module.css';
+import styles from '../styles/MapAdmin.module.css';
 import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
@@ -14,7 +14,7 @@ import 'leaflet.markercluster';
 // import BikeMarker from './marker';
 
 
-const MapView = ({ userType, socket }) => {
+const MapAdmin = ({ userType, socket }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
@@ -213,10 +213,10 @@ const MapView = ({ userType, socket }) => {
     );
 };
 
-MapView.propTypes = {
+MapAdmin.propTypes = {
     userType: PropTypes.string,
     socket: Socket,
     token: PropTypes.string
 };
 
-export default MapView;
+export default MapAdmin;

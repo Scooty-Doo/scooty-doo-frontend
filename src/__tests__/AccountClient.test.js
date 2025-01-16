@@ -1,10 +1,10 @@
 /* eslint-env jest */
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, fireEvent, waitFor } from "@testing-library/react";
 import AccountClient from "../pages/customer/AccountClient";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
-import { fetchUser } from "../api/userApi";
+import { fetchUser, userDetails } from "../api/userApi";
 
 // Mocka API
 jest.mock('../api/userApi', () => ({
@@ -14,7 +14,7 @@ jest.mock('../api/userApi', () => ({
 
 describe("AccountClient", () => {
     beforeEach(() => {
-        // Mocka user
+        jest.clearAllMocks(); // Rensa mocks inför varje test
         fetchUser.mockResolvedValue({
             data: {
                 attributes: {
@@ -39,11 +39,96 @@ describe("AccountClient", () => {
         expect(screen.getByDisplayValue("ScootyPrepaidson")).toBeInTheDocument();
         expect(screen.getByDisplayValue("scooty@doot.com")).toBeInTheDocument();
 
-        // Hitta texten "39,99 :-" även om den är uppdelad
+        // Kontrollera balansvisning
         const balanceText = screen.getByText((content, element) => {
             return content.includes("39.99") && element.textContent.includes(":-");
         });
 
         expect(balanceText).toBeInTheDocument();
+    });
+
+    test("handles API error and shows alert", async () => {
+        fetchUser.mockRejectedValueOnce(new Error("API Error"));
+
+        jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <AccountClient />
+                </MemoryRouter>
+            );
+        });
+
+        expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
+    });
+
+    test("allows user to change name and email and submit form", async () => {
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <AccountClient />
+                </MemoryRouter>
+            );
+        });
+
+        const nameInput = screen.getByDisplayValue("ScootyPrepaidson");
+        const emailInput = screen.getByDisplayValue("scooty@doot.com");
+        const saveButton = screen.getByRole("button", { name: "Spara ändringar" });
+
+        // Ändra användarinformation
+        fireEvent.change(nameInput, { target: { value: "NyPrepaidson" } });
+        fireEvent.change(emailInput, { target: { value: "ny@prepaid.com" } });
+
+        // Skicka formuläret
+        fireEvent.click(saveButton);
+
+        await waitFor(() => {
+            expect(userDetails).toHaveBeenCalledWith(
+                1,
+                "NyPrepaidson",
+                "ny@prepaid.com",
+                "true"
+            );
+            expect(window.alert).toHaveBeenCalledWith("Dina ändringar har sparats!");
+        });
+    });
+
+    test("handles form submission failure", async () => {
+        userDetails.mockRejectedValueOnce(new Error("Failed to update"));
+
+        jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <AccountClient />
+                </MemoryRouter>
+            );
+        });
+
+        const saveButton = screen.getByRole("button", { name: "Spara ändringar" });
+
+        fireEvent.click(saveButton);
+
+        await waitFor(() => {
+            expect(window.alert).toHaveBeenCalledWith("Kunde inte spara ändringar.");
+        });
+    });
+
+    test("changes payment method using select input", async () => {
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <AccountClient />
+                </MemoryRouter>
+            );
+        });
+
+        const selectInput = screen.getByLabelText("Välj betalningsmetod:");
+
+        fireEvent.change(selectInput, { target: { value: "false" } });
+
+        expect(selectInput.value).toBe("false");
     });
 });

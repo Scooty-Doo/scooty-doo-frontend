@@ -1,6 +1,6 @@
 .mapContainer {
     height: 70vh; /* Anpassar höjden till 70% av skärmens höjd */
-    width: 70vw;  /* Anpassar bredden till 70% av skärmens bredd */
+    width: 40vw;  /* Anpassar bredden till 70% av skärmens bredd */
     max-width: 1000px; /* Sätter en maxgräns för bredd */
     border-radius: 10px;
     align-self: stretch; 

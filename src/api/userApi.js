@@ -115,3 +115,30 @@ export const userDetails2 = async (userId, name, email, github_login, use_prepay
         throw error;
     }
 };
+
+// API-funktion för att uppdatera användardetaljer
+export const userDetails3 = async (userId, name, email, github_login, use_prepay) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}${userId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                full_name: name,
+                email: email,
+                github_login: github_login,
+                use_prepay: use_prepay,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update user details: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+};

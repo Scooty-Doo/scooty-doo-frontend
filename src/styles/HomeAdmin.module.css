@@ -1,12 +1,16 @@
 .container {
     display: flex;
-    flex-direction: row; /* Ensure elements are side by side */
-    gap: 16px; /* Add some space between the two components */
+    flex-direction: row; /* Elementen visas sida vid sida */
+    padding-top: 120px;
+    gap: 20px; /* Mellanrum mellan kartan och listan */
+    align-items: flex-start; /* Justera elementen till toppen */
+    padding-right: 150px;
+    box-sizing: border-box;
 }
 
 .map { /* lånat från HomeClient.module.css*/
     flex: 1;
-    width: 100%;
+    width: 50%;
     max-width: none;
     margin-right: 0px;
     margin-left: 20px;
@@ -15,5 +19,6 @@
 
 .list {
     flex: 1; /* Adjust width ratio for the list */
-    max-width: 40%; /* Optional: limit maximum width of the list */
+    max-width: 200%; /* Optional: limit maximum width of the list */
+    gap: 20px; 
 }

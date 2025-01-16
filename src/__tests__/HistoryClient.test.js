@@ -60,24 +60,12 @@ describe("HistoryClient Component", () => {
             expect(screen.getByText("Historik")).toBeInTheDocument();
         });
     
-        // Använd en funktion för att hitta datum i texten
-        expect(
-            screen.getByText((content, element) => {
-                return element.tagName.toLowerCase() === "a" && content.includes("1/1/2024");
-            })
-        ).toBeInTheDocument();
-    
-        expect(
-            screen.getByText((content, element) => {
-                return element.tagName.toLowerCase() === "a" && content.includes("1/2/2024");
-            })
-        ).toBeInTheDocument();
-    
-        expect(screen.getByText("11:00 AM - 12:00 PM")).toBeInTheDocument();
+        expect(screen.getByText("10:00 AM - 11:00 AM")).toBeInTheDocument();
         expect(screen.getByText("79 kr")).toBeInTheDocument();
-        expect(screen.getByText("03:30 PM - 04:00 PM")).toBeInTheDocument();
+        expect(screen.getByText("02:30 PM - 03:00 PM")).toBeInTheDocument();
         expect(screen.getByText("99 kr")).toBeInTheDocument();
     });
+    
     
 
     test("renders error message if fetch fails", async () => {

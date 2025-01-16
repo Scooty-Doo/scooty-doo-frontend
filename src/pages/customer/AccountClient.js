@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../styles/AccountClient.module.css";
-import { fetchUser } from "../../api/userApi";
-import { userDetails } from "../../api/userApi";
+import { fetchUser } from "../../api/meApi";
+import { userDetails } from "../../api/meApi";
 import Stripe from "../../components/Stripe";
 
 const AccountClient = () => {
-    const user_id = 1;
+    const navigate = useNavigate();
 
     // State för användarinfo
     const [userInfo, setUserInfo] = useState({
@@ -16,11 +17,21 @@ const AccountClient = () => {
         use_prepay: "",
         wallet: 0.0
     });
+
+    // Kontrollera token och omdirigera till login om den saknas
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
+
+
     // Hämta användarinfo från API vid komponentens första render
     useEffect(() => {
         const getUserInfo = async () => {
             try {
-                const userData = await fetchUser(user_id);
+                const userData = await fetchUser();
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
@@ -35,7 +46,7 @@ const AccountClient = () => {
         };
 
         getUserInfo();
-    }, [user_id]);
+    }, []);
 
     // Hantera inputförändringar i formuläret
     const handleInputChange = (e) => {
@@ -51,7 +62,7 @@ const AccountClient = () => {
     const handleSaveChanges = async (e) => {
         e.preventDefault();
         try {
-            await userDetails(user_id, userInfo.name, userInfo.email, userInfo.use_prepay);
+            await userDetails(userInfo.name, userInfo.email, userInfo.use_prepay);
             alert("Dina ändringar har sparats!");
         } catch (error) {
             console.error("Failed to update user details:", error);

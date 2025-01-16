@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { Routes, Route, useLocation, HashRouter } from 'react-router-dom';
 
 // Import for components
@@ -14,6 +13,7 @@ import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
 import BikeCRUDAdmin from './pages/admin/BikeCRUDAdmin';
+import CustomerUpdate from './pages/admin/CustomerUpdate';
 
 // Components for customer
 import HomeClient     from './pages/customer/HomeClient';
@@ -61,7 +61,6 @@ Layout.propTypes = {
 
 const App = () => {
     const basename = process.env.NODE_ENV === 'production' ? "" : "";
-    const [token, setToken] = useState(sessionStorage.getItem("token"));
 
     return (
         <HashRouter>
@@ -69,18 +68,22 @@ const App = () => {
                 {/* Define Routes */}
                 <Routes>
                     <Route path="/"              element={<LoginClient basename={basename} />} />
-                    <Route path="/home"          element={<Home />} />
+                    <Route path="/home"          element={<Home/>} />
                     <Route path="/account"       element={<Account />} />
                     <Route path="/history"       element={<History />} />
+                    <Route path="/customerupdate/:userId"       element={<CustomerUpdate />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
+
                     <Route path="/bikeCRUD" element={<h1>Please select a bike to view its details.</h1>} />
                     <Route path="/bikeCRUD/:bikeId" element={<BikeCRUDAdmin />} />
-                    <Route path="/homeclient"    element={<HomeClient token={token} />} />
-                    <Route path="/accountclient" element={<AccountClient />} />
+
+                    <Route path="/homeclient"    element={<HomeClient />} />
+                    <Route path="/accountclient" element={<AccountClient/>} />
+
                     <Route path="/historyclient" element={<HistoryClient />} />
                     <Route path="/ridehistory/:tripId" element={<Ride />} />
-                    <Route path="/githublogin"   element={<GitHubLogin setToken={setToken}/>} />
+                    <Route path="/githublogin"   element={<GitHubLogin/>} />
                     <Route path="*"              element={<h1>404: Page Not Found</h1>} />
                 </Routes>
             </Layout>
