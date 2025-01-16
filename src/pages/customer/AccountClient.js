@@ -78,6 +78,7 @@ const AccountClient = () => {
                 <div className={styles.leftColumn}>
                     <form onSubmit={handleSaveChanges}>
                         <div className={styles.formGroup}>
+                            <label htmlFor="name" className={styles.label}>Användarnamn:</label>
                             <input
                                 type="text"
                                 id="name"
@@ -89,6 +90,7 @@ const AccountClient = () => {
                             />
                         </div>
                         <div className={styles.formGroup}>
+                            <label htmlFor="email" className={styles.label}>E-postadress:</label>
                             <input
                                 type="email"
                                 id="email"

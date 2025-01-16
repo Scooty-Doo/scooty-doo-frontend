@@ -26,6 +26,16 @@
     width: 100%;
 }
 
+.formGroup {
+    width: 110%;
+    max-width: 400px; /* Samma bredd som knappar */
+    margin-bottom: 15px;
+    border-radius: 6px;
+    color: #2c3e50;
+    font-size: 1rem;
+    box-sizing: border-box; /* Säkerställer att padding inte påverkar bredden */
+}
+
 /* Vänster kolumn med en mörk bakgrund */
 .leftColumn {
     color: beige;
@@ -77,8 +87,7 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 4px;
     color: #2c3e50;
-    width: 90%;
-    max-width: 400px;
+    width: 400px;
 }
 
 /* Spara-knappens stil */
