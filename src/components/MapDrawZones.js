@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, FeatureGroup, Polygon, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -55,7 +55,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
     const mapRef = useRef();
     const oldZonesRef = useRef();
     const [mapLayers, setMapLayers] = useState([]);
-    const [oldZones, setOldZones] = useState([]);
+    // const [oldZones, setOldZones] = useState([]);
     // const [newZones, setNewZones] = useState([]);
     // const [editedZones, setEditedZones] = useState([]);
     const [selectedZoneType, setSelectedZoneType] = useState(1);
@@ -75,12 +75,9 @@ import 'leaflet-draw/dist/leaflet.draw.css';
                     const response = await fetch('http://localhost:8000/v1/zones/');
                     const data = await response.json();
 
-                    setOldZones(data.data.map((zone) => ({ // old stinky code to test a thing
-                        id: zone.id,             // Include id
-                        type: zone.type,         // Include type
-                        attributes: zone.attributes, // Include attributes
-                        links: zone.links        // Include links
-                    })));
+                    data.data.forEach(zone => {
+                        loadApiZones(zone);// lägg till zonerna så som skapade zoner görs?
+                      });
                     console.log("fetched old zones",data);
 
 
@@ -106,6 +103,67 @@ import 'leaflet-draw/dist/leaflet.draw.css';
             return [parseFloat(lat), parseFloat(lon)]; // Return as [latitude, longitude]
         });
     }
+
+// Function to handle adding a zone from API to the map
+const loadApiZones = (zoneData) => {
+  console.log("LoadApiZones zoneData: ", zoneData);
+  // Destructuring based on the correct structure
+  const { boundary, zone_type_id } = zoneData.attributes; // Access attributes to get boundary and zone_type_id
+  const zoneId = zoneData.id; // Zone's unique ID (from the root level, not within attributes)
+
+  // Convert the boundary into LatLng objects for the Polygon
+  const coordinates = [];
+  coordinates[0] = parseBoundary(boundary); // Assuming parseBoundary returns an array of [lat, lng] pairs
+
+  console.log("LOAD API COORDINATES: ", coordinates);
+
+  // Ensure the last coordinate is the same as the first to close the polygon
+  // We're pushing the first coordinate again to close the polygon
+  coordinates[0].push(coordinates[0][0]);
+
+  // Assuming you have a function to get color based on zone type
+  const zoneColor = getZoneColor(zone_type_id);
+
+  // Create the Leaflet polygon using the boundary coordinates
+  const polygon = L.polygon(coordinates[0], {
+    color: zoneColor,
+    fillColor: zoneColor,
+    fillOpacity: 0.3, // Customize the opacity
+  });
+
+  // Add the polygon to the map
+  polygon.addTo(oldZonesRef.current);
+
+  // Add to map layers state
+  setMapLayers((layers) => [
+    ...layers,
+    {
+      id: polygon._leaflet_id,
+      zone_id: zoneId, // Store the zone's unique ID
+      zone_type_id: zone_type_id,
+      isNew: false,
+      zone_name: zoneData.attributes.zone_name || "default name", // Assuming 'zone_name' is in attributes
+      city_id: zoneData.attributes.city_id || 0, // Assuming 'city_id' is in attributes
+      boundary: boundary,
+      latlngs: coordinates[0], // Storing the coordinates for later reference
+    },
+  ]);
+};
+
+
+    // Function to parse the boundary string into coordinates
+    const parseBoundary = (boundary) => {
+        const coords = boundary
+          .replace('POLYGON((', '')
+          .replace('))', '')
+          .split(',')
+          .map(coord => {
+            const [lng, lat] = coord.split(' ').map(parseFloat);
+            return [lat, lng]; // Leaflet uses [lat, lng]
+          });
+        return coords;
+      };
+  
 
     const handleCreated = (e) => {
         console.log("CREATED E: ",e)
@@ -314,21 +372,7 @@ const addZonesToMap = (zones) => {
                             marker: false,
                         }}
                     />
-                    {[...oldZones].map((zone) => (
-                    <Polygon
-                        key={zone.id}
-                        positions={parseWKTPolygon(zone.attributes.boundary)} // Process boundary here
-                        color={getZoneColor(zone.attributes.zone_type_id)} // Color based on zone type
-                        pathOptions={{
-                            zoneId: zone.id,
-                            isNew: false,
-                            edited: false,
-                        }}
-                    >
-                        {/* Add a Popup that shows the zone name when clicked */}
-                        <Popup>type id: {zone.attributes.zone_type_id}<br />{zone.attributes.zone_name}</Popup>
-                    </Polygon>
-                ))}
+
 
                 </FeatureGroup>
             </MapContainer>

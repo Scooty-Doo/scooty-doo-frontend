@@ -19,6 +19,10 @@ const ListBikeCity = () => {
         fetchBikeByCityApi(cityId).then((data) => {
             setBikes(data.data);
             setLoading(false);
+        })
+        .catch((error) => {
+            setError(`Error loading bikes: ${error.message}`);
+            setLoading(false);
         });
     };
 
@@ -30,6 +34,10 @@ const ListBikeCity = () => {
         console.log("city Id is", cityId);
         fetchBike(bikeId).then((data) => {
             setBikes([data.data]);
+            setLoading(false);
+        })
+        .catch((error) => {
+            setError(`Error loading bikes: ${error.message}`);
             setLoading(false);
         });
     };
