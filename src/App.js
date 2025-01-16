@@ -12,6 +12,7 @@ import Account  from './pages/admin/AccountAdmin';
 import History  from './pages/admin/HistoryAdmin';
 import Zone     from './pages/admin/ZoneAdmin';
 import Customer from './pages/admin/CustomerAdmin';
+import BikeCRUDAdmin from './pages/admin/BikeCRUDAdmin';
 import CustomerUpdate from './pages/admin/CustomerUpdate';
 
 // Components for customer
@@ -73,8 +74,13 @@ const App = () => {
                     <Route path="/customerupdate/:userId"       element={<CustomerUpdate />} />
                     <Route path="/zone"          element={<Zone />} />
                     <Route path="/customer"      element={<Customer />} />
+
+                    <Route path="/bikeCRUD" element={<h1>Please select a bike to view its details.</h1>} />
+                    <Route path="/bikeCRUD/:bikeId" element={<BikeCRUDAdmin />} />
+
                     <Route path="/homeclient"    element={<HomeClient />} />
                     <Route path="/accountclient" element={<AccountClient/>} />
+
                     <Route path="/historyclient" element={<HistoryClient />} />
                     <Route path="/ridehistory/:tripId" element={<Ride />} />
                     <Route path="/githublogin"   element={<GitHubLogin/>} />

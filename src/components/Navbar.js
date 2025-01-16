@@ -40,10 +40,17 @@ const Navbar = () => {
                     </Link>
                 </li>
                 <li className={styles.navItem}>
+
+                    <Link className={styles.navLink} to="/bikeCRUD">
+                        <span className={styles.navText}>bikeCRUD</span>
+                        <FaUser className={styles.navIcon} />
+                    </Link>
+                </li>
                     <button className={styles.navLink} onClick={handleLogout}>
                         <span className={styles.navText}>Logout</span>
                         <FaSignOutAlt className={styles.navIcon} />
                     </button>
+
                 </li>
 
             </ul>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from '../styles/ListBikeCity.module.css';
 import { fetchBikeByCityApi, fetchBike } from "../api/bikeApi";
 
@@ -18,7 +19,11 @@ const ListBikeCity = () => {
         fetchBikeByCityApi(cityId).then((data) => {
             setBikes(data.data);
             setLoading(false);
-        });
+        })
+            .catch((error) => {
+                setError(`Error loading bikes: ${error.message}`);
+                setLoading(false);
+            });
     };
 
     const fetchBikeById = () => {
@@ -30,7 +35,11 @@ const ListBikeCity = () => {
         fetchBike(bikeId).then((data) => {
             setBikes([data.data]);
             setLoading(false);
-        });
+        })
+            .catch((error) => {
+                setError(`Error loading bikes: ${error.message}`);
+                setLoading(false);
+            });
     };
 
     return (
@@ -85,7 +94,7 @@ const ListBikeCity = () => {
                     <tbody>
                         {bikes.map((bike) => (
                             <tr key={bike.id}>
-                                <td>{bike.id}</td>
+                                <td><Link to={`/bikeCRUD/${bike.id}`}>{bike.id}</Link></td>
                                 <td>{bike.attributes.battery_lvl}%</td>
                                 <td>{bike.attributes.last_position}</td>
                                 <td>{bike.attributes.is_available ? 'Available' : 'Not Available'}</td>
