@@ -9,7 +9,7 @@ import { fetchBikeByCityApi, fetchBike } from '../api/bikeApi';
 jest.mock('../api/bikeApi', () => ({
     fetchBikeByCityApi: jest.fn(),
     fetchBike: jest.fn(),
-  }));
+}));
 
 describe('ListBikeCity Component', () => {
     beforeEach(() => {

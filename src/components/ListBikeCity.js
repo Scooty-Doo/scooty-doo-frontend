@@ -20,10 +20,10 @@ const ListBikeCity = () => {
             setBikes(data.data);
             setLoading(false);
         })
-        .catch((error) => {
-            setError(`Error loading bikes: ${error.message}`);
-            setLoading(false);
-        });
+            .catch((error) => {
+                setError(`Error loading bikes: ${error.message}`);
+                setLoading(false);
+            });
     };
 
     const fetchBikeById = () => {
@@ -36,10 +36,10 @@ const ListBikeCity = () => {
             setBikes([data.data]);
             setLoading(false);
         })
-        .catch((error) => {
-            setError(`Error loading bikes: ${error.message}`);
-            setLoading(false);
-        });
+            .catch((error) => {
+                setError(`Error loading bikes: ${error.message}`);
+                setLoading(false);
+            });
     };
 
     return (

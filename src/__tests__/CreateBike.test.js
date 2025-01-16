@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CreateBike from '../components/CreateBike';
 // Mock the fetch function globally

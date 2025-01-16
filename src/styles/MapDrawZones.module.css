@@ -1,0 +1,89 @@
+/* MapDrawZones.module.css */
+
+/* Huvudformulär */
+.form {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+/* Etiketter för fälten */
+.label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* Select box */
+.select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* Input fält */
+.input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* Placeholder text */
+.input::placeholder {
+    color: #888;
+}
+
+
+/* Knappstilar */
+.button {
+    background-color: #2c3e50c8;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+
+/* Container för kartan */
+.mapContainer {
+    display: flex;
+    justify-content: center; 
+    padding: 20px 0;
+}
+
+/* Container för kartan */
+.headerC {
+    margin-top: 70px;
+    display: flex;
+    justify-content: center; 
+    padding: 20px 0;
+}
+
+
+/* Kartan själv */
+.map {
+    width: 80%; 
+    max-width: 1000px; 
+    height: 50vh; 
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

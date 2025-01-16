@@ -1,384 +1,383 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet';
+import { MapContainer, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
+import styles from "../styles/MapDrawZones.module.css";
+const API_BASE_URL = "http://localhost:8000/v1/zones/";
 
-    // fråga vilhelm om double mounting workarounds (och med hjälp att se om det är double mounting som är problemet)
-
-    // Ny strategi?
-    // Istället för alla arrays så använder vi det inbyggda layers och om layeren är från fetchen så har vi en flagga som säger så
-    // om flagan är true (från old fetch) så patchas arrayen om den är editad (behöver flagga för edited?)
-    // om flagan är false (från hanldeCreated) så postas zonen. (se till att den zon som blir postad är den nyaste varianten av den zonen)
-
-    // Vad saknar zone CRUD?
-    // fungerande handleEdit som inte skapar duplicates
-    // se till att handleSaved fungerar
-    // Lägg till att man kan skriva in ett namn i ett fält över kartan som assignas som nyskapade zoners namn. Om den är tom så används en default string av "Unnamed zone" (gör lika dant för vilket stads id som zonen ska få)
-    // se till att inga edge cases inte fungerar
-
-    // skapas duplicates för att vi inte tar bort layer från kartan?
-
-    // tror att den nya strategien kan vara en breakthrough (blir lite omcodning då) (om vi kör på den så drar vi en copy av denna fil innan för säkerhetens skull)
-
-    // lägg till en if statement i handleEdited för att se till att den bara editar polygons. (ifall handleEdited körs dubelt på grund av att den tar upp något som inte är en zone(men hur blir det en copia av samma zon då???))
-
-    // aparently the polygon component is a scam and cannot be edited instead look into the draw plugin
-
-    // ALLA KOMMENTARER UNDER DENHÄR ÄR KLARA
-    // se till att selectedZoneType faktiskt påverkar vilket zone_type_id som nyskapade zones får (KLAR)
-
-
-
-    // what do we need to fix after the overhaul?
-
-    // fixed:
-    // creat new zones, be able to edit and delete those new zones before sending them to api
-    // readd the zones getting the correct zone color and correct zonetyping based on what selected zone type is selected
-    // add a way to post created zones to api
-
-    // probably fixed but not tested:
-    // make sure that the new zones we can create are labled as new in their data for post/patch differencing
-
-    // not fixed:
-    // when a new zone is created then edited then saved and then edited and saved again then it becomes two different zones since the first saved zone makes it to the api and then the edited zone becomes a different zone that is edited
-    // make sure the old zones are added to the layer so it can be edited
-    // make sure that the old zones can be edited and deleted
-    // make sure that the old zones are labled as old zones and labled if they have been edited or no for patching pourposes
-    // figure out a way to send a delete request to api if zone has been deleted (just do in delete function using _zone_id?)
-
-    // force refesh the page when saving zones?
-    // fixa så att zoner kan editas (edit fins men det verkar inte updatera zonerna)
-    const MapWithZones = () => {
+const MapWithZones = () => {
     const ZOOM_LEVEL = 13;
     const MAP_CENTER = [55.605, 13.0038];
     const mapRef = useRef();
     const oldZonesRef = useRef();
     const [mapLayers, setMapLayers] = useState([]);
-    // const [oldZones, setOldZones] = useState([]);
-    // const [newZones, setNewZones] = useState([]);
-    // const [editedZones, setEditedZones] = useState([]);
     const [selectedZoneType, setSelectedZoneType] = useState(1);
-    const selectedZoneTypeRef = useRef(1);
-    // const newZonesRef = useRef(newZones);
-    // const editedZonesRef = useRef(editedZones);
-    // const oldZonesRef = useRef(oldZones);
+    const [zoneName, setZoneName] = useState(""); 
+    const [cityId, setCityId] = useState(1); 
+    const [newZoneBoundary, setNewZoneBoundary] = useState(null);
+    const [editingZoneId, setEditingZoneId] = useState(null);
 
+    // Hämta zondata från API
     useEffect(() => {
-        selectedZoneTypeRef.current = selectedZoneType;
-    }, [selectedZoneType]);
+        const fetchZones = async () => {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
 
-        // Fetch old zones from backend
-        useEffect(() => { // flytta ut ur useEffect och in i något annat? useEffect kommmer nog overrida oldZone när den inte borde. (är teorin åtminstone)
-            const fetchZones = async () => { // move to zones api? (maya har redan fixat zone api kansek kan använda den)
-                try {
-                    const response = await fetch('http://localhost:8000/v1/zones/');
-                    const data = await response.json();
-
-                    data.data.forEach(zone => {
-                        loadApiZones(zone);// lägg till zonerna så som skapade zoner görs?
-                      });
-                    console.log("fetched old zones",data);
-
-
-                    const parsedZones = data.data.map((zone) => ({
-                        id: zone.id,
-                        latlngs: parseWKTPolygon(zone.attributes.boundary),
-                        zone_type_id: zone.attributes.zone_type_id,
-                    }));
-                    console.log("parsedZones",parsedZones);
-                    addZonesToMap(parsedZones);
-                } catch (error) {
-                    console.error("Failed to fetch zones:", error);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch zones: ${response.status}`);
                 }
-            };
-                fetchZones();
-        }, []);
 
-    function parseWKTPolygon(wkt) {
-        // Extract the coordinates from the WKT string (inside the "(())")
-        const coordinatesString = wkt.match(/\(\((.*?)\)\)/)[1]; // Extracts the coordinates part
-        return coordinatesString.split(",").map(coord => {
-            const [lon, lat] = coord.trim().split(" "); // Split each pair of coordinates
-            return [parseFloat(lat), parseFloat(lon)]; // Return as [latitude, longitude]
-        });
-    }
+                const data = await response.json();
+                data.data.forEach(loadApiZones);
+            } catch (error) {
+                console.error("Error fetching zones:", error);
+            }
+        };
 
-// Function to handle adding a zone from API to the map
-const loadApiZones = (zoneData) => {
-  console.log("LoadApiZones zoneData: ", zoneData);
-  // Destructuring based on the correct structure
-  const { boundary, zone_type_id } = zoneData.attributes; // Access attributes to get boundary and zone_type_id
-  const zoneId = zoneData.id; // Zone's unique ID (from the root level, not within attributes)
+        fetchZones();
+    }, []);
 
-  // Convert the boundary into LatLng objects for the Polygon
-  const coordinates = [];
-  coordinates[0] = parseBoundary(boundary); // Assuming parseBoundary returns an array of [lat, lng] pairs
-
-  console.log("LOAD API COORDINATES: ", coordinates);
-
-  // Ensure the last coordinate is the same as the first to close the polygon
-  // We're pushing the first coordinate again to close the polygon
-  coordinates[0].push(coordinates[0][0]);
-
-  // Assuming you have a function to get color based on zone type
-  const zoneColor = getZoneColor(zone_type_id);
-
-  // Create the Leaflet polygon using the boundary coordinates
-  const polygon = L.polygon(coordinates[0], {
-    color: zoneColor,
-    fillColor: zoneColor,
-    fillOpacity: 0.3, // Customize the opacity
-  });
-
-  // Add the polygon to the map
-  polygon.addTo(oldZonesRef.current);
-
-  // Add to map layers state
-  setMapLayers((layers) => [
-    ...layers,
-    {
-      id: polygon._leaflet_id,
-      zone_id: zoneId, // Store the zone's unique ID
-      zone_type_id: zone_type_id,
-      isNew: false,
-      zone_name: zoneData.attributes.zone_name || "default name", // Assuming 'zone_name' is in attributes
-      city_id: zoneData.attributes.city_id || 0, // Assuming 'city_id' is in attributes
-      boundary: boundary,
-      latlngs: coordinates[0], // Storing the coordinates for later reference
-    },
-  ]);
-};
-
-
-    // Function to parse the boundary string into coordinates
-    const parseBoundary = (boundary) => {
-        const coords = boundary
-          .replace('POLYGON((', '')
-          .replace('))', '')
-          .split(',')
-          .map(coord => {
-            const [lng, lat] = coord.split(' ').map(parseFloat);
-            return [lat, lng]; // Leaflet uses [lat, lng]
-          });
-        return coords;
-      };
-  
-
-    const handleCreated = (e) => {
-        console.log("CREATED E: ",e)
-
-        const { layerType, layer } = e;
-        if (layerType === "polygon") {
-            const {_leaflet_id} = layer;
-
-            // Get the color based on the current selected zone type
-            const zoneColor = getZoneColor(selectedZoneTypeRef.current);
-
-            // for labeling new zones as new
-            const isNew = true;
-
-            const coordinates = layer.getLatLngs()[0];
-            console.log("LatLngs formatt: ",layer.getLatLngs());
-            const firstCoordinate = coordinates[0];
-
-            coordinates.push(firstCoordinate);
-            const boundary = `POLYGON((${coordinates.map(coord => `${coord.lng} ${coord.lat}`).join(', ')}))`;
-
-            // Set the style of the layer (polygon)
-            layer.setStyle({
-                color: zoneColor,
-                fillColor: zoneColor,
+    // Uppdatera karta när zoner ändras
+    useEffect(() => {
+        if (oldZonesRef.current) {
+            oldZonesRef.current.clearLayers();
+            mapLayers.forEach((layer) => {
+                const polygon = new L.Polygon(layer.latlngs, {
+                    id: layer.id, // Tilldelar id här
+                    color: getZoneColor(layer.zone_type_id),
+                    fillOpacity: 0.4,
+                });
+                oldZonesRef.current.addLayer(polygon);
             });
+        }
+    }, [mapLayers]);
 
-            setMapLayers((layers) => [
-                ...layers,
-                {
-                    id:_leaflet_id,
-                    zone_type_id: selectedZoneTypeRef.current,
-                    isNew: isNew,
-                    zone_name: "default name",
-                    city_id: 0,
-                    boundary: boundary,
-                    latlngs: layer.getLatLngs(),
+    // Ladda zoner från api 
+    const loadApiZones = (zoneData) => {
+        if (!zoneData || !zoneData.id || !zoneData.attributes) {
+            console.error("Invalid zone data format:", zoneData);
+            return;
+        }
+    
+        const existingZone = mapLayers.find((layer) => layer.id === zoneData.id);
+        if (existingZone) {
+            console.warn(`Zone with ID ${zoneData.id} already exists.`);
+            return; // Hoppa över om zonen redan finns
+        }
+    
+        const { boundary, zone_type_id, zone_name, city_id } = zoneData.attributes;
+        const latlngs = parseBoundary(boundary);
+    
+        setMapLayers((prevLayers) => [
+            ...prevLayers,
+            {
+                id: zoneData.id,
+                zone_type_id,
+                isNew: false,
+                zone_name: zone_name || "Unnamed Zone",
+                city_id: city_id || 0,
+                boundary,
+                latlngs,
+            },
+        ]);
+    };
+    
+    
+    //omvandla polygon till lat-lng-koordinationer
+    const parseBoundary = (boundary) => {
+        if (!boundary || typeof boundary !== "string") {
+            console.error("Invalid boundary:", boundary);
+            return [];
+        }
+    
+        return boundary
+            .replace("POLYGON((", "")
+            .replace("))", "")
+            .split(",")
+            .map((coord) => {
+                const [lng, lat] = coord.trim().split(" ").map(parseFloat);
+                if (isNaN(lat) || isNaN(lng)) {
+                    console.error("Invalid coordinate in boundary:", coord);
+                    return null;
+                }
+                return [lat, lng];
+            })
+            .filter((coord) => coord !== null); 
+    };
+    
+    // Spara zonen (både ny eller uppdaterad)
+    const handleSave = () => {
+        if (!zoneName || !cityId || !newZoneBoundary) {
+            alert("Please provide a Zone Name, City ID, and draw a zone on the map.");
+            return;
+        }
+    
+        const updatedZone = {
+            zone_name: zoneName,
+            zone_type_id: selectedZoneType,
+            city_id: cityId,
+            boundary: newZoneBoundary,
+        };
+    
+        if (editingZoneId) {
+            console.log("Updating zone:", editingZoneId, updatedZone);
+            UpdateZone(editingZoneId, updatedZone);
+        } else {
+            console.log("Saving new zone:", updatedZone);
+            createZone(updatedZone);
+        }
+    };
+    
+    // Funktion för att skapa ny zon
+    const createZone = async (zoneData) => {
+        try {
+            const response = await fetch(API_BASE_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            ]);
+                body: JSON.stringify(zoneData),
+            });
+    
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error("API Response Error:", errorResponse);
+                throw new Error(`Failed to create zone: ${response.status} - ${errorResponse.detail || 'Unknown error'}`);
+            }
+    
+            const newZone = await response.json();
+            console.log("API response for created zone:", newZone);
+    
+            loadApiZones(newZone.data);
+            alert("Zone created successfully!");
+        } catch (error) {
+            console.error("Error creating zone:", error.message || error);
+            alert("Failed to create zone. Check console for details.");
         }
     };
 
+    // Uppdatera zon
+    const UpdateZone = async (zoneId, zoneData) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}${zoneId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(zoneData),
+            });
+    
+            if (!response.ok) {
+                const errorResponse = await response.text();
+                console.error("API Response Error:", errorResponse);
+                throw new Error(`Failed to update zone: ${response.status} - ${errorResponse}`);
+            }
+    
+            const updatedZone = await response.json();
+            console.log("API response for updated zone:", updatedZone);
+
+            setMapLayers((prevLayers) =>
+                prevLayers.map((layer) =>
+                    layer.id === zoneId
+                        ? { ...layer, ...zoneData, latlngs: parseBoundary(zoneData.boundary) }
+                        : layer
+                )
+            );
+    
+            alert("Zone updated successfully!");
+            setEditingZoneId(null);
+        } catch (error) {
+            console.error("Error updating zone:", error.message || error);
+            alert("Failed to update zone. Check console for details.");
+        }
+    };
+
+    // Skapa ny zon (polygon)
+    const handleCreated = (e) => {
+        const { layerType, layer } = e;
+        if (layerType === "polygon") {
+            const latlngs = layer.getLatLngs()[0];
+    
+            if (latlngs[0] !== latlngs[latlngs.length - 1]) {
+                latlngs.push(latlngs[0]);
+            }
+    
+            const boundary = `POLYGON((${latlngs.map((coord) => `${coord.lng} ${coord.lat}`).join(', ')}))`;
+            setNewZoneBoundary(boundary);
+            console.log("New zone boundary created:", boundary);
+        }
+    };
+
+    // Klicka på befintlig zon för redigering
+    const handleZoneClick = (zoneId) => {
+        const selectedZone = mapLayers.find((layer) => layer.id === zoneId);
+        if (selectedZone) {
+            setEditingZoneId(zoneId);
+            setZoneName(selectedZone.zone_name);
+            setSelectedZoneType(selectedZone.zone_type_id);
+            setCityId(selectedZone.city_id);
+            setNewZoneBoundary(selectedZone.boundary);
+            console.log("Zone selected for editing:", selectedZone);
+        }
+    };
+    
+    // Hantera ändring av polygon
     const handleEdited = (e) => {
-        console.log("EDITED E: ",e)
-
-        const { layers: { _layers } } = e; // get data from edited zone/zones
-
-        Object.values(_layers).map(({ _leaflet_id, editing }) => { // if edited zone matches the zone id then we update latlngs
-            setMapLayers((layers) =>
-                layers.map((l) => l.id === _leaflet_id
-                    ? {...l, latlngs: { ...editing.latlngs[0] } } 
-                    : l
+        const layers = e.layers;
+    
+        layers.eachLayer((layer) => {
+            const updatedLatlngs = layer.getLatLngs()[0];
+            
+            if (updatedLatlngs[0] !== updatedLatlngs[updatedLatlngs.length - 1]) {
+                updatedLatlngs.push(updatedLatlngs[0]);
+            }
+    
+            const updatedBoundary = `POLYGON((${updatedLatlngs
+                .map((coord) => `${coord.lng} ${coord.lat}`)
+                .join(', ')}))`;
+    
+            const zoneId = layer.options?.id;
+    
+            if (!zoneId) {
+                console.error("Zone ID is undefined during editing:", layer);
+                return;
+            }
+    
+            const updatedZone = {
+                zone_name: zoneName,
+                boundary: updatedBoundary,
+            };
+    
+            console.log("Updated zone:", zoneId, updatedZone);
+    
+            UpdateZone(zoneId, updatedZone);
+    
+            setMapLayers((prevLayers) =>
+                prevLayers.map((layer) =>
+                    layer.id === zoneId
+                        ? { ...layer, latlngs: updatedLatlngs, boundary: updatedBoundary }
+                        : layer
                 )
             );
         });
     };
-
-    const handleSave = async () => {
-        try {
-            // Iterate over each layer in mapLayers and post them one by one
-            for (const layer of mapLayers) {
-                console.log("AAAAAAAAAAAAAA",layer.latlngs);
-                const formattedPoints = `POLYGON((${layer.latlngs[0].map(point => `${point.lng} ${point.lat}`).join(', ')}))`;
-                console.log("HELL: ",formattedPoints);
-                const zoneData = {
-                    zone_name: layer.zone_name,
-                    zone_type_id: layer.zone_type_id,
-                    city_id: 1, // temp way to get city id
-                    boundary: formattedPoints, // WKT format
-                };
-                console.log("ZoneData from saved: ",zoneData);
-                console.log("ZoneData JSON.Stringify from saved: ",JSON.stringify(zoneData));
-
-                const response = await fetch('http://localhost:8000/v1/zones/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(zoneData),
-                });
-
-                // Handle the response for each request
-                if (!response.ok) {
-                    console.error('Failed to save zone:', zoneData, response.status, response.statusText);
-                    alert(`Failed to save zone: ${zoneData.zone_name}. Please try again.`);
-                    return; // Stop further requests if one fails
-                }
-            }
-
-            // If all requests succeed
-            console.log('All zones saved successfully.');
-            alert('All zones saved successfully!');
-        } catch (error) {
-            console.error('Error while saving zones:', error);
-            alert('An error occurred. Please try again.');
-        }
-        window.location.reload(); // Force reloading page to avoid weird save then edit interactions
+    
+    
+    // Rendera zoner
+    const renderZones = () => {
+        return mapLayers.map((layer, index) => (
+            <Polygon
+                key={`${layer.id}-${index}`}
+                positions={layer.latlngs}
+                color={getZoneColor(layer.zone_type_id)}
+                fillOpacity={0.4}
+                eventHandlers={{
+                    click: () => handleZoneClick(layer.id),
+                }}
+                options={{ id: layer.id }} 
+            />
+        ));
     };
+    
+    
 
-    const handleDeleted = (e) => {
-        console.log("DELETED E: ",e);
-        const {
-            layers: { _layers },
-         } = e; // get data from deleted zone/zones
-
-        Object.values(_layers).map(({ _leaflet_id }) => { // getting leaflet id to match against zones we have to delete them
-            setMapLayers((layers) => layers.filter((l) => l.id !== _leaflet_id));
-        });
-    };
-
-    const getZoneColor = (type) => { // move to utils?
+    const getZoneColor = (type) => {
         switch (type) {
-            case 1:
-                return 'blue';
-            case 2:
-                return 'yellow';
-            case 3:
-                return 'red';
-            case 4:
-                return 'green';
-            default:
-                return 'gray';
+        case 1:
+            return 'blue';
+        case 2:
+            return 'yellow';
+        case 3:
+            return 'red';
+        case 4:
+            return 'green';
+        default:
+            return 'gray';
         }
     };
 
-// Function to add zones to the map
-const addZonesToMap = (zones) => {
-    const featureGroup = oldZonesRef.current;
-
-    console.log("Adding zones to the map:", zones); // Log the zones being added
-    console.log("Feature group before adding zones:", featureGroup);
-
-    // // Update mapLayers with the new zones
-    // const newMapLayers = zones.map((zone) => {
-    //     const polygon = L.polygon(zone.latlngs, {
-    //         color: getZoneColor(zone.zone_type_id),
-    //         fillColor: getZoneColor(zone.zone_type_id),
-    //         fillOpacity: 0.5,
-    //         boundary: zone.latlngs,
-    //     });
-
-    //     polygon.options = {
-    //         ...polygon.options,
-    //         zoneId: zone.id,
-    //         isNew: false,
-    //         zone_type_id: zone.zone_type_id,
-    //         boundary: zone.boundary,
-    //     };
-
-    //     featureGroup.addLayer(polygon);
-    //     console.log("Added polygon with options:", polygon.options); // Log polygon options after creation
-
-    //     return {
-    //         id: polygon._leaflet_id, // Unique ID for each polygon
-    //         zone_type_id: zone.zone_type_id,
-    //         isNew: false,
-    //         zone_name: zone.name || "default name", // Assuming zone has a name property
-    //         city_id: zone.city_id || 0, // Assuming zone has a city_id property
-    //         boundary: `POLYGON((${zone.latlngs[0].map(coord => `${coord.lng} ${coord.lat}`).join(', ')}))`, // Generate boundary as POLYGON
-    //         latlngs: zone.latlngs,
-    //     };
-    // });
-
-    // Update the mapLayers state with the new zones
-    // setMapLayers((layers) => [...layers, ...newMapLayers]);
-    // map.addLayer(layer);
-    console.log("Feature group after adding zones:", featureGroup); // Log feature group after all zones are added
-};
-
-
-    // console.log("Old Zones", oldZones);
-    // console.log("Edited Zones", editedZones);
-    // console.log("New Zones", newZones);
     return (
         <>
-            <div style={{ padding: '10px' }}>
-                <label>
+            <div className={styles.headerC}>
+                <h1> Create and Edit zones</h1>
+            </div>
+            <div className={styles.mapContainer}>
+                <MapContainer
+                    center={MAP_CENTER}
+                    zoom={ZOOM_LEVEL}
+                    ref={mapRef}
+                    className={styles.map} // Lägg till CSS-klassen för kartan
+                >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    <FeatureGroup ref={oldZonesRef}>
+                        {renderZones()}
+                        <EditControl
+                            position="topright"
+                            onCreated={handleCreated}
+                            onEdited={handleEdited}
+                            draw={{
+                                polyline: false,
+                                rectangle: false,
+                                circle: false,
+                                circlemarker: false,
+                                marker: false,
+                            }}
+                            edit={{
+                                featureGroup: oldZonesRef.current, // Tillåt redigering av befintliga zoner
+                            }}
+                        />
+                    </FeatureGroup>
+                    {renderZones()}
+                </MapContainer>
+            </div>
+            <div className={styles.form}>
+                <label className={styles.label}>
                     Select Zone Type:{' '}
-                    <select value={selectedZoneType} onChange={(e) => setSelectedZoneType(parseInt(e.target.value, 10))}>
+                    <select
+                        value={selectedZoneType}
+                        onChange={(e) => setSelectedZoneType(parseInt(e.target.value, 10))}
+                        className={styles.select}
+                    >
                         <option value="1">Parking</option>
                         <option value="2">Slow</option>
                         <option value="3">Forbidden</option>
                         <option value="4">Charging</option>
                     </select>
                 </label>
-                <button onClick={handleSave}>Save Zones</button>
-            </div>
-            <MapContainer
-            center={MAP_CENTER}
-            zoom={ZOOM_LEVEL} ref={mapRef}
-            whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
-            style={{ height: '90vh', width: '100%' }
-            }>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <FeatureGroup ref={oldZonesRef}>
-                    <EditControl
-                        position="topright"
-                        onCreated={handleCreated}
-                        onEdited={handleEdited}
-                        onDeleted={handleDeleted}
-                        draw={{
-                            polyline: false,
-                            rectangle: false,
-                            circle: false,
-                            circlemarker: false,
-                            marker: false,
-                        }}
+                <br />
+                <label className={styles.label}>
+                    Zone Name:{' '}
+                    <input
+                        type="text"
+                        value={zoneName}
+                        onChange={(e) => setZoneName(e.target.value)}
+                        placeholder="Enter Zone Name"
+                        className={styles.input}
                     />
-
-
-                </FeatureGroup>
-            </MapContainer>
-            <pre>{JSON.stringify( mapLayers, 0, 2 )}</pre>
+                </label>
+                <br />
+                <label className={styles.label}>
+                    City ID:{' '}
+                    <input
+                        type="number"
+                        value={cityId}
+                        onChange={(e) => setCityId(parseInt(e.target.value, 10))}
+                        placeholder="Enter City ID"
+                        className={styles.input}
+                    />
+                </label>
+                <br />
+                <button onClick={handleSave} className={styles.button}>Save Zone</button>
+            </div>
         </>
     );
+    
 };
 
 export default MapWithZones;
