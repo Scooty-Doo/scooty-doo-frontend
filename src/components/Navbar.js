@@ -46,12 +46,10 @@ const Navbar = () => {
                         <FaUser className={styles.navIcon} />
                     </Link>
                 </li>
-                    <button className={styles.navLink} onClick={handleLogout}>
-                        <span className={styles.navText}>Logout</span>
-                        <FaSignOutAlt className={styles.navIcon} />
-                    </button>
-
-                </li>
+                <button className={styles.navLink} onClick={handleLogout}>
+                    <span className={styles.navText}>Logout</span>
+                    <FaSignOutAlt className={styles.navIcon} />
+                </button>
 
             </ul>
         </nav>
