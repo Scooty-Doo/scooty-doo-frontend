@@ -5,6 +5,7 @@ export const startRide = async (bikeId) => {
     try {
         // Hämta token från sessionStorage
         const token = sessionStorage.getItem("token");
+        console.log(token)
 
         if (!token) {
             throw new Error("Ingen token hittades i sessionStorage");

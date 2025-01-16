@@ -3,7 +3,7 @@ import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 import { useNavigate } from 'react-router-dom';
 import { startRide, endRide } from '../../api/tripsApi'; 
-import { fetchUser } from "../../api/userApi";
+import { fetchUser } from "../../api/meApi";
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
@@ -14,6 +14,8 @@ const HomeClient = () => {
     const [userInfo, setUserInfo] = useState(null);
 
     const navigate = useNavigate();
+
+    console.log(sessionStorage)
     
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => {
@@ -25,8 +27,9 @@ const HomeClient = () => {
 
     useEffect(() => {
         const getUserInfo = async () => {
+            const token = sessionStorage.getItem("token");
             try {
-                const userData = await fetchUser(user_id);
+                const userData = await fetchUser(token);
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
@@ -59,10 +62,11 @@ const HomeClient = () => {
     const handleEndRide = async () => {
         try {
             await endRide(tripId, bikeId);
-            console.log("Resa avslutad!");
+            console.log("Resa avslutad!", response);
             setRideActive(false);
             setBikeId('');
-            navigate(`/ridehistory/${tripId}`);
+            //navigate(`/ridehistory/`); med response
+            navigate('/ridehistory', { state: { rideData: response } }); //skicka med resan till ridehistory
         } catch (error) {
             console.error("Failed to end ride:", error);
         }
@@ -72,7 +76,12 @@ const HomeClient = () => {
         <div className={styles.homecontaianer}>
 
             <div className={styles.map}>
-                <MapView />
+                <MapView 
+                    userType="client"
+                    onBikeClick={(id) => {
+                        setBikeId(id); // Fyll i cykelns ID i formuläret
+                    }}
+                />
             </div>
 
             {rideActive ? (

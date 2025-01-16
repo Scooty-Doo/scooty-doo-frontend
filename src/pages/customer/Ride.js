@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { fetchRide } from "../../api/tripsApi";
 import { useNavigate } from "react-router-dom";
 import { parsePath, formatTime } from "../../components/utils"; // Import helpers
 import RideDetails from "../../components/RideDetails";
@@ -9,10 +7,11 @@ import styles from "../../styles/HistoryRideClient.module.css";
 import { fillWallet } from "../../api/stripeApi";
 
 const Ridehistory = () => {
-    const { tripId } = useParams();
-    const [rideHistory, setRideHistory] = useState(null);
     const [amount, setAmount] = useState(0);
     const navigate = useNavigate();
+
+    const rideData = location.state?.rideData; //hämta rideData
+    console.log("Ride Data:", rideData);
 
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => {
@@ -24,23 +23,19 @@ const Ridehistory = () => {
 
 
     useEffect(() => {
-        if (tripId) {
-            fetchRide(tripId).then((data) => {
-                setRideHistory(data);
-
-                // Hämta total_fee och avrunda uppåt
-                const totalFee = data.data.attributes.total_fee;
-                const roundedAmount = Math.ceil(totalFee); // Avrunda uppåt
-                setAmount(roundedAmount); // Sätt det som ett heltal
-            });
+        if (rideData) {
+            // Hämta total_fee och avrunda uppåt
+            const totalFee = rideData.data.attributes.total_fee;
+            const roundedAmount = Math.ceil(totalFee); // Avrunda uppåt
+            setAmount(roundedAmount); // Sätt det som ett heltal
         }
-    }, [tripId]);
+    }, [rideData]);
 
-    if (!rideHistory) {
-        return <div>Laddar resa...</div>;
+    if (!rideData) {
+        return <div>Ingen data tillgänglig för denna resa.</div>;
     }
 
-    const pathCoordinates = parsePath(rideHistory.data.attributes.path_taken);
+    const pathCoordinates = parsePath(rideData.data.attributes.path_taken);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -56,7 +51,7 @@ const Ridehistory = () => {
         <div className={styles.historyContainer}>
             <h2>Din resa</h2>
 
-            <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
+            <RideDetails rideHistory={rideData} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
             <button className={styles.newRide}>Boka en ny cykel</button>
             <button onClick={handleSubmit} className={styles.newRide}>
