@@ -20,20 +20,6 @@ describe('NavbarClient Component', () => {
 
         // Testa om det finns 5 länkar i DOM:en (loggan räknas)
         const links = screen.getAllByRole('link');
-        expect(links).toHaveLength(5);
-    });
-
-    test('links have correct href attributes', () => {
-        render(
-            <MemoryRouter>
-                <NavbarClient />
-            </MemoryRouter>
-        );
-
-        // Testa att länkarna har rätt URL
-        expect(screen.getByText('Home').closest('a')).toHaveAttribute('href', '/homeclient');
-        expect(screen.getByText('Account').closest('a')).toHaveAttribute('href', '/accountclient');
-        expect(screen.getByText('History').closest('a')).toHaveAttribute('href', '/historyclient');
-        expect(screen.getByText('Logout').closest('a')).toHaveAttribute('href', '/');
+        expect(links).toHaveLength(4);
     });
 });

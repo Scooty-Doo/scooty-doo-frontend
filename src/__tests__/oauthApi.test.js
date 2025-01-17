@@ -15,7 +15,7 @@ describe("fetchLogin function", () => {
             token: "abcd1234",
             user: {
                 id: 1,
-                email: "user@example.com"
+                email: "scooty@example.com"
             }
         };
 

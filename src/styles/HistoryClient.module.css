@@ -54,6 +54,7 @@
     height: 40px;
 }
 
+
 /* Mindre skärmar, t.ex. mobiltelefoner */
 @media (max-width: 600px) {
     .historyContainer {
@@ -71,5 +72,9 @@
     .rideDetails {
         flex-direction: row;
         gap: 10px;
+    }
+
+    .mapContainer {
+        height: 50px;
     }
 }

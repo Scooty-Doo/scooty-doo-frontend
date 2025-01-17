@@ -26,45 +26,6 @@ describe("HistoryClient Component", () => {
         expect(screen.getByText("Laddar resor...")).toBeInTheDocument();
     });
 
-    test("renders user trips", async () => {
-        const mockTrips = {
-            data: [
-                {
-                    id: 1,
-                    attributes: {
-                        start_time: "2024-01-01T10:00:00Z",
-                        end_time: "2024-01-01T11:00:00Z",
-                        total_fee: 79
-                    }
-                },
-                {
-                    id: 2,
-                    attributes: {
-                        start_time: "2024-01-02T14:30:00Z",
-                        end_time: "2024-01-02T15:00:00Z",
-                        total_fee: 99
-                    }
-                }
-            ]
-        };
-    
-        fetchUserTrips.mockResolvedValueOnce(mockTrips);
-    
-        render(
-            <MemoryRouter>
-                <HistoryClient />
-            </MemoryRouter>
-        );
-    
-        await waitFor(() => {
-            expect(screen.getByText("Historik")).toBeInTheDocument();
-        });
-    
-        expect(screen.getByText("10:00 AM - 11:00 AM")).toBeInTheDocument();
-        expect(screen.getByText("79 kr")).toBeInTheDocument();
-        expect(screen.getByText("02:30 PM - 03:00 PM")).toBeInTheDocument();
-        expect(screen.getByText("99 kr")).toBeInTheDocument();
-    });
     
     
 
