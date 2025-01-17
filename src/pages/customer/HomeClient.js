@@ -3,7 +3,7 @@ import MapView from '../../components/Map.js';
 import styles from '../../styles/HomeClient.module.css';
 import { useNavigate } from 'react-router-dom';
 import { startRide, endRide } from '../../api/tripsApi'; 
-import { fetchUser } from "../../api/userApi";
+import { fetchUser } from "../../api/meApi";
 
 // Hemsida för klient, där kund kan starta resa
 const HomeClient = () => {
@@ -26,7 +26,7 @@ const HomeClient = () => {
     useEffect(() => {
         const getUserInfo = async () => {
             try {
-                const userData = await fetchUser(user_id);
+                const userData = await fetchUser();
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
@@ -58,11 +58,11 @@ const HomeClient = () => {
 
     const handleEndRide = async () => {
         try {
-            await endRide(tripId, bikeId);
+            const ride = await endRide(tripId, bikeId);
             console.log("Resa avslutad!");
             setRideActive(false);
             setBikeId('');
-            navigate(`/ridehistory/${tripId}`);
+            navigate(`/ridehistory/`, { state: { ride } });
         } catch (error) {
             console.error("Failed to end ride:", error);
         }

@@ -52,6 +52,8 @@ export const endRide = async (tripId, bikeId) => {
         });
 
         if (!response.ok) {
+            const res = await response.json()
+            console.log(res)
             throw new Error(`Failed to end ride: ${response.status}`);
         }
 
