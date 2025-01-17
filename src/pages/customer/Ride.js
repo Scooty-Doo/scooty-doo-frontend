@@ -7,12 +7,14 @@ import RideDetails from "../../components/RideDetails";
 import MapRide from "../../components/MapRide";
 import styles from "../../styles/HistoryRideClient.module.css";
 import { fillWallet } from "../../api/stripeApi";
+import { fetchTrip } from "../../api/tripsApi";
 
 const Ridehistory = () => {
-    //const { tripId } = useParams();
+    const { tripId } = useParams();
     const location = useLocation();
     const [rideHistory, setRideHistory] = useState(null);
     const [amount, setAmount] = useState(0);
+    const [isFetchedViaId, setIsFetchedViaId] = useState(false);
     const navigate = useNavigate();
 
     // Kontrollera token och omdirigera till login om den saknas
@@ -24,9 +26,27 @@ const Ridehistory = () => {
     }, [navigate]);
 
     useEffect(() => {
-        setRideHistory(location.state.ride)
-        console.log(location.state.ride)
-    }, [location])
+        const loadRideData = async () => {
+            try {
+                // Kontrollera om `location.state.ride` finns
+                if (location.state?.ride) {
+                    setRideHistory(location.state.ride);
+                    setIsFetchedViaId(false);
+                } else if (tripId) {
+                    // Hämta resa via API om `location.state.ride` inte finns
+                    const rideData = await fetchTrip(tripId);
+                    setRideHistory(rideData);
+                    setIsFetchedViaId(true);
+                } else {
+                    console.error("Ingen resa tillgänglig");
+                }
+            } catch (error) {
+                console.error("Failed to load ride data:", error);
+            }
+        };
+
+        loadRideData();
+    }, [location, tripId]);
 
     useEffect(() => {
         if (!rideHistory) {
@@ -38,21 +58,6 @@ const Ridehistory = () => {
         setAmount(roundedAmount); // Sätt det som ett heltal  
     }, [rideHistory])
 
-
-    /*
-    useEffect(() => {
-        if (tripId) {
-            fetchRide(tripId).then((data) => {
-                setRideHistory(data);
-
-                // Hämta total_fee och avrunda uppåt
-                const totalFee = data.data.attributes.total_fee;
-                const roundedAmount = Math.ceil(totalFee); // Avrunda uppåt
-                setAmount(roundedAmount); // Sätt det som ett heltal
-            });
-        }
-    }, [tripId]);
-    */
 
     if (!rideHistory) {
         return <div>Laddar resa...</div>;
@@ -76,11 +81,12 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button onClick={handleSubmit} className={styles.Paybutton}>
-                Betala din resa nu
-            </button>
+            {!isFetchedViaId && ( // Visa knappen endast om resan inte hämtades via ID
+                <button onClick={handleSubmit} className={styles.Paybutton}>
+                    Betala din resa nu
+                </button>
+            )}
             <button className={styles.newRide}>Boka en ny cykel</button>
-
         </div>
     );
 };

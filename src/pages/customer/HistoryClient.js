@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/HistoryClient.module.css";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchUserTrips } from "../../api/meApi";
 
 const HistoryClient = () => {
@@ -70,18 +70,18 @@ const HistoryClient = () => {
                 {userTrips.map((trip, index) => (
                     <div key={index} className={styles.rideItem}>
                         <div className={styles.rideDetails}>
-                            {/* Lägg till kartikonen */}
                             <img src={mapIconUrl} alt="Map Icon" className={styles.mapIcon} />
-                            {/* Länk till resans historik */}
                             <p className={styles.date}>
                                 <strong>
                                     {formatDate(trip.attributes.start_time)}
                                 </strong>
                             </p>
-
-                            {/* Visning av resans detaljer */}
                             <p>
-                                <strong>Tid:</strong> {`${formatTime(trip.attributes.start_time)} - ${formatTime(trip.attributes.end_time)}`}
+                                <Link
+                                    to={`/ridehistory/${trip.id}`}
+                                >
+                                    <strong>Tid:</strong> {`${formatTime(trip.attributes.start_time)} - ${formatTime(trip.attributes.end_time)}`}
+                                </Link>
                             </p>
 
                             <p>
