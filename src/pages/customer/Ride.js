@@ -76,10 +76,10 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button className={styles.newRide}>Boka en ny cykel</button>
             <button onClick={handleSubmit} className={styles.newRide}>
                 Betala din resa nu
             </button>
+            <button className={styles.newRide}>Boka en ny cykel</button>
 
         </div>
     );

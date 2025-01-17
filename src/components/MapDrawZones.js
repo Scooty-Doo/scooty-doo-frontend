@@ -137,10 +137,12 @@ const MapWithZones = () => {
     // Funktion för att skapa ny zon
     const createZone = async (zoneData) => {
         try {
+            const token = sessionStorage.getItem("token");
             const response = await fetch(API_BASE_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(zoneData),
             });
@@ -165,10 +167,12 @@ const MapWithZones = () => {
     // Uppdatera zon
     const UpdateZone = async (zoneId, zoneData) => {
         try {
+            const token = sessionStorage.getItem("token");
             const response = await fetch(`${API_BASE_URL}${zoneId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(zoneData),
             });

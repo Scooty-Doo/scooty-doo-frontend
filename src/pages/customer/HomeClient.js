@@ -72,7 +72,12 @@ const HomeClient = () => {
         <div className={styles.homecontaianer}>
 
             <div className={styles.map}>
-                <MapView />
+                <MapView 
+                    userType="client"
+                    onBikeClick={(id) => {
+                        setBikeId(id); // Fyll ID i cykeln
+                    }}
+                />
             </div>
 
             {rideActive ? (
