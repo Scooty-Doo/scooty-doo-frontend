@@ -6,15 +6,11 @@ import Wkt from 'wicket'; // Importera Wicket
 import 'wicket/wicket-leaflet';
 import styles from '../styles/MapView.module.css';
 import PropTypes from 'prop-types';
-import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
-//import { fetchBikes } from '../api/bikeApi';
 import { fetchAvailableBikes } from '../api/bikeApi';
 import 'leaflet.markercluster';
-// import BikeMarker from './marker';
 
-
-const MapView = ({ userType, socket }) => {
+const MapView = ({ userType, onBikeClick }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
@@ -48,9 +44,6 @@ const MapView = ({ userType, socket }) => {
         }
 
         const fetchBikesFromApi = async () => {
-            // Sets the route depending on the usertype
-            // if admin - Tim fixaaaaaaaaa
-
             try {
                 const data = await fetchAvailableBikes();
                 console.log(data.data)
@@ -116,6 +109,9 @@ const MapView = ({ userType, socket }) => {
                     const [, lng, lat] = position;
                     const marker = L.marker([parseFloat(lat), parseFloat(lng)], { icon: bikeIcon });
                     marker.bindPopup(`Cykel ${bike.id}: ${bike.attributes.battery_lvl}% batteri.`);
+                    marker.on('click', () => {
+                        onBikeClick(bike.id); // Id vid klick
+                    });
                     cluster.addLayer(marker);
                 }
             });
@@ -129,37 +125,6 @@ const MapView = ({ userType, socket }) => {
     
         return null;
     };
-    
-    // useEffect to get updates from socket
-    useEffect(() => {
-        if (userType != "admin" || !socket) {
-            return
-        }
-
-        const update_bike = (data) => {
-            let bike = bikes.find((bike) =>  bike.id == data.bike_id);
-            // Could be done with a for loop
-            // Updates the bikes-list, but doesn't update the marker.
-            bike.attributes.battery_lvl = data.battery_lvl;
-            bike.attributes.city_id = data.city_id;
-            bike.attributes.last_position = data.last_position;
-            bike.attributes.is_available = data.is_available;
-            bike.attributes.meta_data = data.meta_data;
-            update_bike_on_map(bike);            
-        };
-
-        const update_bike_on_map = (updatedBike) => { // bikes update on map now, not entierly sure how this works
-            setBikes((prevBikes) =>
-                prevBikes.map((bike) =>
-                    bike.id === updatedBike.id ? updatedBike : bike // If bike.id is match to updatedBike.id then replace old bike with new bike info
-                )
-            );
-        };
-        socket.on("bike_update", update_bike);
-        return () => {
-            socket.off("bike_update", update_bike)
-        }
-    }, [socket, bikes, userType]);
     
 
     if (loading) {
@@ -215,8 +180,8 @@ const MapView = ({ userType, socket }) => {
 
 MapView.propTypes = {
     userType: PropTypes.string,
-    socket: Socket,
-    token: PropTypes.string
+    token: PropTypes.string,
+    onBikeClick: PropTypes.func.isRequired,
 };
 
 export default MapView;

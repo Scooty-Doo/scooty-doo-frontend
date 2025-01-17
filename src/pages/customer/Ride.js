@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { fetchRide } from "../../api/tripsApi";
-import { useNavigate } from "react-router-dom";
+//import { useParams } from "react-router-dom";
+//import { fetchRide } from "../../api/tripsApi";
+import { useNavigate, useLocation } from "react-router-dom";
 import { parsePath, formatTime } from "../../components/utils"; // Import helpers
 import RideDetails from "../../components/RideDetails";
 import MapRide from "../../components/MapRide";
@@ -9,7 +9,8 @@ import styles from "../../styles/HistoryRideClient.module.css";
 import { fillWallet } from "../../api/stripeApi";
 
 const Ridehistory = () => {
-    const { tripId } = useParams();
+    //const { tripId } = useParams();
+    const location = useLocation();
     const [rideHistory, setRideHistory] = useState(null);
     const [amount, setAmount] = useState(0);
     const navigate = useNavigate();
@@ -22,7 +23,23 @@ const Ridehistory = () => {
         }
     }, [navigate]);
 
+    useEffect(() => {
+        setRideHistory(location.state.ride)
+        console.log(location.state.ride)
+    }, [location])
 
+    useEffect(() => {
+        if (!rideHistory) {
+            return
+        }
+        console.log(rideHistory)
+        const totalFee = rideHistory.data.attributes.total_fee;
+        const roundedAmount = Math.ceil(totalFee); // Avrunda uppåt
+        setAmount(roundedAmount); // Sätt det som ett heltal  
+    }, [rideHistory])
+
+
+    /*
     useEffect(() => {
         if (tripId) {
             fetchRide(tripId).then((data) => {
@@ -35,6 +52,7 @@ const Ridehistory = () => {
             });
         }
     }, [tripId]);
+    */
 
     if (!rideHistory) {
         return <div>Laddar resa...</div>;
@@ -58,10 +76,10 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button className={styles.newRide}>Boka en ny cykel</button>
             <button onClick={handleSubmit} className={styles.newRide}>
                 Betala din resa nu
             </button>
+            <button className={styles.newRide}>Boka en ny cykel</button>
 
         </div>
     );

@@ -75,7 +75,7 @@ const HistoryClient = () => {
                             {/* Länk till resans historik */}
                             <p className={styles.date}>
                                 <strong>
-                                    <Link to={`/ridehistory/${trip.id}`}>
+                                    <Link to={`/ridehistory`}>
                                         {formatDate(trip.attributes.start_time)}
                                     </Link>
                                 </strong>
