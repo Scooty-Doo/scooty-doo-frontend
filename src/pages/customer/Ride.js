@@ -76,7 +76,7 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button onClick={handleSubmit} className={styles.newRide}>
+            <button onClick={handleSubmit} className={styles.Paybutton}>
                 Betala din resa nu
             </button>
             <button className={styles.newRide}>Boka en ny cykel</button>

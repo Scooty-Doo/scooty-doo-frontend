@@ -19,7 +19,7 @@ const LoginClient = ({basename}) => {
 
     const gitHubLogin = (e) => {
         e.preventDefault();
-        sessionStorage.setItem("role", e.target.innerText.toLowerCase())
+        sessionStorage.setItem("role", e.currentTarget.innerText.toLowerCase()) //e-currenrtarget istället för e.target
         const clientId = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_GITHUB_CLIENT : process.env.REACT_APP_GITHUB_CLIENT_DEV;
         
         const redirectURI = window.location.href.endsWith(basename)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/HistoryClient.module.css";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import { fetchUserTrips } from "../../api/meApi";
 
 const HistoryClient = () => {
@@ -29,7 +29,7 @@ const HistoryClient = () => {
                 console.error("Error fetching user trips:", err);
                 setError("Kunde inte hämta resor.");
             } finally {
-                setLoading(false); // Sätt laddningstillstånd till falskt
+                setLoading(false);
             }
         };
 
@@ -75,9 +75,7 @@ const HistoryClient = () => {
                             {/* Länk till resans historik */}
                             <p className={styles.date}>
                                 <strong>
-                                    <Link to={`/ridehistory`}>
-                                        {formatDate(trip.attributes.start_time)}
-                                    </Link>
+                                    {formatDate(trip.attributes.start_time)}
                                 </strong>
                             </p>
 

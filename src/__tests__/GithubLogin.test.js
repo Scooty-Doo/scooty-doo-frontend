@@ -24,48 +24,47 @@ describe('GitHubLogin Component', () => {
         jest.clearAllMocks();
         useNavigate.mockReturnValue(mockNavigate);
     });
-
     test('navigates to /homeclient on successful login', async () => {
         const mockToken = 'abcd1234';
-        fetchLogin.mockResolvedValueOnce({ token: mockToken });
+        fetchLogin.mockResolvedValueOnce({ access_token: mockToken }); // matchar med implementationen
         const searchParams = new URLSearchParams({ code: 'github_code' });
         delete window.location;
         window.location = new URL(`http://localhost/?${searchParams.toString()}`);
-
+    
         render(
             <MemoryRouter>
-                <GitHubLogin setToken={setToken} />
+                <GitHubLogin />
             </MemoryRouter>
         );
-
+    
         expect(screen.getByText('Processing GitHub login...')).toBeInTheDocument();
-
+    
         // Vänta på API-svaret
         await waitFor(() => {
-            expect(fetchLogin).toHaveBeenCalledWith('github_code');
-            expect(setToken).toHaveBeenCalledWith(mockToken);
+            expect(fetchLogin).toHaveBeenCalledWith('github_code', null); // Förväntar sig både code och role
             expect(sessionStorage.getItem('token')).toBe(mockToken);
             expect(mockNavigate).toHaveBeenCalledWith('/homeclient', { replace: true });
         });
     });
-
+    
     test('navigates to / if login fails', async () => {
         fetchLogin.mockRejectedValueOnce(new Error('Login failed'));
         const searchParams = new URLSearchParams({ code: 'invalid_code' });
         delete window.location;
         window.location = new URL(`http://localhost/?${searchParams.toString()}`);
-
+    
         render(
             <MemoryRouter>
-                <GitHubLogin setToken={setToken} />
+                <GitHubLogin />
             </MemoryRouter>
         );
-
+    
         await waitFor(() => {
-            expect(fetchLogin).toHaveBeenCalledWith('invalid_code');
+            expect(fetchLogin).toHaveBeenCalledWith('invalid_code', null); // Förväntar sig både code och role
             expect(mockNavigate).toHaveBeenCalledWith('/');
         });
     });
+    
 
     test('redirects to / if no code is present in URL', () => {
         delete window.location;

@@ -3,7 +3,22 @@
     max-width: 800px;
     margin: 0 auto;
     margin-top: 80px;
-    margin-bottom: 50px;
+    padding-bottom: 50px;
+}
+
+.newRide {
+    margin-top: 20px;
+    width: 100%; /* Gör knappen fullbredd på små skärmar */
+    padding: 10px; /* Öka padding för bättre klickyta */
+    font-size: 16px; /* Anpassa textstorlek för bättre läsbarhet */
+}
+
+.Paybutton {
+    margin-top: 20px;
+    width: 100%; /* Gör knappen fullbredd på små skärmar */
+    padding: 10px; /* Öka padding för bättre klickyta */
+    font-size: 16px; /* Anpassa textstorlek för bättre läsbarhet */
+    background-color: #000a4d;
 }
 
 .history {
@@ -35,9 +50,12 @@
 /* Mindre skärmar, t.ex. mobiltelefoner */
 @media (max-width: 600px) {
     .historyContainer {
-        padding: 20px;
         max-width: 800px;
         margin: 0 auto;
+    }
+
+    .newRide {
+        font-size: 14px;
     }
 }
   

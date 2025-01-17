@@ -1,88 +1,122 @@
 /* eslint-env jest */
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Ridehistory from "../pages/customer/Ride";
-import { fetchRide } from "../api/tripsApi";
+import { fillWallet } from "../api/stripeApi";
 import "@testing-library/jest-dom";
 
-// Mocka API och komponenter
-jest.mock("../api/tripsApi", () => ({
-    fetchRide: jest.fn()
+// Mock dependencies
+jest.mock("../api/stripeApi", () => ({
+    fillWallet: jest.fn(),
 }));
 
-jest.mock("../components/MapRide", () => {
-    const MockMapRide = () => <div>Mocked MapRide</div>;
-    MockMapRide.displayName = "MockMapRide";
-    return MockMapRide;
-});
-
-jest.mock("../components/RideDetails", () => {
-    const MockRideDetails = () => <div>Mocked RideDetails</div>;
-    MockRideDetails.displayName = "MockRideDetails";
-    return MockRideDetails;
-});
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"),
+    useNavigate: jest.fn(),
+    useLocation: jest.fn(),
+}));
 
 describe("Ridehistory Component", () => {
+    const mockRideHistory = {
+        data: {
+            attributes: {
+                total_fee: 25.5,
+                path_taken: "LINESTRING(13.06782 55.57786,13.10005 55.55034)",
+            },
+        },
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
-    });
+        sessionStorage.setItem("token", "test-token");
 
-    test("renders loading state initially", async () => {
-        // Säkerställ att mocken returnerar ett Promise
-        fetchRide.mockResolvedValueOnce({ data: { attributes: {} } });
-    
-        render(
-            <MemoryRouter initialEntries={["/ridehistory/1"]}>
-                <Routes>
-                    <Route path="/ridehistory/:tripId" element={<Ridehistory />} />
-                </Routes>
-            </MemoryRouter>
-        );
-    
-        // Kontrollera att vi ser laddningsmeddelandet under fetch
-        expect(screen.getByText("Laddar resa...")).toBeInTheDocument();
-    
-        // Vänta på att API-anropet slutförs
-        await waitFor(() => {
-            expect(fetchRide).toHaveBeenCalledWith("1");
-        });
-    });
-    
-
-    test("renders ride details after fetching ride data", async () => {
-        const mockRideData = {
-            data: {
-                attributes: {
-                    path_taken: "LINESTRING(12.9715987 77.5945627,12.2958104 76.6393805)",
-                    start_time: "2024-01-01T10:00:00Z",
-                    end_time: "2024-01-01T11:00:00Z",
-                    total_fee: 100
-                }
-            }
+        const mockLocation = {
+            state: { ride: mockRideHistory },
         };
 
-        fetchRide.mockResolvedValueOnce(mockRideData);
+        require("react-router-dom").useLocation.mockReturnValue(mockLocation);
+    });
 
+    afterEach(() => {
+        sessionStorage.clear();
+    });
+
+    test("renders the Ridehistory component with ride details", () => {
         render(
-            <MemoryRouter initialEntries={["/ridehistory/1"]}>
-                <Routes>
-                    <Route path="/ridehistory/:tripId" element={<Ridehistory />} />
-                </Routes>
+            <MemoryRouter>
+                <Ridehistory />
             </MemoryRouter>
         );
 
-        // Vänta på att API-anropet ska slutföras och komponenten ska uppdateras
-        await waitFor(() => {
-            expect(screen.getByText("Din resa")).toBeInTheDocument();
-        });
-
-        // Kontrollera att `RideDetails` och `MapRide` renderas
+        expect(screen.getByText("Din resa")).toBeInTheDocument();
+        expect(screen.getByText("Betala din resa nu")).toBeInTheDocument();
         expect(screen.getByText("Mocked RideDetails")).toBeInTheDocument();
         expect(screen.getByText("Mocked MapRide")).toBeInTheDocument();
-
-        // Kontrollera att knappen för att boka ny cykel visas
-        expect(screen.getByText("Boka en ny cykel")).toBeInTheDocument();
     });
 
+    test("redirects to login if token is missing", () => {
+        sessionStorage.removeItem("token");
+
+        const mockNavigate = jest.fn();
+        require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
+
+        render(
+            <MemoryRouter>
+                <Ridehistory />
+            </MemoryRouter>
+        );
+
+        expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+
+    test("calls fillWallet API on button click and redirects", async () => {
+        fillWallet.mockResolvedValueOnce({
+            data: { url: "http://test-payment-url.com" },
+        });
+
+        const originalLocation = window.location;
+        delete window.location;
+        window.location = { assign: jest.fn() };
+
+        render(
+            <MemoryRouter>
+                <Ridehistory />
+            </MemoryRouter>
+        );
+
+        const payButton = screen.getByText("Betala din resa nu");
+        fireEvent.click(payButton);
+
+        await waitFor(() => {
+            expect(fillWallet).toHaveBeenCalledWith(26, expect.any(String)); // Rounded amount
+            expect(window.location.assign).toHaveBeenCalledWith("http://test-payment-url.com");
+        });
+
+        window.location = originalLocation;
+    });
+
+    test("handles API error when filling wallet", async () => {
+        const consoleErrorMock = jest.spyOn(console, "error").mockImplementation(() => {});
+
+        fillWallet.mockRejectedValueOnce(new Error("Failed to process payment"));
+
+        render(
+            <MemoryRouter>
+                <Ridehistory />
+            </MemoryRouter>
+        );
+
+        const payButton = screen.getByText("Betala din resa nu");
+        fireEvent.click(payButton);
+
+        await waitFor(() => {
+            expect(consoleErrorMock).toHaveBeenCalledWith(
+                "Failed to add to wallet. Please try again. Details",
+                expect.any(Error)
+            );
+        });
+
+        consoleErrorMock.mockRestore();
+    });
 });

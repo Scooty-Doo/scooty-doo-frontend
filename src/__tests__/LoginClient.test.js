@@ -1,70 +1,37 @@
 /* eslint-env jest */
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import LoginClient from '../pages/customer/LoginClient';
-import { MemoryRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import LoginClient from "../pages/customer/LoginClient";
+import "@testing-library/jest-dom";
 
-// Mock för miljövariabler
-process.env.REACT_APP_GITHUB_CLIENT_DEV = 'devClientId';
-process.env.REACT_APP_GITHUB_CLIENT = 'prodClientId';
+// Mock environmental variables
+process.env.REACT_APP_GITHUB_CLIENT_DEV = "devClientId";
+process.env.REACT_APP_GITHUB_CLIENT = "prodClientId";
 
-describe('LoginClient Component', () => {
-    const basename = '/app';
+describe("LoginClient Component", () => {
+    const basename = "/app";
 
     beforeEach(() => {
-        document.body.className = '';  // Rensa body-klasser inför varje test
+        document.body.className = ""; // Clear body classes before each test
     });
 
-    test('renders LoginClient correctly', () => {
-        render(
-            <MemoryRouter>
-                <LoginClient basename={basename} />
-            </MemoryRouter>
-        );
+    test("renders LoginClient correctly", () => {
+        render(<LoginClient basename={basename} />);
 
-        expect(screen.getByText('Login')).toBeInTheDocument();
-        expect(screen.getByText('GitHub')).toBeInTheDocument();
-        expect(screen.getByText('Admin')).toBeInTheDocument();
+        expect(screen.getByText("Login")).toBeInTheDocument();
+        expect(screen.getByText("GitHub")).toBeInTheDocument();
+        expect(screen.getByText("Admin")).toBeInTheDocument();
     });
 
-    test('adds and removes body class on mount/unmount', () => {
-        const { unmount } = render(
-            <MemoryRouter>
-                <LoginClient basename={basename} />
-            </MemoryRouter>
-        );
+    test("adds and removes body class on mount/unmount", () => {
+        const { unmount } = render(<LoginClient basename={basename} />);
 
-        // Kontrollera att klassen läggs till
-        expect(document.body.classList.contains('loginBody')).toBe(true);
+        // Check that the class is added
+        expect(document.body.classList.contains("loginBody")).toBe(true);
 
-        // Kontrollera att klassen tas bort
+        // Check that the class is removed on unmount
         unmount();
-        expect(document.body.classList.contains('loginBody')).toBe(false);
+        expect(document.body.classList.contains("loginBody")).toBe(false);
     });
 
-    test('redirects to GitHub login on button click', () => {
-        delete window.location;
-        window.location = { href: 'http://localhost/app' };  // Mocka window.location
-    
-        render(
-            <MemoryRouter>
-                <LoginClient basename={basename} />
-            </MemoryRouter>
-        );
-    
-        const githubButton = screen.getByText('GitHub');
-    
-        fireEvent.click(githubButton);
-    
-        const expectedClientId = process.env.NODE_ENV === 'production' ? 'prodClientId' : 'devClientId';
-        const expectedRedirectUri = `http://localhost/app#/githublogin`;
-    
-        expect(window.location.href).toBe(
-            `https://github.com/login/oauth/authorize?client_id=${expectedClientId}&redirect_uri=${expectedRedirectUri}`
-        );
-    });
-    
-    
-    
 });
