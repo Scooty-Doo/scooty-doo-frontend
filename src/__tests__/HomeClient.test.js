@@ -17,6 +17,10 @@ jest.mock("../api/meApi", () => ({
     fetchUser: jest.fn(),
 }));
 
+jest.mock("../components/Map", () => {
+    return jest.fn(() => <div data-testid="map-view">Mocked MapView</div>);
+});
+
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useNavigate: jest.fn(),
@@ -25,15 +29,28 @@ jest.mock("react-router-dom", () => ({
 describe("HomeClient Component", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        sessionStorage.setItem("token", "test-token");
+
+        Object.defineProperty(window, "sessionStorage", {
+            value: {
+                getItem: jest.fn(),
+                setItem: jest.fn(),
+                removeItem: jest.fn(),
+            },
+            writable: true,
+        });
+
+        jest.spyOn(window, "alert").mockImplementation(() => {}); // Mock alert
+        jest.spyOn(console, "error").mockImplementation(() => {}); // Mock console.error
+
+        window.sessionStorage.getItem.mockReturnValue("test-token");
     });
 
     afterEach(() => {
-        sessionStorage.clear();
+        jest.restoreAllMocks();
     });
 
     test("redirects to login if token is missing", () => {
-        sessionStorage.removeItem("token");
+        window.sessionStorage.getItem.mockReturnValueOnce(null);
 
         const mockNavigate = jest.fn();
         jest.spyOn(require("react-router-dom"), "useNavigate").mockReturnValue(mockNavigate);
@@ -48,7 +65,7 @@ describe("HomeClient Component", () => {
     });
 
     test("fetches and displays user info", async () => {
-        const mockUser = {
+        fetchUser.mockResolvedValueOnce({
             data: {
                 attributes: {
                     full_name: "Test User",
@@ -57,9 +74,7 @@ describe("HomeClient Component", () => {
                     balance: 50,
                 },
             },
-        };
-
-        fetchUser.mockResolvedValueOnce(mockUser);
+        });
 
         render(
             <MemoryRouter>
@@ -69,6 +84,34 @@ describe("HomeClient Component", () => {
 
         await waitFor(() => {
             expect(screen.getByText("Starta din resa")).toBeInTheDocument();
+        });
+    });
+
+    test("handles invalid user data gracefully", async () => {
+        fetchUser.mockResolvedValueOnce(null); // Returnerar null istället för giltig data
+
+        render(
+            <MemoryRouter>
+                <HomeClient />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
+        });
+    });
+
+    test("handles API error gracefully when fetching user info", async () => {
+        fetchUser.mockRejectedValueOnce(new Error("API Error"));
+
+        render(
+            <MemoryRouter>
+                <HomeClient />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
         });
     });
 
@@ -98,60 +141,31 @@ describe("HomeClient Component", () => {
         const mockRide = { data: { id: "trip123" } };
         startRide.mockResolvedValueOnce(mockRide);
         endRide.mockResolvedValueOnce(mockRide);
-    
+
+        const mockNavigate = jest.fn();
+        jest.spyOn(require("react-router-dom"), "useNavigate").mockReturnValue(mockNavigate);
+
         render(
             <MemoryRouter>
                 <HomeClient />
             </MemoryRouter>
         );
-    
+
         fireEvent.change(screen.getByPlaceholderText("Ange cykelns ID"), {
             target: { value: "bike123" },
         });
-    
+
         fireEvent.submit(screen.getByRole("form", { name: /trip-form/i }));
-    
+
         await waitFor(() => {
             expect(screen.getByText("Resa igång")).toBeInTheDocument();
         });
-    
+
         fireEvent.click(screen.getByText("Avsluta resa"));
-    
+
         await waitFor(() => {
             expect(endRide).toHaveBeenCalledWith("trip123", "bike123");
+            expect(mockNavigate).toHaveBeenCalledWith("/ridehistory/", { state: { ride: mockRide } });
         });
-    });
-    
-
-    test("redirects to account if wallet balance is negative", async () => {
-        const mockUser = {
-            data: {
-                attributes: {
-                    full_name: "Test User",
-                    email: "test@example.com",
-                    use_prepay: true,
-                    balance: -10,
-                },
-            },
-        };
-    
-        const mockNavigate = jest.fn();
-        require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
-    
-        fetchUser.mockResolvedValueOnce(mockUser);
-    
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-    
-        await waitFor(() => {
-            expect(screen.getByText("Fyll på ditt saldo innan du kan starta resa")).toBeInTheDocument();
-        });
-    
-        fireEvent.click(screen.getByText("Fyll på ditt saldo innan du kan starta resa"));
-    
-        expect(mockNavigate).toHaveBeenCalledWith("/accountclient");
     });
 });

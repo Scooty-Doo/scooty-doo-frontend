@@ -7,12 +7,19 @@ fetchMock.enableMocks();
 describe("stripeApi functions", () => {
     beforeEach(() => {
         fetchMock.resetMocks();
+
+        // Mocka console.error
+        jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     test("fillWallet adds to wallet", async () => {
         const mockResponse = {
             message: "Wallet updated successfully",
-            session_id: "sess_12345"
+            session_id: "sess_12345",
         };
 
         fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
@@ -25,7 +32,7 @@ describe("stripeApi functions", () => {
                 method: "POST",
                 body: JSON.stringify({
                     amount: 500,
-                    frontend_url: "http://localhost/success"
+                    frontend_url: "http://localhost/success",
                 }),
                 headers: { "Content-Type": "application/json" },
             })
@@ -35,18 +42,23 @@ describe("stripeApi functions", () => {
     });
 
     test("fillWallet handles errors", async () => {
-        fetchMock.mockResponseOnce(null, { status: 400 });
-
+        const errorResponse = { message: "Invalid amount" };
+        fetchMock.mockResponseOnce(JSON.stringify(errorResponse), { status: 400 });
+    
         await expect(fillWallet(500, "http://localhost/success")).rejects.toThrow(
-            "Failed to add to wallet"
+            "Failed to add to wallet: Invalid amount"
+        );
+    
+        expect(console.error).toHaveBeenCalledWith(
+            "Error:",
+            expect.any(Error)
         );
     });
 
-    // Test för stripeSuccessCall
     test("stripeSuccessCall successfully confirms a session", async () => {
         const mockResponse = {
             message: "Payment successful",
-            amount: 500
+            amount: 500,
         };
 
         fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
@@ -69,10 +81,16 @@ describe("stripeApi functions", () => {
     });
 
     test("stripeSuccessCall handles server errors", async () => {
-        fetchMock.mockResponseOnce(null, { status: 500 });
-
+        const errorResponse = { message: "Session not found" };
+        fetchMock.mockResponseOnce(JSON.stringify(errorResponse), { status: 500 });
+    
         await expect(stripeSuccessCall("sess_12345")).rejects.toThrow(
-            "Server error"
+            "Server error: Session not found"
+        );
+    
+        expect(console.error).toHaveBeenCalledWith(
+            "Error:",
+            expect.any(Error)
         );
     });
 });

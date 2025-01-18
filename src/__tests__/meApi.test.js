@@ -5,12 +5,27 @@ global.fetch = jest.fn();
 
 describe("User API functions", () => {
     beforeEach(() => {
+        // Mocka sessionStorage
+        Object.defineProperty(window, "sessionStorage", {
+            value: {
+                getItem: jest.fn((key) => {
+                    if (key === "token") return "test-token"; // Returnera token som standard
+                    return null;
+                }),
+                setItem: jest.fn(),
+                removeItem: jest.fn(),
+            },
+            writable: true,
+        });
+
+        // Mocka console.error för att tysta loggar under tester
+        jest.spyOn(console, "error").mockImplementation(() => {});
+
         jest.clearAllMocks();
-        sessionStorage.setItem("token", "test-token");
     });
 
     afterEach(() => {
-        sessionStorage.clear();
+        jest.restoreAllMocks();
     });
 
     describe("fetchUser", () => {
@@ -42,7 +57,7 @@ describe("User API functions", () => {
         });
 
         test("throws error if token is missing", async () => {
-            sessionStorage.removeItem("token");
+            window.sessionStorage.getItem.mockReturnValueOnce(null); // Simulera att token saknas
             await expect(fetchUser()).rejects.toThrow("Ingen token hittades i sessionStorage");
         });
 
@@ -89,7 +104,7 @@ describe("User API functions", () => {
         });
 
         test("throws error if token is missing", async () => {
-            sessionStorage.removeItem("token");
+            window.sessionStorage.getItem.mockReturnValueOnce(null); // Simulera saknad token
             await expect(userDetails("Maya Edlund", "maya@example.com", false)).rejects.toThrow(
                 "Ingen token hittades i sessionStorage"
             );
@@ -132,7 +147,7 @@ describe("User API functions", () => {
         });
 
         test("throws error if token is missing", async () => {
-            sessionStorage.removeItem("token");
+            window.sessionStorage.getItem.mockReturnValueOnce(null);
             await expect(fetchUserTrips()).rejects.toThrow("Ingen token hittades i sessionStorage");
         });
 

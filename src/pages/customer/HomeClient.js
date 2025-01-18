@@ -27,6 +27,9 @@ const HomeClient = () => {
         const getUserInfo = async () => {
             try {
                 const userData = await fetchUser();
+                if (!userData || !userData.data || !userData.data.attributes) {
+                    throw new Error("Invalid user data format");
+                }
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
