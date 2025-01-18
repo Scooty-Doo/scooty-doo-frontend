@@ -83,7 +83,7 @@ const App = () => {
 
                     <Route path="/historyclient" element={<HistoryClient />} />
                     <Route path="/ridehistory" element={<Ride />} />
-                    <Route path="/ridehistory/:id" element={<Ride />} />
+                    <Route path="/ridehistory/:tripId" element={<Ride />} />
                     <Route path="/githublogin"   element={<GitHubLogin/>} />
                     <Route path="*"              element={<h1>404: Page Not Found</h1>} />
                 </Routes>

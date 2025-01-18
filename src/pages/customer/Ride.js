@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-//import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //import { fetchRide } from "../../api/tripsApi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { parsePath, formatTime } from "../../components/utils"; // Import helpers
@@ -7,7 +7,7 @@ import RideDetails from "../../components/RideDetails";
 import MapRide from "../../components/MapRide";
 import styles from "../../styles/HistoryRideClient.module.css";
 import { fillWallet } from "../../api/stripeApi";
-import { fetchTrip } from "../../api/tripsApi";
+import { fetchTrip } from "../../api/meApi";
 
 const Ridehistory = () => {
     const { tripId } = useParams();
@@ -26,20 +26,29 @@ const Ridehistory = () => {
     }, [navigate]);
 
     useEffect(() => {
+        console.log("location.state:", location.state);
+    }, [location]);
+    
+
+    useEffect(() => {
         const loadRideData = async () => {
             try {
-                // Kontrollera om `location.state.ride` finns
-                if (location.state?.ride) {
-                    setRideHistory(location.state.ride);
-                    setIsFetchedViaId(false);
-                } else if (tripId) {
-                    // Hämta resa via API om `location.state.ride` inte finns
+                // Check if tripId is available
+                if (tripId) {
+                    console.log("Hämta via id:", tripId);
                     const rideData = await fetchTrip(tripId);
                     setRideHistory(rideData);
                     setIsFetchedViaId(true);
+                    // Otherwise get through location.state
+                } else if (location.state?.ride) {
+                    console.log("Använder ride från location.state");
+                    setRideHistory(location.state.ride);
+                    setIsFetchedViaId(false);
                 } else {
                     console.error("Ingen resa tillgänglig");
                 }
+                
+                
             } catch (error) {
                 console.error("Failed to load ride data:", error);
             }

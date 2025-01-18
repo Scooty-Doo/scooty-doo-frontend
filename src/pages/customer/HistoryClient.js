@@ -12,6 +12,8 @@ const HistoryClient = () => {
 
     const mapIconUrl = "https://img.icons8.com/?size=100&id=8212&format=png&color=2C3E50";
 
+    const token = sessionStorage.getItem("token");
+    console.log(token);
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -22,8 +24,10 @@ const HistoryClient = () => {
     
     useEffect(() => {
         const getUserTrips = async () => {
+            console.log("Anropar fetchUserTrips...");
             try {
                 const data = await fetchUserTrips(); // Hämta resor
+                console.log("Data från API:", data);
                 setUserTrips(data.data); // Sätt resorna i state
             } catch (err) {
                 console.error("Error fetching user trips:", err);
@@ -32,9 +36,10 @@ const HistoryClient = () => {
                 setLoading(false);
             }
         };
-
+    
         getUserTrips();
     }, []);
+    
 
     // Formatera tid
     const formatTime = (time) => {

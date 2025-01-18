@@ -68,6 +68,8 @@ export const fetchUserTrips = async () => {
     try {
         // Hämta token från sessionStorage
         const token = sessionStorage.getItem("token");
+        console.log("hhhhh")
+        console.log(`token: ${token}`);
 
         if (!token) {
             throw new Error("Ingen token hittades i sessionStorage");
@@ -91,7 +93,7 @@ export const fetchUserTrips = async () => {
     }
 };
 
-export const fetchTrip = async () => {
+export const fetchTrip = async (trip_id) => {
     try {
         // Hämta token från sessionStorage
         const token = sessionStorage.getItem("token");
