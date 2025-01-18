@@ -68,11 +68,40 @@ export const fetchUserTrips = async () => {
     try {
         // Hämta token från sessionStorage
         const token = sessionStorage.getItem("token");
+        console.log("hhhhh")
+        console.log(`token: ${token}`);
 
         if (!token) {
             throw new Error("Ingen token hittades i sessionStorage");
         }
         const response = await fetch(`${API_BASE_URL}trips`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+  
+        if (!response.ok) {
+            throw new Error(`Failed to fetch user: ${response.status}`);
+        }
+  
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error;
+    }
+};
+
+export const fetchTrip = async (trip_id) => {
+    try {
+        // Hämta token från sessionStorage
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Ingen token hittades i sessionStorage");
+        }
+        const response = await fetch(`${API_BASE_URL}trips/${trip_id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

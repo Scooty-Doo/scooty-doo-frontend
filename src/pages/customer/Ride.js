@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-//import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //import { fetchRide } from "../../api/tripsApi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { parsePath, formatTime } from "../../components/utils"; // Import helpers
@@ -7,12 +7,14 @@ import RideDetails from "../../components/RideDetails";
 import MapRide from "../../components/MapRide";
 import styles from "../../styles/HistoryRideClient.module.css";
 import { fillWallet } from "../../api/stripeApi";
+import { fetchTrip } from "../../api/meApi";
 
 const Ridehistory = () => {
-    //const { tripId } = useParams();
+    const { tripId } = useParams();
     const location = useLocation();
     const [rideHistory, setRideHistory] = useState(null);
     const [amount, setAmount] = useState(0);
+    const [isFetchedViaId, setIsFetchedViaId] = useState(false);
     const navigate = useNavigate();
 
     // Kontrollera token och omdirigera till login om den saknas
@@ -24,9 +26,36 @@ const Ridehistory = () => {
     }, [navigate]);
 
     useEffect(() => {
-        setRideHistory(location.state.ride)
-        console.log(location.state.ride)
-    }, [location])
+        console.log("location.state:", location.state);
+    }, [location]);
+    
+
+    useEffect(() => {
+        const loadRideData = async () => {
+            try {
+                // Check if tripId is available
+                if (tripId) {
+                    console.log("Hämta via id:", tripId);
+                    const rideData = await fetchTrip(tripId);
+                    setRideHistory(rideData);
+                    setIsFetchedViaId(true);
+                    // Otherwise get through location.state
+                } else if (location.state?.ride) {
+                    console.log("Använder ride från location.state");
+                    setRideHistory(location.state.ride);
+                    setIsFetchedViaId(false);
+                } else {
+                    console.error("Ingen resa tillgänglig");
+                }
+                
+                
+            } catch (error) {
+                console.error("Failed to load ride data:", error);
+            }
+        };
+
+        loadRideData();
+    }, [location, tripId]);
 
     useEffect(() => {
         if (!rideHistory) {
@@ -38,21 +67,6 @@ const Ridehistory = () => {
         setAmount(roundedAmount); // Sätt det som ett heltal  
     }, [rideHistory])
 
-
-    /*
-    useEffect(() => {
-        if (tripId) {
-            fetchRide(tripId).then((data) => {
-                setRideHistory(data);
-
-                // Hämta total_fee och avrunda uppåt
-                const totalFee = data.data.attributes.total_fee;
-                const roundedAmount = Math.ceil(totalFee); // Avrunda uppåt
-                setAmount(roundedAmount); // Sätt det som ett heltal
-            });
-        }
-    }, [tripId]);
-    */
 
     if (!rideHistory) {
         return <div>Laddar resa...</div>;
@@ -76,11 +90,12 @@ const Ridehistory = () => {
 
             <RideDetails rideHistory={rideHistory} formatTime={formatTime} />
             <MapRide pathCoordinates={pathCoordinates} />
-            <button onClick={handleSubmit} className={styles.Paybutton}>
-                Betala din resa nu
-            </button>
+            {!isFetchedViaId && ( // Visa knappen endast om resan inte hämtades via ID
+                <button onClick={handleSubmit} className={styles.Paybutton}>
+                    Betala din resa nu
+                </button>
+            )}
             <button className={styles.newRide}>Boka en ny cykel</button>
-
         </div>
     );
 };
