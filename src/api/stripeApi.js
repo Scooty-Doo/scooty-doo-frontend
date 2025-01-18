@@ -15,7 +15,8 @@ export const fillWallet = async (amount, frontend_url) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to add to wallet: ${response.message}`);
+            const errorResponse = await response.json();
+            throw new Error(`Failed to add to wallet: ${errorResponse.message || response.status}`);
         }
 
         return await response.json();
@@ -24,6 +25,8 @@ export const fillWallet = async (amount, frontend_url) => {
         throw error;
     }
 };
+
+
 
 export const stripeSuccessCall  = async (session_id) => {
     try {
@@ -40,7 +43,8 @@ export const stripeSuccessCall  = async (session_id) => {
             }),
         });
         if (!response.ok) {
-            throw new Error(`Server error: ${response.message}`);
+            const errorResponse = await response.json();
+            throw new Error(`Server error: ${errorResponse.message || response.status}`);
         }
         return await response.json();
     } catch (error) {

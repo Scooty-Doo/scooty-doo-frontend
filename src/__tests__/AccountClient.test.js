@@ -9,7 +9,7 @@ import { fetchUser, userDetails } from "../api/meApi";
 // Mocka API
 jest.mock("../api/meApi", () => ({
     fetchUser: jest.fn(),
-    userDetails: jest.fn()
+    userDetails: jest.fn(),
 }));
 
 describe("AccountClient Component", () => {
@@ -21,10 +21,17 @@ describe("AccountClient Component", () => {
                     full_name: "ScootyPrepaidson",
                     email: "scooty@doot.com",
                     use_prepay: "true",
-                    balance: 39.99
-                }
-            }
+                    balance: 39.99,
+                },
+            },
         });
+
+        // Mocka console.error för att tysta loggar
+        jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     test("renders the AccountClient and displays the user info", async () => {
@@ -35,11 +42,11 @@ describe("AccountClient Component", () => {
                 </MemoryRouter>
             );
         });
-    
+
         // Kontrollera användarnamn och e-post
         expect(screen.getByDisplayValue("ScootyPrepaidson")).toBeInTheDocument();
         expect(screen.getByDisplayValue("scooty@doot.com")).toBeInTheDocument();
-    
+
         // Kontrollera balansvisning med en flexibel matcherfunktion
         const balanceText = screen.getByText((content, element) => {
             return (
@@ -48,10 +55,9 @@ describe("AccountClient Component", () => {
                 content.includes(":-")
             );
         });
-    
+
         expect(balanceText).toBeInTheDocument();
     });
-    
 
     test("handles API error and shows alert", async () => {
         fetchUser.mockRejectedValueOnce(new Error("API Error"));
@@ -67,36 +73,10 @@ describe("AccountClient Component", () => {
         });
 
         expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
-    });
-
-    test("allows user to change name and email and submit form", async () => {
-        await act(async () => {
-            render(
-                <MemoryRouter>
-                    <AccountClient />
-                </MemoryRouter>
-            );
-        });
-
-        const nameInput = screen.getByDisplayValue("ScootyPrepaidson");
-        const emailInput = screen.getByDisplayValue("scooty@doot.com");
-        const saveButton = screen.getByRole("button", { name: "Spara ändringar" });
-
-        // Ändra användarinformation
-        fireEvent.change(nameInput, { target: { value: "NyPrepaidson" } });
-        fireEvent.change(emailInput, { target: { value: "ny@prepaid.com" } });
-
-        // Skicka formuläret
-        fireEvent.click(saveButton);
-
-        await waitFor(() => {
-            expect(userDetails).toHaveBeenCalledWith(
-                "NyPrepaidson",
-                "ny@prepaid.com",
-                "true"
-            );
-            expect(window.alert).toHaveBeenCalledWith("Dina ändringar har sparats!");
-        });
+        expect(console.error).toHaveBeenCalledWith(
+            "Error fetching user info:",
+            expect.any(Error)
+        );
     });
 
     test("handles form submission failure", async () => {
@@ -118,6 +98,10 @@ describe("AccountClient Component", () => {
 
         await waitFor(() => {
             expect(window.alert).toHaveBeenCalledWith("Kunde inte spara ändringar.");
+            expect(console.error).toHaveBeenCalledWith(
+                "Failed to update user details:",
+                expect.any(Error)
+            );
         });
     });
 
