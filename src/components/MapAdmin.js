@@ -126,7 +126,6 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             }
         };
 
-
         fetchMapZones();
         fetchBikesFromApi();
     }, [userType]);
@@ -215,9 +214,9 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             return
         }
 
-        const update_bike = (data) => { // data verkar vara inbakat från socketen
+        const update_bike = (data) => {
             console.log("update_bike Data:",data);
-            let bike = bikes.find((bike) =>  bike.id == data.bike_id); // testa att starta trip i annat fönster för att testa?
+            let bike = bikes.find((bike) =>  bike.id == data.bike_id);
             // Could be done with a for loop
             // Updates the bikes-list, but doesn't update the marker.
             bike.attributes.battery_lvl = data.battery_lvl;
@@ -228,16 +227,45 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             update_bike_on_map(bike);
         };
 
-        const update_bike_on_map = (updatedBike) => { // bikes update on map now, not entierly sure how this works
+        const update_bike_on_map = (updatedBike) => {
             setBikes((prevBikes) =>
                 prevBikes.map((bike) =>
                     bike.id === updatedBike.id ? updatedBike : bike // If bike.id is match to updatedBike.id then replace old bike with new bike info
                 )
             );
         };
-        socket.on("bike_update", update_bike); // när bike_update händer så körs functionen update_bike
-        return () => { // när den är klar turn off socket
-            socket.off("bike_update", update_bike)
+
+        const handle_bike_update_start = (data) => {
+            if (!data.zone_id) {
+                console.log("zon id i start var null",data.zone_id);
+                return;
+            }
+            const count = -1;
+            const zone_id = data.zone_id;
+            console.log("Bike update started:", data);
+            updateBikeCount(zone_id, count);
+            console.log("bikeCounts efter start trip: ",bikeCounts)
+        };
+
+        const handle_bike_update_end = (data) => {
+            if (!data.zone_id) {
+                console.log("zon id i start var null",data.zone_id);
+                return;
+            }
+            const count = 1;
+            const zone_id = data.zone_id;
+            console.log("Bike update ended:", data);
+            updateBikeCount(zone_id, count);
+            console.log("bikeCounts efter end trip: ",bikeCounts)
+        };
+
+        socket.on("bike_update", update_bike);
+        socket.on("bike_update_start", handle_bike_update_start);
+        socket.on("bike_update_end", handle_bike_update_end);
+        return () => {
+            socket.off("bike_update", update_bike);
+            socket.off("bike_update_start", handle_bike_update_start);
+            socket.off("bike_update_end", handle_bike_update_end);
         }
     }, [socket, bikes, userType]);
 
@@ -256,7 +284,6 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             />
             <ClusterMarkers />
             <UpdateMapCenter center={selectedBikePoint} />
-            {/* <UpdateMapCenter selectedBikePoint={selectedBikePoint}/> */}
 
             {userPosition && (
                 <Marker position={userPosition} icon={userIcon}>

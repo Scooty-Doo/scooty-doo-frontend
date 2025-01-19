@@ -116,7 +116,7 @@ const AccountAdmin = () => {
                     name="github_login"
                     value={formData.github_login}
                     onChange={handleChange}
-                    placeholder="Ange ditt telefonnummer"
+                    placeholder="Ange ditt Github Login"
                     className={styles.input}
                 />
                 {errors.github_login && (
@@ -133,7 +133,6 @@ const AccountAdmin = () => {
                     name="id"
                     value={formData.id}
                     readOnly
-                    placeholder="Ange ditt telefonnummer"
                     className={styles.input}
                 />
                 {errors.id && (
@@ -150,7 +149,6 @@ const AccountAdmin = () => {
                     name="self"
                     value={formData.self}
                     readOnly
-                    placeholder="Ange ditt telefonnummer"
                     className={styles.input}
                 />
                 {errors.self && (
