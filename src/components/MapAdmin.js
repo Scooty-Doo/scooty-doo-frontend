@@ -329,7 +329,10 @@ MapAdmin.propTypes = {
 };
 
 UpdateMapCenter.propTypes = {
-    center: PropTypes.arrayOf(PropTypes.number).isRequired,
+    center: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.oneOf([null])  // Allows null
+    ]),
 };
 
 export default MapAdmin;
