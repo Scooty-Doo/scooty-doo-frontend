@@ -34,11 +34,6 @@ const AccountAdmin = () => {
                 const adminData = await fetchAdmin();
                 console.log("admin details: ", adminData);
 
-                if (!adminData || !adminData.data || !adminData.data.attributes) {
-                    console.error("Invalid admin data:", adminData);
-                    return;
-                }
-
                 setFormData({
                     full_name: adminData.data.attributes.full_name || "",
                     email: adminData.data.attributes.email || "",
