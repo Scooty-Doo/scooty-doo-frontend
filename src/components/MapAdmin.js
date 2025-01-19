@@ -126,6 +126,12 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             }
         };
 
+
+        fetchMapZones();
+        fetchBikesFromApi();
+    }, [userType]);
+
+    useEffect(() => {
         const fetchBikesFromZones = async () => { // möjliga ändringar till function, lägg till att man ger cityId för staden man kollar på och får functionen att köra när cityId byts
             const cityId = 3; // lägg till att cityId sätts till den stad man har vald och att functionen körs om när man ändrar stad
             const zoneTypeIds = [1, 2]; // List of zoneTypeIds to fetch
@@ -153,11 +159,8 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             });
             console.log("bikeCounts initialized: ",bikeCounts)
         };
-
-        fetchMapZones();
-        fetchBikesFromApi();
         fetchBikesFromZones();
-    }, [userType]);
+    });
 
     const ClusterMarkers = () => {
         const map = useMap();

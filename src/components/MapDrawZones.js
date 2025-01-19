@@ -41,7 +41,7 @@ const MapWithZones = () => {
         };
 
         fetchZones();
-    }, []);
+    });
 
     // Uppdatera karta när zoner ändras
     useEffect(() => {
