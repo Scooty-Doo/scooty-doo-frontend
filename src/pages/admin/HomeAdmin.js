@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const HomeAdmin = ({token}) => {
-        const navigate = useNavigate();
-        const [selectedBikePoint, setSelectedBikePoint] = useState(null);
+    const navigate = useNavigate();
+    const [selectedBikePoint, setSelectedBikePoint] = useState(null);
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => { // lägg till i alla admin sidor!
         const token = sessionStorage.getItem("token");
@@ -27,15 +27,15 @@ const HomeAdmin = ({token}) => {
         <div className={styles.container}>
             <div className={styles.map}>
                 <MapAdmin
-                userType={"admin"}
-                socket={socket}
-                token={token}
-                selectedBikePoint={selectedBikePoint} // Ge selectedBikePoint till MapAdmin
+                    userType={"admin"}
+                    socket={socket}
+                    token={token}
+                    selectedBikePoint={selectedBikePoint} // Ge selectedBikePoint till MapAdmin
                 />
             </div>
             <div className={styles.list}>
                 <ListBikeCity
-                onBikePointClick={setSelectedBikePoint} // Updatera selectedBikePoint state
+                    onBikePointClick={setSelectedBikePoint} // Updatera selectedBikePoint state
                 />
             </div>
         </div>

@@ -28,16 +28,16 @@ const UpdateMapCenter = ({ center }) => {
     const map = useMap();
 
     useEffect(() => {
-      if (coords && map) {
-        map.flyTo([coords[1],coords[0]], map.getZoom(), {
-            animate: true,
-            duration: 1.5,
-          });
-      }
-    }, [center, map]);
+        if (coords && map) {
+            map.flyTo([coords[1],coords[0]], map.getZoom(), {
+                animate: true,
+                duration: 1.5,
+            });
+        }
+    }, [center, map, coords]);
 
     return null;
-  };
+};
 
 const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
@@ -222,7 +222,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             bike.attributes.last_position = data.last_position;
             bike.attributes.is_available = data.is_available;
             bike.attributes.meta_data = data.meta_data;
-            update_bike_on_map(bike);            
+            update_bike_on_map(bike);
         };
 
         const update_bike_on_map = (updatedBike) => { // bikes update on map now, not entierly sure how this works
@@ -300,6 +300,6 @@ MapAdmin.propTypes = {
 
 UpdateMapCenter.propTypes = {
     center: PropTypes.arrayOf(PropTypes.number).isRequired,
-  };
+};
 
 export default MapAdmin;
