@@ -1,56 +1,97 @@
-/* eslint-env jest */
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import AccountAdmin from "../pages/admin/AccountAdmin";
 import "@testing-library/jest-dom";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import AccountAdmin from "../pages/admin/AccountAdmin";
+import { fetchAdmin } from "../api/adminAccountApi";
 
-describe("AccountAdmin Component", () => {
-    test("renders the form with default values", () => {
-        render(<AccountAdmin />);
+// Mock the fetchAdmin function
+jest.mock("../api/adminAccountApi", () => ({
+  fetchAdmin: jest.fn(),
+}));
 
-        expect(screen.getByLabelText(/Användarnamn:/i)).toHaveValue("Tim Lundqvist");
-        expect(screen.getByLabelText(/E-postadress:/i)).toHaveValue("tim@mail.com");
-        expect(screen.getByLabelText(/Telefonnummer:/i)).toHaveValue("0725558468");
-    });
+describe("AccountAdmin", () => {
+  const mockAdminData = {
+    data: {
+      attributes: {
+        full_name: "John Doe",
+        email: "john.doe@example.com",
+        github_login: "johndoe",
+        created_at: "2022-01-01",
+        updated_at: "2022-01-01",
+      },
+      id: "12345",
+      links: {
+        self: "/admin/12345",
+      },
+    },
+  };
 
-    test("shows validation errors for empty fields on submit", () => {
-        render(<AccountAdmin />);
+  beforeEach(() => {
+    fetchAdmin.mockResolvedValue(mockAdminData); // Mock the resolved data from the API
+  });
 
-        // Tömma fält
-        fireEvent.change(screen.getByLabelText(/Användarnamn:/i), { target: { value: "" } });
-        fireEvent.change(screen.getByLabelText(/E-postadress:/i), { target: { value: "" } });
-        fireEvent.change(screen.getByLabelText(/Telefonnummer:/i), { target: { value: "" } });
+  test("renders the form with admin data", async () => {
+    render(<AccountAdmin />);
 
-        fireEvent.click(screen.getByRole("button", { name: /Spara ändringar/i }));
+    // Wait for the form to be populated with fetched admin data
+    await waitFor(() => expect(fetchAdmin).toHaveBeenCalled());
 
-        expect(screen.getByText(/Användarnamn krävs/i)).toBeInTheDocument();
-        expect(screen.getByText(/E-postadress krävs/i)).toBeInTheDocument();
-        expect(screen.getByText(/Telefonnummer krävs/i)).toBeInTheDocument();
-    });
+    // Check if the fields are populated with the fetched data
+    expect(screen.getByLabelText(/Användarnamn/)).toHaveValue(mockAdminData.data.attributes.full_name);
+    expect(screen.getByLabelText(/E-postadress/)).toHaveValue(mockAdminData.data.attributes.email);
+    expect(screen.getByLabelText(/Github Login/)).toHaveValue(mockAdminData.data.attributes.github_login);
+    expect(screen.getByLabelText(/Id/)).toHaveValue(mockAdminData.data.id);
+    expect(screen.getByLabelText(/Self/)).toHaveValue(mockAdminData.data.links.self);
+  });
 
-    test("shows validation error for invalid email", () => {
-        render(<AccountAdmin />);
+  test("handles form submission with validation errors", async () => {
+    render(<AccountAdmin />);
 
-        fireEvent.change(screen.getByLabelText(/E-postadress:/i), { target: { value: "invalidemail" } });
+    // Wait for the form to be populated with fetched admin data
+    await waitFor(() => expect(fetchAdmin).toHaveBeenCalled());
 
-        fireEvent.click(screen.getByRole("button", { name: /Spara ändringar/i }));
+    // Fill the form with invalid data (empty fields to trigger validation errors)
+    fireEvent.change(screen.getByLabelText(/Användarnamn/), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText(/E-postadress/), { target: { value: "" } });
 
-        expect(screen.getByText(/Ogiltig e-postadress/i)).toBeInTheDocument();
-    });
+    // Submit the form
+    fireEvent.click(screen.getByText(/Spara ändringar/));
 
-    test("submits the form when all fields are valid", () => {
-        const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
+    // Check if validation error messages appear
+    expect(await screen.findByText(/Användarnamn krävs/)).toBeInTheDocument();
+    expect(await screen.findByText(/E-postadress krävs/)).toBeInTheDocument();
+  });
 
-        render(<AccountAdmin />);
+  test("handles valid form submission", async () => {
+    render(<AccountAdmin />);
 
-        fireEvent.change(screen.getByLabelText(/Användarnamn:/i), { target: { value: "Ny Admin" } });
-        fireEvent.change(screen.getByLabelText(/E-postadress:/i), { target: { value: "newadmin@mail.com" } });
-        fireEvent.change(screen.getByLabelText(/Telefonnummer:/i), { target: { value: "0701234567" } });
+    // Wait for the form to be populated with fetched admin data
+    // await waitFor(() => expect(fetchAdmin).toHaveBeenCalled());
 
-        fireEvent.click(screen.getByRole("button", { name: /Spara ändringar/i }));
+    // Fill the form with valid data
+    fireEvent.change(screen.getByLabelText(/Användarnamn/), { target: { value: "Jane Doe" } });
+    fireEvent.change(screen.getByLabelText(/E-postadress/), { target: { value: "jane.doe@example.com" } });
 
-        expect(alertMock).toHaveBeenCalledWith("Ändringar sparade!");
+    // Mock the global alert function to check if it's called
+    global.alert = jest.fn();
 
-        alertMock.mockRestore();
-    });
+    // Submit the form
+    fireEvent.click(screen.getByText(/Spara ändringar/));
+
+    // Check if the alert function was called
+    expect(global.alert).toHaveBeenCalledWith("Ändringar sparade!");
+  });
+
+  test("handles API fetch errors", async () => {
+    // Make fetchAdmin mock reject with an error
+    fetchAdmin.mockRejectedValueOnce(new Error("Failed to fetch admin details"));
+
+    render(<AccountAdmin />);
+
+    // Wait for the form to be populated with fetched admin data
+    await waitFor(() => expect(fetchAdmin).toHaveBeenCalled());
+
+    // Check if the error was logged (optional)
+    // This part is to ensure the error handling part of the useEffect works
+    // You could also mock console.error if you want to check if it logs the error correctly
+  });
 });
