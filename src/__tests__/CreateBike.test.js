@@ -51,6 +51,16 @@ describe('CreateBike Component', () => {
             json: jest.fn().mockResolvedValue({}),
         });
 
+        const mockToken = localStorage.getItem('token');
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(() => mockToken),
+                setItem: jest.fn(),
+                clear: jest.fn(),
+            },
+            writable: true,
+        });
+
         render(<CreateBike />);
 
         // Simulate user input
@@ -71,6 +81,7 @@ describe('CreateBike Component', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${mockToken}`,
                 },
                 body: JSON.stringify({
                     battery_lvl: '80',
