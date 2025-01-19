@@ -1,8 +1,6 @@
 const backendURL = "http://localhost:8000/"
 
 export async function fetchLogin(code, role) {
-    console.log("igen men i oauth role: ",role);
-    console.log("igen men i oauth code: ",code);
     try {
         let res = await fetch(backendURL + "v1/oauth/github", {
             method: "POST",

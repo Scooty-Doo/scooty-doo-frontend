@@ -238,13 +238,6 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
         }
     }, [socket, bikes, userType]);
 
-    // sockets för zone count hantering ideér
-    // när socket säger att trip start/end så ger vi zon id som cykel lämna och ger en +1 eller -1 till updateBikeCount
-    // om cykeln startade eller endade i ingen zon så gör vi inte callen för den sidan
-    // Problem:
-    // Vad är bike_update_start och bike_update_end data strukturen?
-    // kan inte få igång start/end trip på client side
-
     if (loading) {
         return <p>Loading</p>
     }

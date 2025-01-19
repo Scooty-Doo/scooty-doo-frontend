@@ -14,7 +14,6 @@ const HomeClient = () => {
     const [userInfo, setUserInfo] = useState(null);
 
     const navigate = useNavigate();
-    console.log("sessionStorage i clientsidan",sessionStorage);
     
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => {

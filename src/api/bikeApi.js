@@ -1,8 +1,6 @@
 const API_BASE_URL = "http://127.0.0.1:8000/v1/bikes/";
 // Hämta information om cyklarna
 export const fetchBikes = async () => {
-    const token = sessionStorage.getItem("token");
-    console.log("Bike fetch token check: ",token);
     try {
         const token = sessionStorage.getItem("token");
 
@@ -57,8 +55,6 @@ export const fetchAvailableBikes = async () => {
 
 // Hämta information om en cykel
 export const fetchBike = async (bike_id) => {
-    const token = sessionStorage.getItem("token");
-    console.log("Bike fetch token check: ",token);
     try {
         const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}${bike_id}`, {
@@ -81,8 +77,6 @@ export const fetchBike = async (bike_id) => {
 };
 
 export const fetchBikeByCityApi = async (cityId) => {
-
-    console.log("city Id is inside api", cityId);
 
     try {
         const token = sessionStorage.getItem("token");
