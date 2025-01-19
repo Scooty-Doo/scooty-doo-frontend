@@ -1,6 +1,8 @@
 const API_BASE_URL = "http://127.0.0.1:8000/v1/bikes/";
 // Hämta information om cyklarna
 export const fetchBikes = async () => {
+    const token = sessionStorage.getItem("token");
+    console.log("Bike fetch token check: ",token);
     try {
         const token = sessionStorage.getItem("token");
 
@@ -55,10 +57,14 @@ export const fetchAvailableBikes = async () => {
 
 // Hämta information om en cykel
 export const fetchBike = async (bike_id) => {
+    const token = sessionStorage.getItem("token");
+    console.log("Bike fetch token check: ",token);
     try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}${bike_id}`, {
             method: "GET",
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
         });
@@ -79,9 +85,11 @@ export const fetchBikeByCityApi = async (cityId) => {
     console.log("city Id is inside api", cityId);
 
     try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}?city_id=${cityId}`, {
             method: "GET",
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
         });
@@ -99,9 +107,11 @@ export const fetchBikeByCityApi = async (cityId) => {
 // API-funktion för att uppdatera cykeldetaljer
 export const bikeDetails = async (bike_id, battery_level, city_id, position, availability) => {
     try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}${bike_id}`, {
             method: "PATCH",
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -123,6 +133,32 @@ export const bikeDetails = async (bike_id, battery_level, city_id, position, ava
     }
 };
 
+export const fetchBikesInZone = async (zoneTypeId, cityId) => {
+    try {
+        // Hämta token från sessionStorage
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            throw new Error("Ingen token hittades i sessionStorage");
+        }
+        const response = await fetch(`${API_BASE_URL}bikes_in_zone?zone_type_id=${zoneTypeId}&city_id=${cityId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch bikes in zone: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching bikes in zonetype:", error);
+        throw error;
+    }
+};
+
 export const bikeDelete = async (bike_id) => {
 
     // Show confirmation dialog
@@ -136,8 +172,13 @@ export const bikeDelete = async (bike_id) => {
     console.log(`Attempting to delete bike with ID: ${bike_id}`);
 
     try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}${bike_id}`, {
             method: 'DELETE',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
 
         if (response.status === 204) {

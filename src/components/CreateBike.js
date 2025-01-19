@@ -45,9 +45,11 @@ const CreateBike = () => {
         console.log("formatted yikes",JSON.stringify(formattedBike));
 
         try {
+            const token = sessionStorage.getItem("token");
             const response = await fetch(`http://localhost:8000/v1/bikes/`, {
                 method: 'POST', // request type
                 headers: {
+                    "Authorization": `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formattedBike), // Send bike object as JSON

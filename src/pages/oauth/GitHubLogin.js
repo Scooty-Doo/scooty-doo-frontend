@@ -8,6 +8,8 @@ const GitHubLogin = () => {
 
     useEffect(() => {
         const login = async (code, role="user") => {
+            console.log("role: ",role);
+            console.log("code: ",code);
             try {
                 let res = await fetchLogin(code, role);
                 console.log("Response from fetchLogin:", res);
