@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import styles from '../styles/BikeCRUDAdmin.module.css';
+import styles from '../styles/BikeCRUDAdmin.module.css';
 
 
 // The component works as intended, however i have not polished the code.
@@ -96,60 +96,62 @@ const CreateBike = () => {
     // if (error) return <p>Error: {error}</p>;
 
     return (
-        <form onSubmit={handleSubmit}>
-            {/* Battery Level (non-editable) */}
-            <div>
-                <label htmlFor="battery_lvl">Battery Level:</label>
-                <input
-                    type="number"
-                    id="battery_lvl"
-                    name="battery_lvl"
-                    value={bike?.data?.attributes?.battery_lvl || ""}
-                    onChange={handleChange}
-                />
-            </div>
+        <div className={styles.createForm}>
+            <form onSubmit={handleSubmit}>
+                {/* Battery Level (non-editable) */}
+                <div>
+                    <label htmlFor="battery_lvl">Battery Level:</label>
+                    <input
+                        type="number"
+                        id="battery_lvl"
+                        name="battery_lvl"
+                        value={bike?.data?.attributes?.battery_lvl || ""}
+                        onChange={handleChange}
+                    />
+                </div>
 
-            {/* Last Position (non-editable) */}
-            <div>
-                <label htmlFor="last_position">Last Position:</label>
-                <input
-                    type="text"
-                    id="last_position"
-                    name="last_position"
-                    value={bike?.data?.attributes?.last_position || ""}
-                    onChange={handleChange}
-                />
-            </div>
+                {/* Last Position (non-editable) */}
+                <div>
+                    <label htmlFor="last_position">Last Position:</label>
+                    <input
+                        type="text"
+                        id="last_position"
+                        name="last_position"
+                        value={bike?.data?.attributes?.last_position || ""}
+                        onChange={handleChange}
+                    />
+                </div>
 
-            {/* Is Available (editable) */}
-            <div>
-                <label htmlFor="is_available">Is Available:</label>
-                <input
-                    type="checkbox"
-                    id="is_available"
-                    name="is_available"
-                    checked={bike?.data?.attributes?.is_available || false}
-                    onChange={handleChange}
-                />
-            </div>
+                {/* Is Available (editable) */}
+                <div>
+                    <label htmlFor="is_available">Is Available:</label>
+                    <input
+                        type="checkbox"
+                        id="is_available"
+                        name="is_available"
+                        checked={bike?.data?.attributes?.is_available || false}
+                        onChange={handleChange}
+                    />
+                </div>
 
-            {/* City ID (editable) */}
-            <div>
-                <label htmlFor="cityId">City ID:</label>
-                <input
-                    type="text"
-                    id="cityId"
-                    name="cityId"
-                    value={bike?.data?.relationships?.city?.data?.id || ""}
-                    onChange={handleChange}
-                />
-            </div>
+                {/* City ID (editable) */}
+                <div>
+                    <label htmlFor="cityId">City ID:</label>
+                    <input
+                        type="text"
+                        id="cityId"
+                        name="cityId"
+                        value={bike?.data?.relationships?.city?.data?.id || ""}
+                        onChange={handleChange}
+                    />
+                </div>
 
-            {/* Works */}
-            <div>
-                <button type="submit">Add new bike</button>
-            </div>
-        </form>
+                {/* Works */}
+                <div>
+                    <button type="submit">Add new bike</button>
+                </div>
+            </form>
+        </div>
     );
 };
 

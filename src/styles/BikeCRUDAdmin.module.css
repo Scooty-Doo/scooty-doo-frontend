@@ -1,48 +1,121 @@
-.formContainer {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 20px;
+}
+
+/* Main form container */
+.mainForm {
+    padding: 50px;
+    max-width: 600px;
+    margin-top: 80px;
     background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    color: #333;
+    margin-top: 120px;
+    align-items: center;
 }
 
-h1 {
-    font-size: 24px;
+.heading {
+    text-align: left;
+    font-size: 2rem;
     margin-bottom: 20px;
-    text-align: center;
+    color: #444;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.formGroup {
+    margin-bottom: 15px;
 }
 
+/* Create form section */
+.createForm {
+    padding: 50px;
+    max-width: 600px;
+    margin-top: 80px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    color: #333;
+    margin-top: 120px;
+    align-items: center;
+}
+
+/* Form labels */
 label {
-    display: flex;
-    flex-direction: column;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
+    display: block;
 }
 
+/* Form input fields */
 input {
+    width: 100%;
     padding: 8px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
+/* Input for non-editable fields */
+input[readonly] {
+    background-color: #f0f0f0;
+}
+
+/* Checkbox style */
+input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+/* Submit buttons */
 button {
-    padding: 10px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
+    background-color: #4CAF50;
+    color: white;
     border: none;
+    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Delete button */
+button[type="submit"]:nth-child(2) {
+    background-color: #f44336;
+}
+
+button[type="submit"]:nth-child(2):hover {
+    background-color: #e41f24;
+}
+
+/* Spacing between form elements */
+div {
+    margin-bottom: 20px;
+}
+
+/* Section styling for the create form */
+.createForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .mainForm {
+        margin-right: 0;
+        max-width: 100%;
+    }
 }
