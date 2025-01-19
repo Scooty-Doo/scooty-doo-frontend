@@ -57,19 +57,24 @@ const AccountAdmin = () => {
             // Spara ändringar logik här
         } else {
             setErrors(validationErrors);
+            console.log(validationErrors);
         }
     };
 
     const validateForm = () => {
         const errors = {};
-        if (!formData.full_name.trim()) errors.full_name = "Användarnamn krävs";
-        if (!formData.email.trim()) errors.email = "E-postadress krävs";
-        else if (!/\S+@\S+\.\S+/.test(formData.email))
-            errors.email = "Ogiltig e-postadress";
-        if (!formData.phoneNumber.trim())
-            errors.phoneNumber = "Telefonnummer krävs";
+        Object.entries(formData).forEach(([key, value]) => {
+            if (key === "email") {
+                if (!value?.trim()) errors.email = "E-postadress krävs";
+                else if (!/\S+@\S+\.\S+/.test(value))
+                    errors.email = "Ogiltig e-postadress";
+            } else if (!value?.trim()) {
+                errors[key] = `${key} krävs`;
+            }
+        });
         return errors;
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className={styles.container}>
