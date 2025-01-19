@@ -31,12 +31,12 @@ const UpdateMapCenter = ({ center }) => {
       if (coords && map) {
         map.flyTo([coords[1],coords[0]], map.getZoom(), {
             animate: true,
-            duration: 1.5, // Duration of the animation in seconds
+            duration: 1.5,
           });
       }
     }, [center, map]);
 
-    return null; // This component doesn't render anything
+    return null;
   };
 
 const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
@@ -78,35 +78,6 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
         iconAnchor: [16, 32],
         popupAnchor: [0, -32],
     });
-
-    // const UpdateMapCenter = (selectedBikePoint) => {
-    //     const map = useMap();
-    //     console.log("Bike Data inside UpdateMapCenter: ",selectedBikePoint)
-
-        
-    //     useEffect(() => {
-    //         const coords = pointToLatLngs(selectedBikePoint);
-
-    //         if (coords === null) {
-    //             return null
-    //         }
-    //         map.setView([coords[1], coords[0]], 15);
-
-    //     }, [selectedBikePoint]);
-    
-    //     return null;
-    // };
-
-    // const pointToLatLngs = (lastPosition) => {
-    //     // Extract the coordinates from the POINT format
-    //     if (selectedBikePoint === null) {
-    //         return null
-    //     }
-    //     const coordinates = lastPosition.match(/POINT\(([^)]+)\)/)[1].split(' ');
-    //     return coordinates; // formatted lat lngs in an array
-    // };
-
-
 
     // Hämtar cyklar från API och lägger till zoner
     useEffect(() => {
@@ -156,7 +127,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
         };
 
         const fetchBikesFromZones = async () => { // möjliga ändringar till function, lägg till att man ger cityId för staden man kollar på och får functionen att köra när cityId byts
-            const cityId = 3; // Set cityId
+            const cityId = 3; // lägg till att cityId sätts till den stad man har vald och att functionen körs om när man ändrar stad
             const zoneTypeIds = [1, 2]; // List of zoneTypeIds to fetch
             const allBikes = []; // To store combined bike data from both zones
             const allBikesSorted = [];
@@ -175,12 +146,6 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             } finally {
                 setLoading(false);
             }
-            // change vara +1 by default?
-            // all logik för att fixa hur många bikes i de olika zonerna körs här
-            // sudo kod för inizialize skriv här
-            // loopa genom allBikes
-            // skicka bikes relationship.zonde.data.id som zoneId för varje bike
-            // lägga till zon typ id i bikeCounts objektet?
             allBikes.forEach(bike => {
                 const zoneId = bike.relationships.zone.data.id;
                 const change = 1;
