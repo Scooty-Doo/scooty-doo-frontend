@@ -39,7 +39,7 @@ const UpdateMapCenter = ({ center }) => {
     return null;
 };
 
-const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
+const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
@@ -48,6 +48,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
     // const cityId = 3;
     // hämta cityId från den valda staden man kollar på och använd den som ett filter för vilka bikes man hämtar
     console.log("selectedBikePoint: ",selectedBikePoint);
+    console.log("selectedCity: ",selectedCity);
 
     // Function för att uppdatera bikeCount för att räkna hur många bikes i olika zoner
     const updateBikeCount = (zoneId, change) => {
@@ -267,7 +268,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             socket.off("bike_update_start", handle_bike_update_start);
             socket.off("bike_update_end", handle_bike_update_end);
         }
-    }, [socket, bikes, userType]);
+    }, [socket, bikes, userType, bikeCounts]);
 
     if (loading) {
         return <p>Loading</p>
@@ -284,6 +285,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint }) => {
             />
             <ClusterMarkers />
             <UpdateMapCenter center={selectedBikePoint} />
+            <UpdateMapCenter center={selectedCity?.attributes?.c_location  || null} />
 
             {userPosition && (
                 <Marker position={userPosition} icon={userIcon}>
@@ -325,7 +327,8 @@ MapAdmin.propTypes = {
     userType: PropTypes.string,
     socket: Socket,
     token: PropTypes.string,
-    selectedBikePoint: PropTypes.arrayOf(PropTypes.number)
+    selectedBikePoint: PropTypes.arrayOf(PropTypes.number),
+    selectedCity: PropTypes.object,
 };
 
 UpdateMapCenter.propTypes = {

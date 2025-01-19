@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import styles from "../../styles/AccountAdmin.module.css";
 import { fetchAdmin } from '../../api/adminAccountApi';
 
 const AccountAdmin = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
     const [formData, setFormData] = useState({
         full_name: "",
         email: "",

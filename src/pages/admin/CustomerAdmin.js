@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from "../../styles/CustomerAdmin.module.css";
 import { fetchCustomer } from "../../api/customerApi";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,12 @@ const Customer = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     const handleRowClick = (userId) => {
         navigate(`/customerupdate/${userId}`);

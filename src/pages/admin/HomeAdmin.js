@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ListBikeCity from '../../components/ListBikeCity'; // Import the ListBikeCity component som har sök funktionalitet
 import MapAdmin from '../../components/MapAdmin.js';
+import CitySelector from '../../components/SelectCityAdmin';
 import styles from '../../styles/HomeAdmin.module.css';
 import { io } from 'socket.io-client';
 import PropTypes from 'prop-types';
@@ -9,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 const HomeAdmin = ({token}) => {
     const navigate = useNavigate();
     const [selectedBikePoint, setSelectedBikePoint] = useState(null);
+    const [selectedCity, setSelectedCity] = useState(null);
     // Kontrollera token och omdirigera till login om den saknas
-    useEffect(() => { // lägg till i alla admin sidor!
+    useEffect(() => {
         const token = sessionStorage.getItem("token");
         if (!token) {
             navigate("/");
@@ -31,7 +33,11 @@ const HomeAdmin = ({token}) => {
                     socket={socket}
                     token={token}
                     selectedBikePoint={selectedBikePoint} // Ge selectedBikePoint till MapAdmin
+                    selectedCity={selectedCity} // samma sak fast för city details
                 />
+            </div>
+            <div>
+                <CitySelector onCitySelect={setSelectedCity}/>
             </div>
             <div className={styles.list}>
                 <ListBikeCity

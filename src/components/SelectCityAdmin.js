@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCities } from '../api/citiesApi';
+import PropTypes from "prop-types";
 
-const CitySelector = () => {
+const CitySelector = ({ onCitySelect }) => {
     // State to store the list of cities
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCity, setSelectedCity] = useState('');
 
     // Fetch cities from the API when the component is mounted
-    useEffect (() => { // hämta city data
+    useEffect (() => {
         const getCities = async () => {
             const data = await fetchCities();
             console.log("getCities: ",data.data);
@@ -20,7 +21,12 @@ const CitySelector = () => {
 
     // Handle change in selected city
     const handleCityChange = (event) => {
-        setSelectedCity(event.target.value);
+        const cityId = event.target.value;
+        setSelectedCity(cityId);
+
+        // Pass the selected city data to the parent component
+        const selectedCityData = cities.find((city) => city.id === cityId);
+        onCitySelect(selectedCityData);
     };
 
     if (loading) {
@@ -45,6 +51,10 @@ const CitySelector = () => {
             {selectedCity && <p>You selected city ID: {selectedCity}</p>}
         </div>
     );
+};
+
+CitySelector.propTypes = {
+    onCitySelect: PropTypes.func.isRequired,
 };
 
 export default CitySelector;
