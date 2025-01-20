@@ -1,10 +1,8 @@
 /* eslint-env jest */
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render} from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import HomeClient from "../pages/customer/HomeClient";
-import { startRide, endRide } from "../api/tripsApi";
-import { fetchUser } from "../api/meApi";
 import "@testing-library/jest-dom";
 
 // Mock API calls
