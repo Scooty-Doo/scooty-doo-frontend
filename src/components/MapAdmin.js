@@ -9,16 +9,62 @@ import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
 //import { fetchBikes } from '../api/bikeApi';
-import { fetchAvailableBikes } from '../api/bikeApi';
+import { fetchBikes, fetchBikesInZone } from '../api/bikeApi';
 import 'leaflet.markercluster';
 // import BikeMarker from './marker';
+import { fetchCities } from '../api/citiesApi';
 
+const UpdateMapCenter = ({ center }) => {
+    const pointToLatLngs = (lastPosition) => {
+        // Extract the coordinates from the POINT format
+        if (lastPosition === null) {
+            return null
+        }
+        const coordinates = lastPosition.match(/POINT\(([^)]+)\)/)[1].split(' ');
+        return coordinates; // formatted lat lngs in an array
+    };
+    const coords = pointToLatLngs(center);
+    console.log("Coords in UpdateMapCenter",coords);
+    const map = useMap();
 
-const MapAdmin = ({ userType, socket }) => {
+    useEffect(() => {
+        if (coords && map) {
+            map.flyTo([coords[1],coords[0]], map.getZoom(), {
+                animate: true,
+                duration: 1.5,
+            });
+        }
+    }, [center, map, coords]);
+
+    return null;
+};
+
+const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
     const [userPosition, setUserPosition] = useState(null);
+    let bikeCounts = {};
+    // const cityId = 3;
+    // hämta cityId från den valda staden man kollar på och använd den som ett filter för vilka bikes man hämtar
+    console.log("selectedBikePoint: ",selectedBikePoint);
+    console.log("selectedCity: ",selectedCity);
+
+    // Function för att uppdatera bikeCount för att räkna hur många bikes i olika zoner
+    const updateBikeCount = (zoneId, change) => {
+        if (!bikeCounts[zoneId]) {
+            bikeCounts[zoneId] = 0; // Initialize count if it doesn't exist
+        }
+        bikeCounts[zoneId] += change; // Increase or decrease based on the 'change' argument
+    };
+
+    useEffect (() => { // hämta city data
+        const getCities = async () => {
+            const data = await fetchCities();
+            console.log("getCities: ",data.data);
+        };
+        getCities();
+    }, []);
 
     const bikeIcon = new L.divIcon({
         className: styles["bike-icon"],
@@ -47,14 +93,17 @@ const MapAdmin = ({ userType, socket }) => {
             );
         }
 
+
+
         const fetchBikesFromApi = async () => {
             // Sets the route depending on the usertype
             // if admin - Tim fixaaaaaaaaa
 
             try {
-                const data = await fetchAvailableBikes();
+                const data = await fetchBikes();
                 console.log(data.data)
                 setBikes(data.data);
+                // console.log("HÄÄÄÄÄÄÄÄR",data);
             } catch (error) {
                 console.error('Error fetching bikes:', error);
             } finally {
@@ -70,18 +119,49 @@ const MapAdmin = ({ userType, socket }) => {
                     name: zone.attributes.zone_name,
                     wkt: zone.attributes.boundary,
                     type: zone.attributes.zone_type_id === 1 ? 'Parking' :
-                        zone.attributes.zone_type_id === 2 ? 'Slow' :
+                        zone.attributes.zone_type_id === 2 ? 'Charging' :
                             zone.attributes.zone_type_id === 3 ? 'Forbidden' :
-                                zone.attributes.zone_type_id === 4 ? 'Charging' : 'Unknown'
+                                zone.attributes.zone_type_id === 4 ? 'Slow' : 'Unknown'
                 })));
             } catch (error) {
                 console.error('Error fetching zones:', error);
             }
         };
-    
+
         fetchMapZones();
         fetchBikesFromApi();
     }, [userType]);
+
+    useEffect(() => {
+        const fetchBikesFromZones = async () => { // möjliga ändringar till function, lägg till att man ger cityId för staden man kollar på och får functionen att köra när cityId byts
+            const cityId = 3; // lägg till att cityId sätts till den stad man har vald och att functionen körs om när man ändrar stad
+            const zoneTypeIds = [1, 2]; // List of zoneTypeIds to fetch
+            const allBikes = []; // To store combined bike data from both zones
+            const allBikesSorted = [];
+        
+            try {
+                for (const zoneTypeId of zoneTypeIds) {
+                    const data = await fetchBikesInZone(zoneTypeId, cityId); // Call your fetch function
+                    console.log(`Data for zoneTypeId ${zoneTypeId}:`, data.data);
+                    allBikesSorted.push(data.data); // lägg in bikesen från varje fetch i varsin array i allBikes arrayen
+                    allBikes.push(...data.data);
+                }
+                console.log("allBikes: ",allBikes)
+                console.log("allBikesSorted: ",allBikesSorted)
+            } catch (error) {
+                console.error("Error fetching bikes:", error);
+            } finally {
+                setLoading(false);
+            }
+            allBikes.forEach(bike => {
+                const zoneId = bike.relationships.zone.data.id;
+                const change = 1;
+                updateBikeCount(zoneId, change); // change kommer vara + eller - 1 för start/end trip och vad som + för första hämtning
+            });
+            console.log("bikeCounts initialized: ",bikeCounts)
+        };
+        fetchBikesFromZones();
+    });
 
     const ClusterMarkers = () => {
         const map = useMap();
@@ -129,7 +209,7 @@ const MapAdmin = ({ userType, socket }) => {
     
         return null;
     };
-    
+
     // useEffect to get updates from socket
     useEffect(() => {
         if (userType != "admin" || !socket) {
@@ -137,6 +217,7 @@ const MapAdmin = ({ userType, socket }) => {
         }
 
         const update_bike = (data) => {
+            console.log("update_bike Data:",data);
             let bike = bikes.find((bike) =>  bike.id == data.bike_id);
             // Could be done with a for loop
             // Updates the bikes-list, but doesn't update the marker.
@@ -145,22 +226,54 @@ const MapAdmin = ({ userType, socket }) => {
             bike.attributes.last_position = data.last_position;
             bike.attributes.is_available = data.is_available;
             bike.attributes.meta_data = data.meta_data;
-            update_bike_on_map(bike);            
+            update_bike_on_map(bike);
         };
 
-        const update_bike_on_map = (updatedBike) => { // bikes update on map now, not entierly sure how this works
+        const update_bike_on_map = (updatedBike) => {
             setBikes((prevBikes) =>
                 prevBikes.map((bike) =>
                     bike.id === updatedBike.id ? updatedBike : bike // If bike.id is match to updatedBike.id then replace old bike with new bike info
                 )
             );
         };
+
         socket.on("bike_update", update_bike);
         return () => {
-            socket.off("bike_update", update_bike)
+            socket.off("bike_update", update_bike);
         }
     }, [socket, bikes, userType]);
-    
+
+    // useEffect(() => {
+    //     const handle_bike_update_start = (data) => {
+    //         if (!data.zone_id) {
+    //             console.log("zon id i start var null",data.zone_id);
+    //             return;
+    //         }
+    //         const count = -1;
+    //         const zone_id = data.zone_id;
+    //         console.log("Bike update started:", data);
+    //         updateBikeCount(zone_id, count);
+    //         console.log("bikeCounts efter start trip: ",bikeCounts)
+    //     };
+
+    //     const handle_bike_update_end = (data) => {
+    //         if (!data.zone_id) {
+    //             console.log("zon id i start var null",data.zone_id);
+    //             return;
+    //         }
+    //         const count = 1;
+    //         const zone_id = data.zone_id;
+    //         console.log("Bike update ended:", data);
+    //         updateBikeCount(zone_id, count);
+    //         console.log("bikeCounts efter end trip: ",bikeCounts)
+    //     };
+    //     socket.on("bike_update_start", handle_bike_update_start);
+    //     socket.on("bike_update_end", handle_bike_update_end);
+    //     return () => {
+    //         socket.off("bike_update_start", handle_bike_update_start);
+    //         socket.off("bike_update_end", handle_bike_update_end);
+    //     }
+    // }, [socket, bikeCounts]);
 
     if (loading) {
         return <p>Loading</p>
@@ -176,6 +289,8 @@ const MapAdmin = ({ userType, socket }) => {
                 attribution='&copy; <a href="https://www.thunderforest.com/">Thunderforest</a> contributors'
             />
             <ClusterMarkers />
+            <UpdateMapCenter center={selectedCity?.attributes?.c_location  || null} />
+            <UpdateMapCenter center={selectedBikePoint} />
 
             {userPosition && (
                 <Marker position={userPosition} icon={userIcon}>
@@ -216,7 +331,16 @@ const MapAdmin = ({ userType, socket }) => {
 MapAdmin.propTypes = {
     userType: PropTypes.string,
     socket: Socket,
-    token: PropTypes.string
+    token: PropTypes.string,
+    selectedBikePoint: PropTypes.arrayOf(PropTypes.number),
+    selectedCity: PropTypes.object,
+};
+
+UpdateMapCenter.propTypes = {
+    center: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.oneOf([null])  // Allows null
+    ]),
 };
 
 export default MapAdmin;

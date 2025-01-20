@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/ListBikeCity.module.css';
 import { fetchBikeByCityApi, fetchBike } from "../api/bikeApi";
+import PropTypes from "prop-types";
 
-const ListBikeCity = () => {
+const ListBikeCity = ({ onBikePointClick }) => {
     const [bikes, setBikes] = useState([]);
     const [cityId, setCityId] = useState('');
     const [bikeId, setBikeId] = useState('');
@@ -96,7 +97,8 @@ const ListBikeCity = () => {
                             <tr key={bike.id}>
                                 <td><Link to={`/bikeCRUD/${bike.id}`}>{bike.id}</Link></td>
                                 <td>{bike.attributes.battery_lvl}%</td>
-                                <td>{bike.attributes.last_position}</td>
+                                <td onClick={() => onBikePointClick(bike.attributes.last_position)} style={{ cursor: 'pointer' }}>
+                                    {bike.attributes.last_position}</td>
                                 <td>{bike.attributes.is_available ? 'Available' : 'Not Available'}</td>
                                 <td>{new Date(bike.attributes.created_at).toLocaleString()}</td>
                                 <td>{new Date(bike.attributes.updated_at).toLocaleString()}</td>
@@ -108,6 +110,11 @@ const ListBikeCity = () => {
             </div>
         </div>
     );
+};
+
+// Add PropTypes for validation
+ListBikeCity.propTypes = {
+    onBikePointClick: PropTypes.func.isRequired, // Define the type of the prop
 };
 
 export default ListBikeCity;

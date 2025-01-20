@@ -19,6 +19,31 @@ const MapWithZones = () => {
     const [newZoneBoundary, setNewZoneBoundary] = useState(null);
     const [editingZoneId, setEditingZoneId] = useState(null);
 
+    // Hämta zondata från API
+    useEffect(() => {
+        const fetchZones = async () => {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch zones: ${response.status}`);
+                }
+
+                const data = await response.json();
+                data.data.forEach(loadApiZones);
+            } catch (error) {
+                console.error("Error fetching zones:", error);
+            }
+        };
+
+        fetchZones();
+    });
+
     // Uppdatera karta när zoner ändras
     useEffect(() => {
         if (oldZonesRef.current) {
@@ -299,11 +324,11 @@ const MapWithZones = () => {
         case 1:
             return 'blue';
         case 2:
-            return 'yellow';
+            return 'green';
         case 3:
             return 'red';
         case 4:
-            return 'green';
+            return 'yellow';
         default:
             return 'gray';
         }
@@ -352,9 +377,9 @@ const MapWithZones = () => {
                         className={styles.select}
                     >
                         <option value="1">Parking</option>
-                        <option value="2">Slow</option>
+                        <option value="2">Charging</option>
                         <option value="3">Forbidden</option>
-                        <option value="4">Charging</option>
+                        <option value="4">Slow</option>
                     </select>
                 </label>
                 <br />

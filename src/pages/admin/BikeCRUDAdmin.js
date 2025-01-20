@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-// import styles from '../../styles/BikeCRUDAdmin.module.css';
+import { useParams, useNavigate } from 'react-router-dom';
+import styles from '../../styles/BikeCRUDAdmin.module.css';
 import { fetchBike, bikeDetails, bikeDelete } from "../../api/bikeApi";
 import CreateBike from '../../components/CreateBike';
-
-// What does this file need to be able to do?
-// Get the bike id from the preavious page for use in displaying the form and also store said id to be able to update the bike using the form
-// this is to be done later, for now just set a variable bikeId to a static number
-// Have a form that displays the information of the bike (done)
-// Be able to use that form to update the bike. (Once the form has been submitted, transform the information in the form into a json formatt that the update bike input is looking for) (done)
-// Given that the JSON data of the bike contains a link to self that just contains the fetch link to call via id we COULD just take that from the previous page and put it into a variable called (fetchBikeUrl)
-
-// Which should be editable?
-// bikeId == no
-// batterylvl == no
-// location == no
-// available == yes
-// created date == no
-// updated date == no?
-// cityId == yes
-// links == no
-// links2 == no
 
 const BikeCRUDAdmin = () => {
     const { bikeId } = useParams(); // Get bike ID from URL params
@@ -28,6 +10,13 @@ const BikeCRUDAdmin = () => {
     const [loading, setLoading] = useState(true);
     const [error] = useState(null);
     // const bikeId = 3;
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     // Fetch bike details
     useEffect(() => {
@@ -106,116 +95,125 @@ const BikeCRUDAdmin = () => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <><form onSubmit={handleSubmit}>
-            {/* Bike ID (non-editable) */}
-            <div>
-                <label htmlFor="id">Bike ID:</label>
-                <input
-                    type="text"
-                    id="id"
-                    name="id"
-                    value={bike?.data?.id || ""}
-                    readOnly />
-            </div>
+        <div className={styles.container}>
+            <div className={styles.mainForm}>
+                <form onSubmit={handleSubmit}>
+                    <h2 className={styles.heading}>Ändra Cykel-data</h2>
+                    {/* Bike ID (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="id">Bike ID:</label>
+                        <input
+                            type="text"
+                            id="id"
+                            name="id"
+                            value={bike?.data?.id || ""}
+                            readOnly />
+                    </div>
 
-            {/* Battery Level (non-editable) */}
-            <div>
-                <label htmlFor="battery_lvl">Battery Level:</label>
-                <input
-                    type="number"
-                    id="battery_lvl"
-                    name="battery_lvl"
-                    value={bike?.data?.attributes?.battery_lvl || ""}
-                    readOnly />
-            </div>
+                    {/* Battery Level (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="battery_lvl">Battery Level:</label>
+                        <input
+                            type="number"
+                            id="battery_lvl"
+                            name="battery_lvl"
+                            value={bike?.data?.attributes?.battery_lvl || ""}
+                            readOnly />
+                    </div>
 
-            {/* Last Position (non-editable) */}
-            <div>
-                <label htmlFor="last_position">Last Position:</label>
-                <input
-                    type="text"
-                    id="last_position"
-                    name="last_position"
-                    value={bike?.data?.attributes?.last_position || ""}
-                    readOnly />
-            </div>
+                    {/* Last Position (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="last_position">Last Position:</label>
+                        <input
+                            type="text"
+                            id="last_position"
+                            name="last_position"
+                            value={bike?.data?.attributes?.last_position || ""}
+                            readOnly />
+                    </div>
 
-            {/* Is Available (editable) */}
-            <div>
-                <label htmlFor="is_available">Is Available:</label>
-                <input
-                    type="checkbox"
-                    id="is_available"
-                    name="is_available"
-                    checked={bike?.data?.attributes?.is_available || false}
-                    onChange={handleChange} />
-            </div>
+                    {/* Is Available (editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="is_available">Is Available:</label>
+                        <input
+                            type="checkbox"
+                            id="is_available"
+                            name="is_available"
+                            checked={bike?.data?.attributes?.is_available || false}
+                            onChange={handleChange} />
+                    </div>
 
-            {/* Created At (non-editable) */}
-            <div>
-                <label htmlFor="created_at">Created At:</label>
-                <input
-                    type="text"
-                    id="created_at"
-                    name="created_at"
-                    value={bike?.data?.attributes?.created_at || ""}
-                    readOnly />
-            </div>
+                    {/* Created At (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="created_at">Created At:</label>
+                        <input
+                            type="text"
+                            id="created_at"
+                            name="created_at"
+                            value={bike?.data?.attributes?.created_at || ""}
+                            readOnly />
+                    </div>
 
-            {/* Updated At (non-editable) */}
-            <div>
-                <label htmlFor="updated_at">Updated At:</label>
-                <input
-                    type="text"
-                    id="updated_at"
-                    name="updated_at"
-                    value={bike?.data?.attributes?.updated_at || ""}
-                    readOnly />
-            </div>
+                    {/* Updated At (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="updated_at">Updated At:</label>
+                        <input
+                            type="text"
+                            id="updated_at"
+                            name="updated_at"
+                            value={bike?.data?.attributes?.updated_at || ""}
+                            readOnly />
+                    </div>
 
-            {/* City ID (editable) */}
-            <div>
-                <label htmlFor="cityId">City ID:</label>
-                <input
-                    type="text"
-                    id="cityId"
-                    name="cityId"
-                    value={bike?.data?.relationships?.city?.data?.id || ""}
-                    onChange={handleChange} />
-            </div>
+                    {/* City ID (editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="cityId">City ID:</label>
+                        <input
+                            type="text"
+                            id="cityId"
+                            name="cityId"
+                            value={bike?.data?.relationships?.city?.data?.id || ""}
+                            onChange={handleChange} />
+                    </div>
 
-            {/* Bike Link (non-editable) */}
-            <div>
-                <label htmlFor="bikeById">Bike Link:</label>
-                <input
-                    type="text"
-                    id="bikeLink"
-                    name="bikeLink"
-                    value={bike?.data?.links?.self || ""}
-                    readOnly />
-            </div>
+                    {/* Bike Link (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="bikeById">Bike Link:</label>
+                        <input
+                            type="text"
+                            id="bikeLink"
+                            name="bikeLink"
+                            value={bike?.data?.links?.self || ""}
+                            readOnly />
+                    </div>
 
-            {/* Top-Level Link (non-editable) */}
-            <div>
-                <label htmlFor="bikesAll">All bikes link:</label>
-                <input
-                    type="text"
-                    id="topLevelLink"
-                    name="topLevelLink"
-                    value={bike?.links?.self || ""}
-                    readOnly />
-            </div>
+                    {/* Top-Level Link (non-editable) */}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="bikesAll">All bikes link:</label>
+                        <input
+                            type="text"
+                            id="topLevelLink"
+                            name="topLevelLink"
+                            value={bike?.links?.self || ""}
+                            readOnly />
+                    </div>
 
-
-            <div>
-                <button type="submit">Submit</button>
+                    <div className={styles.formGroup}>
+                        <button type="submit">Submit</button>
+                    </div>
+                    <div className={styles.formGroup}>
+                        <button type="submit" onClick={deleteBike}>
+                        Delete
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div>
-                <button type="submit" onClick={deleteBike}>
-                    Delete
-                </button>
+            <div className={styles.createForm}>
+                <h2 className={styles.heading}>Skapa Cykel</h2>
+                <CreateBike />
             </div>
-        </form><div><CreateBike /></div></>
+        </div>
+        
     );
 };
 

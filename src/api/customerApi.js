@@ -3,6 +3,7 @@ const API_BASE_URL = "http://127.0.0.1:8000/v1/users/";
 // Hämta information om en användare med dynamiska sökparametrar
 export const fetchCustomer = async ({ name_search = "", email_search = "", github_login_search = "" } = {}) => {
     try {
+        const token = sessionStorage.getItem("token");
         // Bygg query-parametrar baserat på inmatade värden
         const params = new URLSearchParams();
         if (name_search) params.append("name_search", name_search);
@@ -17,6 +18,7 @@ export const fetchCustomer = async ({ name_search = "", email_search = "", githu
         const response = await fetch(fullUrl, {
             method: "GET",
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
         });
