@@ -296,11 +296,11 @@ const MapWithZones = () => {
         case 1:
             return 'blue';
         case 2:
-            return 'yellow';
+            return 'green';
         case 3:
             return 'red';
         case 4:
-            return 'green';
+            return 'yellow';
         default:
             return 'gray';
         }
@@ -349,9 +349,9 @@ const MapWithZones = () => {
                         className={styles.select}
                     >
                         <option value="1">Parking</option>
-                        <option value="2">Slow</option>
+                        <option value="2">Charging</option>
                         <option value="3">Forbidden</option>
-                        <option value="4">Charging</option>
+                        <option value="4">Slow</option>
                     </select>
                 </label>
                 <br />
