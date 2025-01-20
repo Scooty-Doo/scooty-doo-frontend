@@ -26,7 +26,7 @@ export const fetchBikes = async () => {
     }
 };
 
-export const fetchAvailableBikes = async () => {
+export const fetchAvailableBikes = async (cityId) => {
     try {
         // Hämta token från sessionStorage
         const token = sessionStorage.getItem("token");
@@ -34,7 +34,7 @@ export const fetchAvailableBikes = async () => {
         if (!token) {
             throw new Error("Ingen token hittades i sessionStorage");
         }
-        const response = await fetch(`${API_BASE_URL}available`, {
+        const response = await fetch(`${API_BASE_URL}available?limit=10000000&city_id=${cityId}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

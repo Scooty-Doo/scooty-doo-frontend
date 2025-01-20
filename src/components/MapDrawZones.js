@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import { useCallback } from 'react';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import styles from "../styles/MapDrawZones.module.css";
@@ -18,7 +19,53 @@ const MapWithZones = () => {
     const [newZoneBoundary, setNewZoneBoundary] = useState(null);
     const [editingZoneId, setEditingZoneId] = useState(null);
 
+    // Uppdatera karta när zoner ändras
+    useEffect(() => {
+        if (oldZonesRef.current) {
+            oldZonesRef.current.clearLayers();
+            mapLayers.forEach((layer) => {
+                const polygon = new L.Polygon(layer.latlngs, {
+                    id: layer.id, // Tilldelar id här
+                    color: getZoneColor(layer.zone_type_id),
+                    fillOpacity: 0.4,
+                });
+                oldZonesRef.current.addLayer(polygon);
+            });
+        }
+    }, [mapLayers]);
+
+    // Ladda zoner från api 
+    const loadApiZones = useCallback((zoneData) => {
+        if (!zoneData || !zoneData.id || !zoneData.attributes) {
+            console.error("Invalid zone data format:", zoneData);
+            return;
+        }
+    
+        const existingZone = mapLayers.find((layer) => layer.id === zoneData.id);
+        if (existingZone) {
+            console.warn(`Zone with ID ${zoneData.id} already exists.`);
+            return; // Skip if zone already exists
+        }
+    
+        const { boundary, zone_type_id, zone_name, city_id } = zoneData.attributes;
+        const latlngs = parseBoundary(boundary);
+    
+        setMapLayers((prevLayers) => [
+            ...prevLayers,
+            {
+                id: zoneData.id,
+                zone_type_id,
+                isNew: false,
+                zone_name: zone_name || "Unnamed Zone",
+                city_id: city_id || 0,
+                boundary,
+                latlngs,
+            },
+        ]);
+    }, [mapLayers]);
+
     // Hämta zondata från API
+    // UseEffect with loadApiZones as a dependency
     useEffect(() => {
         const fetchZones = async () => {
             try {
@@ -41,52 +88,8 @@ const MapWithZones = () => {
         };
 
         fetchZones();
-    }, []);
+    }, [loadApiZones]); 
 
-    // Uppdatera karta när zoner ändras
-    useEffect(() => {
-        if (oldZonesRef.current) {
-            oldZonesRef.current.clearLayers();
-            mapLayers.forEach((layer) => {
-                const polygon = new L.Polygon(layer.latlngs, {
-                    id: layer.id, // Tilldelar id här
-                    color: getZoneColor(layer.zone_type_id),
-                    fillOpacity: 0.4,
-                });
-                oldZonesRef.current.addLayer(polygon);
-            });
-        }
-    }, [mapLayers]);
-
-    // Ladda zoner från api 
-    const loadApiZones = (zoneData) => {
-        if (!zoneData || !zoneData.id || !zoneData.attributes) {
-            console.error("Invalid zone data format:", zoneData);
-            return;
-        }
-    
-        const existingZone = mapLayers.find((layer) => layer.id === zoneData.id);
-        if (existingZone) {
-            console.warn(`Zone with ID ${zoneData.id} already exists.`);
-            return; // Hoppa över om zonen redan finns
-        }
-    
-        const { boundary, zone_type_id, zone_name, city_id } = zoneData.attributes;
-        const latlngs = parseBoundary(boundary);
-    
-        setMapLayers((prevLayers) => [
-            ...prevLayers,
-            {
-                id: zoneData.id,
-                zone_type_id,
-                isNew: false,
-                zone_name: zone_name || "Unnamed Zone",
-                city_id: city_id || 0,
-                boundary,
-                latlngs,
-            },
-        ]);
-    };
     
     
     //omvandla polygon till lat-lng-koordinationer
