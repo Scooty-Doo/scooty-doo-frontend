@@ -19,6 +19,27 @@ jest.mock("react-leaflet", () => ({
     )),
 }));
 
+const parseBoundary = (boundary) => {
+    if (!boundary || typeof boundary !== "string") {
+        console.error("Invalid boundary:", boundary);
+        return [];
+    }
+
+    return boundary
+        .replace("POLYGON((", "")
+        .replace("))", "")
+        .split(",")
+        .map((coord) => {
+            const [lng, lat] = coord.trim().split(" ").map(parseFloat);
+            if (isNaN(lat) || isNaN(lng)) {
+                console.error("Invalid coordinate in boundary:", coord);
+                return null;
+            }
+            return [lat, lng];
+        })
+        .filter((coord) => coord !== null); 
+};
+
 // Mock React Leaflet Draw
 jest.mock("react-leaflet-draw", () => ({
     EditControl: jest.fn(() => <div data-testid="edit-control" />),
@@ -31,7 +52,7 @@ global.fetch = jest.fn(() =>
         json: async () => ({ data: [] }),
     })
 );
-
+ 
 describe("MapWithZones Component", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -85,5 +106,39 @@ describe("MapWithZones Component", () => {
             expect(fetch).toHaveBeenCalledWith("http://localhost:8000/v1/zones/", expect.any(Object))
         );
     });
+
+    test('initial state is correct', () => {
+        render(<MapWithZones />);
+        const { getByLabelText } = screen;
+      
+        // Check initial state for form fields
+        expect(getByLabelText('Select Zone Type:').value).toBe('1');
+        expect(getByLabelText('Zone Name:').value).toBe('');
+        expect(getByLabelText('City ID:').value).toBe('1');
+      });
+
+      test('fetches and loads zones correctly', async () => {
+        const mockFetch = jest.spyOn(global, 'fetch');
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            data: [
+              { id: 1, attributes: { boundary: 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', zone_name: 'Zone A', zone_type_id: 1, city_id: 1 } },
+            ],
+          }),
+        });
+      
+        render(<MapWithZones />);
+        
+        await waitFor(() => {
+          expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      test('correctly parses boundary string', () => {
+        const boundary = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))';
+        const result = parseBoundary(boundary);
+        expect(result).toEqual([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]);
+      });
 
 });
