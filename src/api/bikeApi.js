@@ -80,7 +80,7 @@ export const fetchBikeByCityApi = async (cityId) => {
 
     try {
         const token = sessionStorage.getItem("token");
-        const response = await fetch(`${API_BASE_URL}?city_id=${cityId}`, {
+        const response = await fetch(`${API_BASE_URL}?city_id=${cityId}&limit=9999`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
