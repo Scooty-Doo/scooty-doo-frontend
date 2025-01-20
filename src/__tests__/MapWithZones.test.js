@@ -115,30 +115,30 @@ describe("MapWithZones Component", () => {
         expect(getByLabelText('Select Zone Type:').value).toBe('1');
         expect(getByLabelText('Zone Name:').value).toBe('');
         expect(getByLabelText('City ID:').value).toBe('1');
-      });
+    });
 
-      test('fetches and loads zones correctly', async () => {
+    test('fetches and loads zones correctly', async () => {
         const mockFetch = jest.spyOn(global, 'fetch');
         mockFetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            data: [
-              { id: 1, attributes: { boundary: 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', zone_name: 'Zone A', zone_type_id: 1, city_id: 1 } },
-            ],
-          }),
+            ok: true,
+            json: async () => ({
+                data: [
+                    { id: 1, attributes: { boundary: 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', zone_name: 'Zone A', zone_type_id: 1, city_id: 1 } },
+                ],
+            }),
         });
       
         render(<MapWithZones />);
         
         await waitFor(() => {
-          expect(mockFetch).toHaveBeenCalledTimes(1);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
         });
-      });
+    });
 
-      test('correctly parses boundary string', () => {
+    test('correctly parses boundary string', () => {
         const boundary = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))';
         const result = parseBoundary(boundary);
         expect(result).toEqual([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]);
-      });
+    });
 
 });
