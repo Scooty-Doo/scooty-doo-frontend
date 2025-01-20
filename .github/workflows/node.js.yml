@@ -13,7 +13,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env: 
+      CI: "FalsE"
     strategy:
       matrix:
         node-version: [23.x, 22.x, 21.x]
