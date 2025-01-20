@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import { useCallback } from 'react';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import styles from "../styles/MapDrawZones.module.css";
@@ -59,7 +60,7 @@ const MapWithZones = () => {
     }, [mapLayers]);
 
     // Ladda zoner från api 
-    const loadApiZones = (zoneData) => {
+    const loadApiZones = useCallback((zoneData) => {
         if (!zoneData || !zoneData.id || !zoneData.attributes) {
             console.error("Invalid zone data format:", zoneData);
             return;
@@ -68,7 +69,7 @@ const MapWithZones = () => {
         const existingZone = mapLayers.find((layer) => layer.id === zoneData.id);
         if (existingZone) {
             console.warn(`Zone with ID ${zoneData.id} already exists.`);
-            return; // Hoppa över om zonen redan finns
+            return; // Skip if zone already exists
         }
     
         const { boundary, zone_type_id, zone_name, city_id } = zoneData.attributes;
@@ -86,7 +87,34 @@ const MapWithZones = () => {
                 latlngs,
             },
         ]);
-    };
+    }, [mapLayers]);
+
+    // Hämta zondata från API
+    // UseEffect with loadApiZones as a dependency
+    useEffect(() => {
+        const fetchZones = async () => {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch zones: ${response.status}`);
+                }
+
+                const data = await response.json();
+                data.data.forEach(loadApiZones);
+            } catch (error) {
+                console.error("Error fetching zones:", error);
+            }
+        };
+
+        fetchZones();
+    }, [loadApiZones]); 
+
     
     
     //omvandla polygon till lat-lng-koordinationer

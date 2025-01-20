@@ -12,6 +12,7 @@ const HomeClient = () => {
     const [tripId, setTripId] = useState(null);
     const [rideActive, setRideActive] = useState(false); 
     const [userInfo, setUserInfo] = useState(null);
+    const [cityId, setCityId] = useState(null);
 
     const navigate = useNavigate();
     
@@ -27,6 +28,9 @@ const HomeClient = () => {
         const getUserInfo = async () => {
             try {
                 const userData = await fetchUser();
+                if (!userData || !userData.data || !userData.data.attributes) {
+                    throw new Error("Invalid user data format");
+                }
                 const formattedData = {
                     name: userData.data.attributes.full_name,
                     email: userData.data.attributes.email,
@@ -68,14 +72,21 @@ const HomeClient = () => {
         }
     };
 
+    useEffect(() => {
+        console.log("CityId in HomeClient:", cityId);
+    }, [cityId]);
+    
+
     return (
         <div className={styles.homecontaianer}>
 
             <div className={styles.map}>
                 <MapView 
                     userType="client"
-                    onBikeClick={(id) => {
-                        setBikeId(id); // Fyll ID i cykeln
+                    onBikeClick={(id) => setBikeId(id)}
+                    onCitySelect={(id) => {
+                        console.log("City selected in HomeClient:", id);
+                        setCityId(id);
                     }}
                 />
             </div>
@@ -88,32 +99,33 @@ const HomeClient = () => {
                     </button>
                 </div>
             ) : (
-                <div className={styles.formcontainer}>
-                    <h2>Starta din resa</h2>
-                    {userInfo?.use_prepay && userInfo?.wallet < 0 ? (
-                        <button 
-                            onClick={() => navigate('/accountclient')} 
-                            className={styles.rechargeButton}
-                        >
-                            Fyll på ditt saldo innan du kan starta resa
-                        </button>
-                    ) : (
-                        <form aria-label="trip-form" onSubmit={handleSubmit}>
-                            <input 
-                                type="text" 
-                                id="bikeId" 
-                                value={bikeId} 
-                                onChange={(e) => setBikeId(e.target.value)}
-                                placeholder="Ange cykelns ID"
-                                required
-                            />
-                            <button type="submit">Start</button>
-                        </form>
-                    )}
-                </div>
+                cityId && ( // Visa endast om cityId är valt
+                    <div className={styles.formcontainer}>
+                        <h2>Starta din resa</h2>
+                        {userInfo?.use_prepay && userInfo?.wallet < 0 ? (
+                            <button 
+                                onClick={() => navigate('/accountclient')} 
+                                className={styles.rechargeButton}
+                            >
+                                Fyll på ditt saldo innan du kan starta resa
+                            </button>
+                        ) : (
+                            <form aria-label="trip-form" onSubmit={handleSubmit}>
+                                <input 
+                                    type="text" 
+                                    id="bikeId" 
+                                    value={bikeId} 
+                                    onChange={(e) => setBikeId(e.target.value)}
+                                    placeholder="Ange cykelns ID"
+                                    required
+                                />
+                                <button type="submit">Start</button>
+                            </form>
+                        )}
+                    </div>
+                )
             )}
         </div>
     );
 }
-
 export default HomeClient;

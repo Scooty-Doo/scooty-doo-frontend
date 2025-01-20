@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/HistoryClient.module.css";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchUserTrips } from "../../api/meApi";
 
 const HistoryClient = () => {
@@ -12,6 +12,8 @@ const HistoryClient = () => {
 
     const mapIconUrl = "https://img.icons8.com/?size=100&id=8212&format=png&color=2C3E50";
 
+    const token = sessionStorage.getItem("token");
+    console.log(token);
     // Kontrollera token och omdirigera till login om den saknas
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -22,8 +24,10 @@ const HistoryClient = () => {
     
     useEffect(() => {
         const getUserTrips = async () => {
+            console.log("Anropar fetchUserTrips...");
             try {
                 const data = await fetchUserTrips(); // Hämta resor
+                console.log("Data från API:", data);
                 setUserTrips(data.data); // Sätt resorna i state
             } catch (err) {
                 console.error("Error fetching user trips:", err);
@@ -32,9 +36,10 @@ const HistoryClient = () => {
                 setLoading(false);
             }
         };
-
+    
         getUserTrips();
     }, []);
+    
 
     // Formatera tid
     const formatTime = (time) => {
@@ -70,18 +75,18 @@ const HistoryClient = () => {
                 {userTrips.map((trip, index) => (
                     <div key={index} className={styles.rideItem}>
                         <div className={styles.rideDetails}>
-                            {/* Lägg till kartikonen */}
                             <img src={mapIconUrl} alt="Map Icon" className={styles.mapIcon} />
-                            {/* Länk till resans historik */}
                             <p className={styles.date}>
                                 <strong>
                                     {formatDate(trip.attributes.start_time)}
                                 </strong>
                             </p>
-
-                            {/* Visning av resans detaljer */}
                             <p>
-                                <strong>Tid:</strong> {`${formatTime(trip.attributes.start_time)} - ${formatTime(trip.attributes.end_time)}`}
+                                <Link
+                                    to={`/ridehistory/${trip.id}`}
+                                >
+                                    <strong>Tid:</strong> {`${formatTime(trip.attributes.start_time)} - ${formatTime(trip.attributes.end_time)}`}
+                                </Link>
                             </p>
 
                             <p>
