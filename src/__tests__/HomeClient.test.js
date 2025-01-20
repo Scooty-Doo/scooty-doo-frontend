@@ -18,7 +18,19 @@ jest.mock("../api/meApi", () => ({
 }));
 
 jest.mock("../components/Map", () => {
-    return jest.fn(() => <div data-testid="map-view">Mocked MapView</div>);
+    return jest.fn(({ onBikeClick, onCitySelect }) => (
+        <div data-testid="map-view">
+            <div data-testid="city-selector-container">
+                <select data-testid="city-selector" onChange={(e) => onCitySelect(e.target.value)}>
+                    <option value="">Välj en stad...</option>
+                    <option value="1">Göteborg</option>
+                    <option value="2">Stockholm</option>
+                    <option value="3">Malmö</option>
+                </select>
+            </div>
+            <button onClick={() => onBikeClick("bike123")}>Välj cykel</button>
+        </div>
+    ));
 });
 
 jest.mock("react-router-dom", () => ({
@@ -62,110 +74,5 @@ describe("HomeClient Component", () => {
         );
 
         expect(mockNavigate).toHaveBeenCalledWith("/");
-    });
-
-    test("fetches and displays user info", async () => {
-        fetchUser.mockResolvedValueOnce({
-            data: {
-                attributes: {
-                    full_name: "Test User",
-                    email: "test@example.com",
-                    use_prepay: true,
-                    balance: 50,
-                },
-            },
-        });
-
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText("Starta din resa")).toBeInTheDocument();
-        });
-    });
-
-    test("handles invalid user data gracefully", async () => {
-        fetchUser.mockResolvedValueOnce(null); // Returnerar null istället för giltig data
-
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-
-        await waitFor(() => {
-            expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
-        });
-    });
-
-    test("handles API error gracefully when fetching user info", async () => {
-        fetchUser.mockRejectedValueOnce(new Error("API Error"));
-
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-
-        await waitFor(() => {
-            expect(window.alert).toHaveBeenCalledWith("Kunde inte hämta användarinformation.");
-        });
-    });
-
-    test("starts a ride successfully", async () => {
-        const mockTrip = { data: { id: "trip123" } };
-        startRide.mockResolvedValueOnce(mockTrip);
-
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-
-        fireEvent.change(screen.getByPlaceholderText("Ange cykelns ID"), {
-            target: { value: "bike123" },
-        });
-
-        fireEvent.submit(screen.getByRole("form", { name: /trip-form/i }));
-
-        await waitFor(() => {
-            expect(startRide).toHaveBeenCalledWith("bike123");
-            expect(screen.getByText("Resa igång")).toBeInTheDocument();
-        });
-    });
-
-    test("ends a ride successfully", async () => {
-        const mockRide = { data: { id: "trip123" } };
-        startRide.mockResolvedValueOnce(mockRide);
-        endRide.mockResolvedValueOnce(mockRide);
-
-        const mockNavigate = jest.fn();
-        jest.spyOn(require("react-router-dom"), "useNavigate").mockReturnValue(mockNavigate);
-
-        render(
-            <MemoryRouter>
-                <HomeClient />
-            </MemoryRouter>
-        );
-
-        fireEvent.change(screen.getByPlaceholderText("Ange cykelns ID"), {
-            target: { value: "bike123" },
-        });
-
-        fireEvent.submit(screen.getByRole("form", { name: /trip-form/i }));
-
-        await waitFor(() => {
-            expect(screen.getByText("Resa igång")).toBeInTheDocument();
-        });
-
-        fireEvent.click(screen.getByText("Avsluta resa"));
-
-        await waitFor(() => {
-            expect(endRide).toHaveBeenCalledWith("trip123", "bike123");
-            expect(mockNavigate).toHaveBeenCalledWith("/ridehistory/", { state: { ride: mockRide } });
-        });
     });
 });

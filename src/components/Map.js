@@ -10,10 +10,11 @@ import { fetchZones } from "../api/zonesApi";
 import { fetchAvailableBikes } from '../api/bikeApi';
 import 'leaflet.markercluster';
 
-const MapView = ({ userType, onBikeClick }) => {
+const MapView = ({ onBikeClick, onCitySelect }) => {
     const [bikes, setBikes] = useState([]); // State för att hålla cyklarna
     const [zones, setZones] = useState([]); // State för att hålla zondata
     const [loading, setLoading] = useState(true); // State för att hantera laddning
+    const [cityId, setCityId] = useState(null);
     const [userPosition, setUserPosition] = useState(null);
 
     const bikeIcon = new L.divIcon({
@@ -32,6 +33,8 @@ const MapView = ({ userType, onBikeClick }) => {
 
     // Hämtar cyklar från API och lägger till zoner
     useEffect(() => {
+        if (!cityId) return;
+    
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -45,7 +48,7 @@ const MapView = ({ userType, onBikeClick }) => {
 
         const fetchBikesFromApi = async () => {
             try {
-                const data = await fetchAvailableBikes();
+                const data = await fetchAvailableBikes(cityId);
                 console.log(data.data)
                 setBikes(data.data);
             } catch (error) {
@@ -74,7 +77,25 @@ const MapView = ({ userType, onBikeClick }) => {
     
         fetchMapZones();
         fetchBikesFromApi();
-    }, [userType]);
+    }, [cityId]);
+
+    const handleCitySelection = (e) => {
+        const selectedCity = parseInt(e.target.value);
+        setCityId(selectedCity);
+        if (onCitySelect) {
+            console.log("Skickar cityId till HomeClient:", selectedCity);
+            onCitySelect(selectedCity);
+        } else {
+            console.warn("onCitySelect är inte definierad.");
+        }
+    };
+    
+    
+
+    useEffect(() => {
+        console.log("Vald cityId:", cityId);
+    }, [cityId]);
+    
 
     const ClusterMarkers = () => {
         const map = useMap();
@@ -127,8 +148,26 @@ const MapView = ({ userType, onBikeClick }) => {
     };
     
 
+    if (!cityId) {
+        return (
+            <div className={styles.citySelector}>
+                <h2 className={styles.cityTitle}>Välj stad</h2>
+                <select 
+                    onChange={handleCitySelection} 
+                    defaultValue="" 
+                    className={styles.cityDropdown}
+                >
+                    <option value="" disabled>Välj en stad...</option>
+                    <option value="1">Göteborg</option>
+                    <option value="2">Stockholm</option>
+                    <option value="3">Malmö</option>
+                </select>
+            </div>
+        );
+    }
+
     if (loading) {
-        return <p>Loading</p>
+        return <p>Loading...</p>;
     }
     return (
         <MapContainer
@@ -182,6 +221,7 @@ MapView.propTypes = {
     userType: PropTypes.string,
     token: PropTypes.string,
     onBikeClick: PropTypes.func.isRequired,
+    onCitySelect: PropTypes.func.isRequired,
 };
 
 export default MapView;
