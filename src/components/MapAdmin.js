@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { Socket } from 'socket.io-client';
 import { fetchZones } from "../api/zonesApi";
 //import { fetchBikes } from '../api/bikeApi';
-import { fetchAvailableBikes, fetchBikesInZone } from '../api/bikeApi';
+import { fetchBikes, fetchBikesInZone } from '../api/bikeApi';
 import 'leaflet.markercluster';
 // import BikeMarker from './marker';
 import { fetchCities } from '../api/citiesApi';
@@ -100,9 +100,10 @@ const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
             // if admin - Tim fixaaaaaaaaa
 
             try {
-                const data = await fetchAvailableBikes();
+                const data = await fetchBikes();
                 console.log(data.data)
                 setBikes(data.data);
+                // console.log("HÄÄÄÄÄÄÄÄR",data);
             } catch (error) {
                 console.error('Error fetching bikes:', error);
             } finally {
@@ -118,9 +119,9 @@ const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
                     name: zone.attributes.zone_name,
                     wkt: zone.attributes.boundary,
                     type: zone.attributes.zone_type_id === 1 ? 'Parking' :
-                        zone.attributes.zone_type_id === 2 ? 'Slow' :
+                        zone.attributes.zone_type_id === 2 ? 'Charging' :
                             zone.attributes.zone_type_id === 3 ? 'Forbidden' :
-                                zone.attributes.zone_type_id === 4 ? 'Charging' : 'Unknown'
+                                zone.attributes.zone_type_id === 4 ? 'Slow' : 'Unknown'
                 })));
             } catch (error) {
                 console.error('Error fetching zones:', error);
@@ -284,8 +285,8 @@ const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
                 attribution='&copy; <a href="https://www.thunderforest.com/">Thunderforest</a> contributors'
             />
             <ClusterMarkers />
-            <UpdateMapCenter center={selectedBikePoint} />
             <UpdateMapCenter center={selectedCity?.attributes?.c_location  || null} />
+            <UpdateMapCenter center={selectedBikePoint} />
 
             {userPosition && (
                 <Marker position={userPosition} icon={userIcon}>
