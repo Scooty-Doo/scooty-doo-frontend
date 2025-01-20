@@ -208,7 +208,7 @@ const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
     
         return null;
     };
-    
+
     // useEffect to get updates from socket
     useEffect(() => {
         if (userType != "admin" || !socket) {
