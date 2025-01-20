@@ -7,7 +7,7 @@ export const fetchBikes = async () => {
         if (!token) {
             throw new Error("Ingen token hittades i sessionStorage");
         }
-        const response = await fetch(`${API_BASE_URL}`, {
+        const response = await fetch(`${API_BASE_URL}?limit=9999`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
