@@ -129,9 +129,11 @@ export const userDetails2 = async (userId, name, email, github_login, use_prepay
 // API-funktion för att uppdatera användardetaljer
 export const userDetails3 = async (userId, name, email, github_login, use_prepay) => {
     try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch(`${API_BASE_URL}${userId}`, {
             method: "PATCH",
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({

@@ -237,39 +237,43 @@ const MapAdmin = ({ userType, socket, selectedBikePoint, selectedCity }) => {
             );
         };
 
-        const handle_bike_update_start = (data) => {
-            if (!data.zone_id) {
-                console.log("zon id i start var null",data.zone_id);
-                return;
-            }
-            const count = -1;
-            const zone_id = data.zone_id;
-            console.log("Bike update started:", data);
-            updateBikeCount(zone_id, count);
-            console.log("bikeCounts efter start trip: ",bikeCounts)
-        };
-
-        const handle_bike_update_end = (data) => {
-            if (!data.zone_id) {
-                console.log("zon id i start var null",data.zone_id);
-                return;
-            }
-            const count = 1;
-            const zone_id = data.zone_id;
-            console.log("Bike update ended:", data);
-            updateBikeCount(zone_id, count);
-            console.log("bikeCounts efter end trip: ",bikeCounts)
-        };
-
         socket.on("bike_update", update_bike);
-        socket.on("bike_update_start", handle_bike_update_start);
-        socket.on("bike_update_end", handle_bike_update_end);
         return () => {
             socket.off("bike_update", update_bike);
-            socket.off("bike_update_start", handle_bike_update_start);
-            socket.off("bike_update_end", handle_bike_update_end);
         }
-    }, [socket, bikes, userType, bikeCounts]);
+    }, [socket, bikes, userType]);
+
+    // useEffect(() => {
+    //     const handle_bike_update_start = (data) => {
+    //         if (!data.zone_id) {
+    //             console.log("zon id i start var null",data.zone_id);
+    //             return;
+    //         }
+    //         const count = -1;
+    //         const zone_id = data.zone_id;
+    //         console.log("Bike update started:", data);
+    //         updateBikeCount(zone_id, count);
+    //         console.log("bikeCounts efter start trip: ",bikeCounts)
+    //     };
+
+    //     const handle_bike_update_end = (data) => {
+    //         if (!data.zone_id) {
+    //             console.log("zon id i start var null",data.zone_id);
+    //             return;
+    //         }
+    //         const count = 1;
+    //         const zone_id = data.zone_id;
+    //         console.log("Bike update ended:", data);
+    //         updateBikeCount(zone_id, count);
+    //         console.log("bikeCounts efter end trip: ",bikeCounts)
+    //     };
+    //     socket.on("bike_update_start", handle_bike_update_start);
+    //     socket.on("bike_update_end", handle_bike_update_end);
+    //     return () => {
+    //         socket.off("bike_update_start", handle_bike_update_start);
+    //         socket.off("bike_update_end", handle_bike_update_end);
+    //     }
+    // }, [socket, bikeCounts]);
 
     if (loading) {
         return <p>Loading</p>
